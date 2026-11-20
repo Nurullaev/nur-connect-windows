@@ -117,6 +117,7 @@ void main() {
     (tester) async {
       await pump(tester, profile: false);
       expect(find.byType(NurConnectDashboard), findsOne);
+      expect(find.text(appName), findsOneWidget);
       expect(find.byKey(const ValueKey('nur-welcome')), findsOne);
       expect(find.text(currentAppLocalizations.nurAddSubscription), findsOne);
       expect(find.byKey(const ValueKey('nur-connect-toggle')), findsNothing);

@@ -62,7 +62,7 @@ void main() {
     expect(find.text('Check for updates'), findsOneWidget);
   });
 
-  testWidgets('lists the links and the people behind the fork', (tester) async {
+  testWidgets('credits the fork author as a compact link', (tester) async {
     await pump(tester);
 
     expect(find.text('Original repository'), findsOneWidget);
@@ -75,8 +75,8 @@ void main() {
     expect(find.text('github.com/pluralplay/FlClashX'), findsOneWidget);
     expect(find.text('t.me/flclashx'), findsNothing);
     expect(find.text('Fork author'), findsOneWidget);
-    expect(find.text('pluralplay'), findsOneWidget);
-    expect(find.byType(CircleAvatar), findsOneWidget);
+    expect(find.text('github.com/pluralplay'), findsOneWidget);
+    expect(find.byType(CircleAvatar), findsNothing);
     expect(find.text('x_kit_'), findsNothing);
     expect(tester.takeException(), isNull);
   });

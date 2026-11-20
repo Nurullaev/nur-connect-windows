@@ -9,23 +9,6 @@ import 'package:fl_clash/ui/ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
-@immutable
-class Person {
-  const Person({required this.avatar, required this.name, this.link});
-
-  final String avatar;
-  final String name;
-  final String? link;
-}
-
-const _forkAuthors = [
-  Person(
-    avatar: 'assets/images/avatar/pluralplay.jpg',
-    name: 'pluralplay',
-    link: 'https://github.com/pluralplay',
-  ),
-];
-
 const _upstreamRepository = 'chen08209/FlClash';
 const _coreRepository = 'MetaCubeX/mihomo';
 const _baseRepository = 'pluralplay/FlClashX';
@@ -153,11 +136,13 @@ class AboutView extends ConsumerWidget {
                 url: 'https://github.com/$_baseRepository',
                 label: 'github.com/$_baseRepository',
               ),
+              _buildLinkItem(
+                glyph: AppGlyphs.link,
+                title: appLocalizations.forkAuthor,
+                url: 'https://github.com/pluralplay',
+                label: 'github.com/pluralplay',
+              ),
             ],
-          ),
-          generateSection(
-            title: appLocalizations.forkAuthor,
-            items: const [_PeopleRow(people: _forkAuthors)],
           ),
         ],
       ),
@@ -197,7 +182,6 @@ class _AboutHero extends ConsumerWidget {
   });
 
   static const _logoSize = 96.0;
-  static const _logoInset = 14.0;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -213,18 +197,12 @@ class _AboutHero extends ConsumerWidget {
             onEnterDeveloperMode: onEnterDeveloperMode,
             onEasterEgg: onEasterEgg,
             onLongPress: onUnlockFullSettings,
-            child: DecoratedBox(
-              decoration: ShapeDecoration(
-                color: raised,
-                shape: AppShape.all(AppCorner.fit(_logoSize)),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(_logoInset),
-                child: Image.asset(
-                  'assets/images/icon.png',
-                  width: _logoSize - _logoInset * 2,
-                  height: _logoSize - _logoInset * 2,
-                ),
+            child: ClipOval(
+              child: Image.asset(
+                'assets/images/icon.png',
+                width: _logoSize,
+                height: _logoSize,
+                fit: BoxFit.cover,
               ),
             ),
           ),
@@ -330,72 +308,6 @@ class _LinkBadge extends StatelessWidget {
             size: 20,
             color: colorScheme.onSurfaceVariant,
           ),
-        ),
-      ),
-    );
-  }
-}
-
-/// A row of avatars with names under them; a person with a link opens it.
-class _PeopleRow extends StatelessWidget {
-  const _PeopleRow({required this.people});
-
-  static const _avatarSize = 56.0;
-
-  final List<Person> people;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListItem(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-      title: Wrap(
-        spacing: 16,
-        runSpacing: 12,
-        children: [
-          for (final person in people)
-            _Avatar(person: person, size: _avatarSize),
-        ],
-      ),
-    );
-  }
-}
-
-class _Avatar extends StatelessWidget {
-  const _Avatar({required this.person, required this.size});
-
-  final Person person;
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    final link = person.link;
-    final column = Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        CircleAvatar(
-          radius: size / 2,
-          foregroundImage: AssetImage(person.avatar),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          person.name,
-          style: AppTextStyle.caption1.of(context, emphasized: link != null),
-        ),
-      ],
-    );
-    if (link == null) {
-      return column;
-    }
-    return Tooltip(
-      message: link,
-      child: FocusRing(
-        shape: AppShape.md,
-        standsOff: true,
-        child: InkWell(
-          mouseCursor: clickableCursor,
-          customBorder: AppShape.md,
-          onTap: () => dialogs.openUrl(link),
-          child: Padding(padding: const EdgeInsets.all(4), child: column),
         ),
       ),
     );

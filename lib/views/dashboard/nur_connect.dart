@@ -36,6 +36,24 @@ class NurConnectDashboard extends ConsumerWidget {
     final scale = math.max(1.0, MediaQuery.textScalerOf(context).scale(1));
     return CommonScaffold(
       title: appName,
+      titleWidget: Row(
+        mainAxisSize: MainAxisSize.min,
+        spacing: 12,
+        children: [
+          ClipOval(
+            child: Image.asset(
+              'assets/images/icon.png',
+              width: 40,
+              height: 40,
+              fit: BoxFit.cover,
+              excludeFromSemantics: true,
+            ),
+          ),
+          Flexible(
+            child: Text(appName, maxLines: 1, overflow: TextOverflow.ellipsis),
+          ),
+        ],
+      ),
       backgroundColor: DashboardColors.of(context).page,
       actions: const [CoreStatusButton()],
       body: LayoutBuilder(
@@ -90,21 +108,9 @@ class NurConnectDashboard extends ConsumerWidget {
                         spacing: 16,
                         runSpacing: 12,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                appName,
-                                style: AppTextStyle.title1.of(
-                                  context,
-                                  emphasized: true,
-                                ),
-                              ),
-                              Text(
-                                l10n.nurHomeSubtitle,
-                                style: AppTextStyle.callout.of(context),
-                              ),
-                            ],
+                          Text(
+                            l10n.nurHomeSubtitle,
+                            style: AppTextStyle.callout.of(context),
                           ),
                           if (profile != null)
                             TonalButton(
