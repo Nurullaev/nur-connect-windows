@@ -683,6 +683,7 @@ Future<void> _packageWindows(
     'runner',
     'Release',
   );
+  requireWindowsBundleArchitecture(Directory(built), build.arch);
   var bundle = built;
   if (identity.pre) {
     requireChannelMarker(
@@ -1176,6 +1177,69 @@ Future<void> _packageAppImage(
     environment: {'ARCH': appImageEnvArch(build.arch)},
   );
   Directory(appDir).deleteSync(recursive: true);
+}
+
+/// Reject a stale native hook output before it reaches a Windows package.
+void requireWindowsBundleArchitecture(Directory bundle, String arch) {
+  final expected = switch (arch) {
+    'amd64' => 0x8664,
+    'arm64' => 0xaa64,
+    _ => throw ArgumentError.value(arch, 'arch'),
+  };
+  final binaries = bundle
+      .listSync(recursive: true)
+      .whereType<File>()
+      .where(
+        (file) => const {
+          '.exe',
+          '.dll',
+        }.contains(p.extension(file.path).toLowerCase()),
+      );
+  var count = 0;
+  for (final file in binaries) {
+    count++;
+    final machine = _windowsPeMachine(file);
+    // The upstream standalone loopback utility is intentionally x86 and runs
+    // through Windows emulation. No app, Core, Helper or DLL gets this exception.
+    if (p.basename(file.path) == 'EnableLoopback.exe' &&
+        machine == 0x014c &&
+        sha256.convert(file.readAsBytesSync()).toString() ==
+            '0ccf6f4b2f6e89ddb50b3075fd6b604ef7c0d6b13ce377781d898dcd8f9c91d7') {
+      continue;
+    }
+    if (machine != expected) {
+      throw StateError(
+        'Windows $arch package contains a different architecture: '
+        '${file.path} (PE 0x${machine.toRadixString(16)}). '
+        'Rebuild native assets for $arch before packaging.',
+      );
+    }
+  }
+  if (count == 0) throw StateError('No Windows binaries in ${bundle.path}');
+}
+
+int _windowsPeMachine(File file) {
+  final input = file.openSync();
+  try {
+    final length = input.lengthSync();
+    final header = input.readSync(64);
+    if (header.length < 64 || header[0] != 0x4d || header[1] != 0x5a) {
+      throw FormatException('Invalid Windows executable: ${file.path}');
+    }
+    final offset =
+        header[60] | header[61] << 8 | header[62] << 16 | header[63] << 24;
+    if (offset < 64 || offset + 6 > length) {
+      throw FormatException('Invalid PE header offset: ${file.path}');
+    }
+    input.setPositionSync(offset);
+    final pe = input.readSync(6);
+    if (pe[0] != 0x50 || pe[1] != 0x45 || pe[2] != 0 || pe[3] != 0) {
+      throw FormatException('Invalid PE signature: ${file.path}');
+    }
+    return pe[4] | pe[5] << 8;
+  } finally {
+    input.closeSync();
+  }
 }
 
 String windowsSdkArch(Abi abi) => switch (abi) {

@@ -166,7 +166,7 @@ void main() {
 
   group('run', () {
     test(
-      'reports read files and written directories as dependencies',
+      'tracks output files as well as directories across target switches',
       () async {
         final goFile = p.join(repository.path, 'core', 'lib.go');
         final coreDir = p.join(repository.path, 'libclash', 'linux');
@@ -195,6 +195,8 @@ void main() {
         expect(seen?.target, Target.linuxAmd64);
         expect(BuildOutput(output.json).dependencies, [
           Uri.file(goFile),
+          Uri.file(p.join(coreDir, 'FlClashCore')),
+          Uri.file(p.join(coreDir, 'manifest.json')),
           Uri.directory(p.join(repository.path, 'core')),
           Uri.directory(coreDir),
         ]);

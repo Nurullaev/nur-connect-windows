@@ -20,6 +20,12 @@ void main() {
     );
   });
 
+  test('a fresh configuration uses VPN routing without system proxy', () {
+    final config = Config.realFromJson(null);
+    expect(config.patchClashConfig.tun.enable, isTrue);
+    expect(config.networkProps.systemProxy, isFalse);
+  });
+
   test('an explicit user choice stays off after loading and saving', () {
     final config = Config.realFromJson({
       'appSettingProps': {'autoCheckUpdate': false},

@@ -27,6 +27,52 @@ void main() {
       },
     );
 
+    test('Windows packaging rejects a native binary left by ARM tests', () {
+      final dir = Directory.systemTemp.createTempSync('nur-pe-architecture-');
+      addTearDown(() => dir.deleteSync(recursive: true));
+      void writePe(String name, int machine) {
+        final bytes = List<int>.filled(70, 0);
+        bytes[0] = 0x4d;
+        bytes[1] = 0x5a;
+        bytes[60] = 64;
+        bytes[64] = 0x50;
+        bytes[65] = 0x45;
+        bytes[68] = machine & 0xff;
+        bytes[69] = machine >> 8;
+        File(p.join(dir.path, name)).writeAsBytesSync(bytes);
+      }
+
+      writePe('NurConnect.exe', 0x8664);
+      writePe('NurConnectCore.exe', 0xaa64);
+      expect(
+        () => setup.requireWindowsBundleArchitecture(dir, 'amd64'),
+        throwsA(
+          isA<StateError>().having(
+            (e) => e.message,
+            'offending file',
+            contains('NurConnectCore.exe'),
+          ),
+        ),
+      );
+      writePe('NurConnectCore.exe', 0x8664);
+      setup.requireWindowsBundleArchitecture(dir, 'amd64');
+      final loopback = File(
+        'windows/EnableLoopback.exe',
+      ).copySync(p.join(dir.path, 'EnableLoopback.exe'));
+      setup.requireWindowsBundleArchitecture(dir, 'amd64');
+      writePe('EnableLoopback.exe', 0x014c);
+      expect(
+        () => setup.requireWindowsBundleArchitecture(dir, 'amd64'),
+        throwsStateError,
+      );
+      loopback.deleteSync();
+      File(p.join(dir.path, 'broken.dll')).writeAsStringSync('not PE');
+      expect(
+        () => setup.requireWindowsBundleArchitecture(dir, 'amd64'),
+        throwsFormatException,
+      );
+    });
+
     test('Windows packaging requires the SDK ABI to match the artifact', () {
       expect(setup.windowsSdkArch(Abi.windowsArm64), 'arm64');
       expect(setup.windowsSdkArch(Abi.windowsX64), 'amd64');

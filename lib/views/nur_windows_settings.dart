@@ -40,11 +40,6 @@ class NurWindowsSettings extends ConsumerWidget {
         children: [
           const ManagedSettingsHint(keys: generalPageKeys),
           generateSection(
-            title: l10n.connection,
-            items: const [TUNItem(), SystemProxyItem()],
-            footer: l10n.tunDesc,
-          ),
-          generateSection(
             title: l10n.startupAndBackground,
             items: [
               ConfigToggleItem(
@@ -157,10 +152,17 @@ class NurWindowsSettings extends ConsumerWidget {
             title: l10n.logsAndDiagnostics,
             items: const [OpenLogsFolderItem(), ShareLogsItem()],
           ),
-          if (!simple)
-            generateSection(
-              title: l10n.advancedConfig,
-              items: [
+          generateSection(
+            title: simple ? l10n.more : l10n.advancedConfig,
+            items: [
+              if (!simple) ...[
+                ListItem.open(
+                  title: Text(l10n.network),
+                  widget: CommonScaffold(
+                    title: l10n.network,
+                    body: const NetworkListView(),
+                  ),
+                ),
                 ListItem.open(
                   title: Text(l10n.general),
                   widget: const GeneralView(),
@@ -174,14 +176,7 @@ class NurWindowsSettings extends ConsumerWidget {
                   widget: const HotKeyView(),
                 ),
               ],
-            ),
-          generateSection(
-            items: [
-              ListItem.open(
-                leading: const GlyphIcon(AppGlyphs.info),
-                title: Text(l10n.about),
-                widget: const AboutView(),
-              ),
+              ListItem.open(title: Text(l10n.about), widget: const AboutView()),
             ],
           ),
         ],

@@ -32,7 +32,6 @@ class NurConnectDashboard extends ConsumerWidget {
       profilesProvider.select((value) => value.isNotEmpty),
     );
     final announcement = ref.watch(announcementProvider) != null;
-    final simple = ref.watch(simpleModeProvider);
     final scale = math.max(1.0, MediaQuery.textScalerOf(context).scale(1));
     return CommonScaffold(
       title: appName,
@@ -49,7 +48,7 @@ class NurConnectDashboard extends ConsumerWidget {
               excludeFromSemantics: true,
             ),
           ),
-          Flexible(
+          const Flexible(
             child: Text(appName, maxLines: 1, overflow: TextOverflow.ellipsis),
           ),
         ],
@@ -66,7 +65,6 @@ class NurConnectDashboard extends ConsumerWidget {
               if (profile != null) ...[
                 const _ConnectionCard(),
                 const _ServerCard(),
-                const NetworkTakeoverCard(),
               ] else
                 _WelcomeCard(hasProfiles: hasProfiles),
             ],
@@ -77,7 +75,6 @@ class NurConnectDashboard extends ConsumerWidget {
             children: [
               if (profile != null) ...[
                 const ProfilesCard(),
-                if (!simple) const OutboundModeCard(),
                 const NetworkSpeedCard(),
               ],
               if (announcement) const AnnouncementCard(),
@@ -102,24 +99,9 @@ class NurConnectDashboard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     spacing: 24,
                     children: [
-                      Wrap(
-                        alignment: WrapAlignment.spaceBetween,
-                        crossAxisAlignment: WrapCrossAlignment.center,
-                        spacing: 16,
-                        runSpacing: 12,
-                        children: [
-                          Text(
-                            l10n.nurHomeSubtitle,
-                            style: AppTextStyle.callout.of(context),
-                          ),
-                          if (profile != null)
-                            TonalButton(
-                              glyph: AppGlyphs.cloudDownload,
-                              label: l10n.nurAddSubscription,
-                              onPressed: () =>
-                                  unawaited(addProfileByLink(context, ref)),
-                            ),
-                        ],
+                      Text(
+                        l10n.nurHomeSubtitle,
+                        style: AppTextStyle.callout.of(context),
                       ),
                       if (twoColumns && profile != null)
                         Row(

@@ -27,3 +27,7 @@ dart setup.dart windows --env pre --arch amd64
 Outputs go to `dist/`. Add `--targets zip` for a portable archive only. Provider-signed updates require our own signing keys; the upstream key is no longer trusted.
 
 [GPL v3](LICENSE). Original author credits and third-party licenses are retained; see [NOTICE](NOTICE.md). Source base: FlClashX `a9bbb66f6aec3e47359819c93976148a1d270e23`, Mihomo `v1.19.34`. This is a separate project from the similarly named mobile apps and is not an official upstream release.
+
+The owner chose the simplified Nur Connect interface after comparing it with
+FlClashX. New installations use TUN VPN routing by default; network switches
+are available in advanced settings. The first public release is being prepared.

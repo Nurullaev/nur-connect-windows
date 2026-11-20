@@ -89,6 +89,9 @@ final class CoreBuilder implements Builder {
     }
     output.dependencies.addAll([
       for (final path in report.inputs) Uri.file(path),
+      // ARM tests and x64 releases share staging paths. Track file content so
+      // a cached hook reruns when another target overwrites these binaries.
+      for (final path in report.outputs) Uri.file(path),
       for (final path in report.sourceDirectories) Uri.directory(path),
       for (final path in report.outputDirectories) Uri.directory(path),
     ]);
