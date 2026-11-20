@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/action.dart';
@@ -16,20 +18,22 @@ import '../helpers/test_profiles.dart';
 class _RecordingProfilesAction extends ProfilesAction {
   final singles = <String>[];
   final deviceHeaderChoices = <bool>[];
-  final pageChoices = <bool>[];
+  Object? failure;
+  Completer<Profile>? pending;
 
   @override
-  Future<Profile?> addProfileFromLink(
+  Future<Profile> importProfileFromLink(
     String link, {
     String? label,
     String ageSecretKey = '',
     bool sendDeviceHeaders = true,
-    bool showProfiles = true,
   }) async {
     singles.add(link);
     deviceHeaderChoices.add(sendDeviceHeaders);
-    pageChoices.add(showProfiles);
-    return null;
+    if (failure case final Exception error) throw error;
+    if (failure case final Error error) throw error;
+    if (pending != null) return pending!.future;
+    return Profile.normal(url: link);
   }
 }
 
@@ -62,6 +66,7 @@ Future<void> _openMenu(WidgetTester tester, ProviderContainer container) async {
     UncontrolledProviderScope(
       container: container,
       child: TestApp(
+        locale: const Locale('en'),
         child: Scaffold(
           body: Center(
             child: AddProfileMenu(
@@ -85,6 +90,7 @@ Future<void> _openLinkDialog(
     UncontrolledProviderScope(
       container: container,
       child: TestApp(
+        locale: const Locale('en'),
         child: Scaffold(
           body: Center(
             child: Consumer(
@@ -119,6 +125,58 @@ TextButton _button(WidgetTester tester, String label) =>
     tester.widget<TextButton>(find.widgetWithText(TextButton, label));
 
 void main() {
+  testWidgets('a failed import keeps its link and can be retried in place', (
+    tester,
+  ) async {
+    final action = _RecordingProfilesAction()
+      ..failure = const SubscriptionImportException(
+        SubscriptionImportIssue.wrongFormat,
+      );
+    final container = _containerFor(tester, profilesAction: action);
+    await _openLinkDialog(tester, container);
+    const url = 'https://example.test/sub/private-token';
+    await tester.enterText(find.byType(TextField), url);
+    await tester.pump();
+    await tester.tap(find.text(currentAppLocalizations.add));
+    await tester.pumpAndSettle();
+    expect(find.byType(AddProfileLinkDialog), findsOne);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).controller!.text,
+      url,
+    );
+    expect(action.singles, [url]);
+    expect(
+      tester.widget<TextField>(find.byType(TextField)).decoration!.errorText,
+      currentAppLocalizations.nurImportWrongFormat,
+    );
+    action.failure = null;
+    await tester.tap(find.text(currentAppLocalizations.retry));
+    await tester.pumpAndSettle();
+    expect(action.singles, [url, url]);
+    expect(find.byType(AddProfileLinkDialog), findsNothing);
+  });
+
+  testWidgets('a pending import prevents duplicate submit and dismissal', (
+    tester,
+  ) async {
+    final pending = Completer<Profile>();
+    final action = _RecordingProfilesAction()..pending = pending;
+    final container = _containerFor(tester, profilesAction: action);
+    await _openLinkDialog(tester, container);
+    await tester.enterText(find.byType(TextField), 'https://example.test/sub');
+    await tester.pump();
+    await tester.tap(find.text(currentAppLocalizations.add));
+    await tester.pump();
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pump();
+    expect(action.singles, hasLength(1));
+    expect(_button(tester, currentAppLocalizations.cancel).onPressed, isNull);
+    expect(find.text(currentAppLocalizations.nurImporting), findsOne);
+    pending.complete(Profile.normal(url: 'https://example.test/sub'));
+    await tester.pumpAndSettle();
+    expect(find.byType(AddProfileLinkDialog), findsNothing);
+  });
+
   testWidgets('offers the QR code, file, link, and custom entries', (
     tester,
   ) async {
@@ -166,7 +224,6 @@ void main() {
 
     expect(action.singles, ['https://example.com/sub']);
     expect(action.deviceHeaderChoices, [true]);
-    expect(action.pageChoices, [false]);
     expect(find.byType(AddProfileLinkDialog), findsNothing);
   });
 

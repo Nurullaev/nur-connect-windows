@@ -64,7 +64,7 @@ class OutboundModeCard extends ConsumerWidget {
                       semanticLabel: item.label,
                       onTap: () => _changeMode(ref, item),
                       builder: (foreground) => SizedBox(
-                        height: 52,
+                        height: 52 * DashboardDensityScope.scaleOf(context),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           spacing: 2,

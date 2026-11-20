@@ -254,6 +254,25 @@ void main() {
   }
 
   group('setRunning gating', () {
+    test(
+      'a cached profile cannot start after an explicit HWID refusal',
+      () async {
+        markInitialized();
+        final profile = Profile.normal(
+          url: 'https://example.test/sub',
+        ).copyWith(providerHeaders: {'x-hwid-max-devices-reached': 'true'});
+        container.read(profilesProvider.notifier).put(profile);
+        container.listen(currentProfileIdProvider, (_, _) {});
+        container.read(currentProfileIdProvider.notifier).value = profile.id;
+        await expectLater(
+          action.setRunning(true),
+          throwsA(isA<SubscriptionImportException>()),
+        );
+        expect(action.coreRunningCalls, isEmpty);
+        expect(container.read(runTimeProvider), isNull);
+      },
+    );
+
     test('an initialize request bypasses the init gate', () async {
       await container
           .read(setupActionProvider.notifier)

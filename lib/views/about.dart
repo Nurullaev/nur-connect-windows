@@ -28,7 +28,7 @@ const _forkAuthors = [
 
 const _upstreamRepository = 'chen08209/FlClash';
 const _coreRepository = 'MetaCubeX/mihomo';
-const _telegram = 'https://t.me/flclashx';
+const _baseRepository = 'pluralplay/FlClashX';
 
 /// The running core's version when it answers, else the one this build was
 /// made with, else nothing.
@@ -121,6 +121,12 @@ class AboutView extends ConsumerWidget {
             title: appLocalizations.more,
             items: [
               _buildLinkItem(
+                glyph: AppGlyphs.globe,
+                title: appLocalizations.website,
+                url: productWebsite,
+                label: 'nurconnect.app',
+              ),
+              _buildLinkItem(
                 glyph: AppGlyphs.code,
                 title: appLocalizations.project,
                 url: 'https://github.com/$repository',
@@ -139,10 +145,10 @@ class AboutView extends ConsumerWidget {
                 label: 'github.com/$_coreRepository',
               ),
               _buildLinkItem(
-                glyph: AppGlyphs.send,
-                title: 'Telegram',
-                url: _telegram,
-                label: 't.me/flclashx',
+                glyph: AppGlyphs.code,
+                title: 'FlClashX',
+                url: 'https://github.com/$_baseRepository',
+                label: 'github.com/$_baseRepository',
               ),
             ],
           ),

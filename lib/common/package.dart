@@ -8,11 +8,11 @@ extension PackageInfoExtension on PackageInfo {
   String get displayVersion =>
       appVersionDefine.isNotEmpty ? appVersionDefine : version;
 
-  /// `FlClashX/v<app> core/<mihomo> Platform/<os>`; the core token is left
+  /// `Nur-Connect-Windows/v<app> core/<mihomo> Platform/<os>`; the core token is left
   /// out until a version is known. A TV says `androidtv`, which still
   /// contains `android` for panel rules matching a substring.
   String uaWith(String coreVersion, {bool tv = false}) => [
-    '$appName/v$displayVersion',
+    '$productUserAgent/v$displayVersion',
     if (coreVersion.isNotEmpty) 'core/$coreVersion',
     'Platform/${tv ? 'androidtv' : Platform.operatingSystem}',
   ].join(' ');

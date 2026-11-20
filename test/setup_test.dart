@@ -1,12 +1,29 @@
+import 'dart:ffi' show Abi;
 import 'dart:io';
 
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
+import 'package:yaml/yaml.dart';
 
 import '../setup.dart' as setup;
 
 void main() {
   group('setup.dart', () {
+    test('Windows packaging requires the SDK ABI to match the artifact', () {
+      expect(setup.windowsSdkArch(Abi.windowsArm64), 'arm64');
+      expect(setup.windowsSdkArch(Abi.windowsX64), 'amd64');
+      expect(
+        () => setup.requireWindowsSdkArchitecture('amd64', Abi.windowsArm64),
+        throwsArgumentError,
+      );
+      expect(
+        () => setup.requireWindowsSdkArchitecture('arm64', Abi.windowsX64),
+        throwsArgumentError,
+      );
+      setup.requireWindowsSdkArchitecture('amd64', Abi.windowsX64);
+      setup.requireWindowsSdkArchitecture('arm64', Abi.windowsArm64);
+    });
+
     test('a pre build of macOS takes its own bundle id and name', () {
       final config = setup.macosChannelConfig('pre')!;
 
@@ -131,7 +148,7 @@ hooks:
     test('names artifacts by platform and architecture', () {
       expect(
         setup.artifactName('windows', 'amd64', '-setup.exe'),
-        'FlClashX-windows-amd64-setup.exe',
+        'NurConnect-windows-amd64-setup.exe',
       );
       expect(
         setup.artifactName('android', 'arm64-v8a', '.apk'),
@@ -222,7 +239,7 @@ hooks:
         arch: 'amd64',
         sourceDir: r'C:\build',
         outputDir: r'C:\dist',
-        outputBaseName: 'FlClashX-windows-amd64-setup',
+        outputBaseName: 'NurConnect-windows-amd64-setup',
         rootDir: r'C:\repo',
       );
       expect(script, contains('AppId=ABC'));
@@ -320,33 +337,28 @@ hooks:
       );
     });
 
-    test('the installer takes over a 0.4 FlClashX registration in place', () {
+    test('the installer cannot adopt or retire a FlClash installation', () {
       final script = File(
         'windows/packaging/exe/inno_setup.iss',
       ).readAsStringSync();
-
-      expect(
-        script,
-        contains(r'Uninstall\728B3532-C74B-4870-9068-BE70FE12A3E6_is1'),
-      );
-      expect(script, contains("(Pos('FlClashX', Name) = 1)"));
-      expect(script, contains('WizardForm.DirEdit.Text := LegacyDir;'));
-      expect(
-        script,
-        matches(RegExp(r'ClearStaleProxy;\s+RetireLegacyInstall;')),
-      );
-      expect(script, isNot(contains('Exec(Uninstaller')));
+      expect(script, isNot(contains('FindLegacyInstall')));
+      expect(script, isNot(contains('RetireLegacyInstall')));
+      expect(script, isNot(contains('728B3532-C74B-4870-9068-BE70FE12A3E6')));
+      expect(script, isNot(contains('LegacyHelperService')));
+      expect(script, contains('IsUpgrade := IsAppInstalled();'));
     });
 
     group('a Windows or Linux pre-release', () {
       final template = File(
         'windows/packaging/exe/inno_setup.iss',
       ).readAsStringSync();
-      final config = {
-        'app_id': 'D915C0D1-2F5B-4676-97D5-6D55F3EF45A4',
-        'display_name': 'FlClashX',
-        'executable_name': 'FlClashX.exe',
-      };
+      final config =
+          loadYaml(
+                File(
+                  'windows/packaging/exe/make_config.yaml',
+                ).readAsStringSync(),
+              )
+              as Map;
 
       String render(setup.DesktopIdentity identity) => setup.renderInnoSetup(
         template,
@@ -355,33 +367,36 @@ hooks:
         arch: 'amd64',
         sourceDir: r'C:\build',
         outputDir: r'C:\dist',
-        outputBaseName: 'FlClashX-windows-amd64-setup',
+        outputBaseName: 'NurConnect-windows-amd64-setup',
         rootDir: r'C:\repo',
         identity: identity,
       );
 
       test('installs under its own id, name, Helper and data', () {
-        final pre = render(setup.preDesktop);
+        final pre = render(setup.preWindows);
         expect(pre, isNot(contains('D915C0D1-2F5B-4676-97D5-6D55F3EF45A4')));
-        expect(pre, contains(r'DefaultDirName={autopf}\FlClashX Pre'));
-        expect(pre, contains("HelperService = 'FlClashXPreHelperService';"));
-        expect(pre, contains('AdoptLegacy = False;'));
-        expect(pre, contains("KillProcess('FlClashXPre.exe');"));
-        expect(pre, contains(r'{userappdata}\com.follow\clashx.pre'));
+        expect(pre, contains(r'DefaultDirName={autopf}\Nur Connect Pre'));
+        expect(pre, contains("HelperService = 'NurConnectWindowsPreHelper';"));
+        expect(pre, isNot(contains('AdoptLegacy')));
+        expect(pre, contains("KillProcess('NurConnectPre.exe');"));
+        expect(pre, contains(r'{userappdata}\Nurullaev\NurConnectWindows.pre'));
         expect(
           RegExp(r'\{\{([A-Z_]+)\}\}').allMatches(pre).map((m) => m[1]),
           everyElement('NAME'),
         );
       });
 
-      test('leaves the stable installer as it was', () {
-        final stable = render(setup.stableDesktop);
-        expect(stable, contains('AppId=D915C0D1-2F5B-4676-97D5-6D55F3EF45A4'));
-        expect(stable, contains(r'DefaultDirName={autopf}\FlClashX'));
-        expect(stable, contains("HelperService = 'FlClashXHelperService';"));
-        expect(stable, contains('AdoptLegacy = True;'));
-        expect(stable, contains("KillProcess('FlClashX.exe');"));
-        expect(stable, contains(r"{userappdata}\com.follow\clashx')"));
+      test('gives the stable installer its own product identity', () {
+        final stable = render(setup.stableWindows);
+        expect(stable, contains('AppId=${config['app_id']}'));
+        expect(stable, contains(r'DefaultDirName={autopf}\Nur Connect'));
+        expect(stable, contains("HelperService = 'NurConnectWindowsHelper';"));
+        expect(stable, isNot(contains('AdoptLegacy')));
+        expect(stable, contains("KillProcess('NurConnect.exe');"));
+        expect(
+          stable,
+          contains(r"{userappdata}\Nurullaev\NurConnectWindows')"),
+        );
       });
 
       test('stops only the Core started from its own install', () {

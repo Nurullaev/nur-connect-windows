@@ -1,6 +1,7 @@
 import 'package:fl_clash/common/constant.dart';
 import 'package:fl_clash/common/exception.dart';
 import 'package:fl_clash/common/network_error.dart';
+import 'package:fl_clash/common/subscription_import.dart';
 import 'package:fl_clash/core/desktop/launch_policy.dart';
 import 'package:fl_clash/core/method.dart';
 import 'package:fl_clash/l10n/l10n.dart';
@@ -91,6 +92,9 @@ String? coreLaunchBlockedMessage(
 }
 
 String userFacingErrorMessage(Object error, AppLocalizations appLocalizations) {
+  if (error is SubscriptionImportException) {
+    return subscriptionImportErrorMessage(error, appLocalizations);
+  }
   return networkErrorMessage(error, appLocalizations) ??
       coreLaunchBlockedMessage(error, appLocalizations) ??
       switch (error) {
@@ -105,6 +109,26 @@ String userFacingErrorMessage(Object error, AppLocalizations appLocalizations) {
         CoreMethodException(:final message) => message,
         _ => error.toString(),
       };
+}
+
+/// Import failures must not expose a URL token or a line of a downloaded config.
+String subscriptionImportErrorMessage(Object error, AppLocalizations l10n) {
+  if (error is SubscriptionImportException) {
+    return switch (error.issue) {
+      SubscriptionImportIssue.invalidLink => l10n.invalidLinkTip,
+      SubscriptionImportIssue.emptyResponse => l10n.nurImportEmptyResponse,
+      SubscriptionImportIssue.wrongFormat => l10n.nurImportWrongFormat,
+      SubscriptionImportIssue.invalidConfig => l10n.nurImportInvalidConfig,
+      SubscriptionImportIssue.deviceLimit => l10n.deviceLimitReached,
+      SubscriptionImportIssue.deviceUnsupported =>
+        l10n.deviceIdUnsupportedTitle,
+    };
+  }
+  if (error is AgeSecretKeyRequiredException) {
+    return l10n.ageSecretKeyRequiredTip;
+  }
+  return networkErrorMessage(error, l10n, includeDetails: false) ??
+      l10n.nurImportFailed;
 }
 
 String delayFailureText(int delay, AppLocalizations appLocalizations) {

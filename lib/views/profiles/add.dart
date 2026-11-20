@@ -16,17 +16,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 /// from stays, so a profile added from the dashboard lands on it.
 Future<void> addProfileByLink(BuildContext context, WidgetRef ref) async {
   final profilesAction = ref.read(profilesActionProvider.notifier);
-  final link = await dialogs.showCommonDialog<String>(
+  await dialogs.showCommonDialog<String>(
     context: context,
-    child: const AddProfileLinkDialog(),
+    child: AddProfileLinkDialog(
+      onImport: (link) async {
+        await profilesAction.importProfileFromLink(link);
+      },
+    ),
   );
-  if (link != null) {
-    unawaited(profilesAction.addProfileFromLink(link, showProfiles: false));
-  }
 }
 
 class AddProfileLinkDialog extends StatefulWidget {
-  const AddProfileLinkDialog({super.key});
+  const AddProfileLinkDialog({super.key, this.onImport});
+
+  final Future<void> Function(String link)? onImport;
 
   @override
   State<AddProfileLinkDialog> createState() => _AddProfileLinkDialogState();
@@ -35,6 +38,7 @@ class AddProfileLinkDialog extends StatefulWidget {
 class _AddProfileLinkDialogState extends State<AddProfileLinkDialog> {
   final _controller = TextEditingController();
   String? _error;
+  bool _busy = false;
 
   @override
   void dispose() {
@@ -42,74 +46,110 @@ class _AddProfileLinkDialogState extends State<AddProfileLinkDialog> {
     super.dispose();
   }
 
-  bool _isLink(String text) => text.isUrl || text.isShareLink;
-
-  void _submit() {
-    final link = _controller.text.trim();
-    if (link.isEmpty) {
-      return;
+  Future<void> _submit() async {
+    if (_busy || _controller.text.trim().isEmpty) return;
+    try {
+      final link = subscriptionLinkFromInput(_controller.text);
+      setState(() {
+        _busy = true;
+        _error = null;
+      });
+      await widget.onImport?.call(link);
+      if (mounted) {
+        // PopScope blocks dismissal during a request; unlock it before pop.
+        setState(() => _busy = false);
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) Navigator.of(context).pop(link);
+        });
+      }
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _busy = false;
+        _error = subscriptionImportErrorMessage(
+          error,
+          context.appLocalizations,
+        );
+      });
     }
-    if (!_isLink(link)) {
-      setState(() => _error = context.appLocalizations.invalidLinkTip);
-      return;
-    }
-    Navigator.of(context).pop(link);
   }
 
   Future<void> _addFromClipboard() async {
-    final text = (await Clipboard.getData(Clipboard.kTextPlain))?.text?.trim();
-    if (!mounted) {
-      return;
+    if (_busy) return;
+    try {
+      final text = (await Clipboard.getData(Clipboard.kTextPlain))?.text ?? '';
+      if (!mounted || _busy) return;
+      subscriptionLinkFromInput(text);
+      _controller.text = text.trim();
+      await _submit();
+    } catch (error) {
+      if (mounted) {
+        setState(
+          () => _error = subscriptionImportErrorMessage(
+            error,
+            context.appLocalizations,
+          ),
+        );
+      }
     }
-    if (text == null || !_isLink(text)) {
-      setState(() => _error = context.appLocalizations.invalidLinkTip);
-      return;
-    }
-    Navigator.of(context).pop(text);
   }
 
   @override
   Widget build(BuildContext context) {
     final appLocalizations = context.appLocalizations;
-    return CommonDialog(
-      title: appLocalizations.addProfile,
-      hasFields: true,
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.of(context).pop(),
-          child: Text(appLocalizations.cancel),
-        ),
-        TextButton(
-          onPressed: _controller.text.trim().isEmpty ? null : _submit,
-          child: Text(appLocalizations.add),
-        ),
-      ],
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 12,
-        children: [
-          TextField(
-            controller: _controller,
-            autofocus: true,
-            autocorrect: false,
-            keyboardType: TextInputType.url,
-            textInputAction: TextInputAction.done,
-            inputFormatters: TextInputLimits.limit(TextInputLimits.url),
-            decoration: InputDecoration(
-              hintText: appLocalizations.link,
-              errorText: _error,
-              errorMaxLines: 2,
-            ),
-            onChanged: (_) => setState(() => _error = null),
-            onSubmitted: (_) => _submit(),
+    return PopScope(
+      canPop: !_busy,
+      child: CommonDialog(
+        title: appLocalizations.nurAddSubscription,
+        hasFields: true,
+        actions: [
+          TextButton(
+            onPressed: _busy ? null : () => Navigator.of(context).pop(),
+            child: Text(appLocalizations.cancel),
           ),
-          TonalButton(
-            glyph: AppGlyphs.paste,
-            label: appLocalizations.addFromClipboard,
-            onPressed: () => unawaited(_addFromClipboard()),
+          TextButton(
+            onPressed: _busy || _controller.text.trim().isEmpty
+                ? null
+                : _submit,
+            child: Text(
+              _error == null ? appLocalizations.add : appLocalizations.retry,
+            ),
           ),
         ],
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          spacing: 12,
+          children: [
+            Text(appLocalizations.nurSubscriptionHint),
+            TextField(
+              key: const ValueKey('subscription-link-field'),
+              controller: _controller,
+              readOnly: _busy,
+              autofocus: true,
+              autocorrect: false,
+              keyboardType: TextInputType.url,
+              textInputAction: TextInputAction.done,
+              inputFormatters: TextInputLimits.limit(TextInputLimits.url),
+              decoration: InputDecoration(
+                hintText: appLocalizations.link,
+                errorText: _error,
+                errorMaxLines: 5,
+              ),
+              onChanged: (_) => setState(() => _error = null),
+              onSubmitted: (_) => _submit(),
+            ),
+            if (_busy) ...[
+              const Center(child: CommonCircleLoading(size: 20)),
+              Text(appLocalizations.nurImporting, textAlign: TextAlign.center),
+            ] else
+              TonalButton(
+                glyph: AppGlyphs.paste,
+                label: appLocalizations.addFromClipboard,
+                onPressed: () => unawaited(_addFromClipboard()),
+              ),
+          ],
+        ),
       ),
     );
   }

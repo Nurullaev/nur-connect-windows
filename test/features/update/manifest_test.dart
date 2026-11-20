@@ -79,6 +79,17 @@ Matcher _rejected(String reason) => throwsA(
 void main() {
   late List<String> keys;
 
+  test(
+    'provider updates stay disabled until a product key is provisioned',
+    () async {
+      final signed = await signUpdateManifest(const [1, 2, 3], _seed);
+      expect(
+        await verifyUpdateManifestSignature(const [1, 2, 3], signed.signature),
+        isFalse,
+      );
+    },
+  );
+
   setUpAll(() async {
     keys = [(await signUpdateManifest(const [], _seed)).publicKey];
   });
@@ -325,12 +336,15 @@ void main() {
     });
   });
 
-  test('the pinned keys are raw 32-byte keys', () {
-    expect(updateManifestKeys, isNotEmpty);
-    for (final key in updateManifestKeys) {
-      expect(base64.decode(key), hasLength(32));
-    }
-  });
+  test(
+    'the preview trusts no provider signing key until ours is provisioned',
+    () {
+      expect(updateManifestKeys, isEmpty);
+      for (final key in updateManifestKeys) {
+        expect(base64.decode(key), hasLength(32));
+      }
+    },
+  );
 
   group('an unsigned body is bounded before it is read', () {
     Future<Map<String, dynamic>?> fetchWith(

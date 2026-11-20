@@ -2,10 +2,16 @@ use std::path::Path;
 
 use once_cell::sync::Lazy;
 
+#[cfg(target_os = "windows")]
+const STABLE_HELPER: &str = "NurConnectWindowsHelper";
+#[cfg(not(target_os = "windows"))]
 const STABLE_HELPER: &str = "FlClashXHelperService";
+#[cfg(target_os = "windows")]
+const PRE_HELPER: &str = "NurConnectWindowsPreHelper";
+#[cfg(not(target_os = "windows"))]
 const PRE_HELPER: &str = "FlClashXPreHelperService";
 
-/// A pre-release ships this binary as `FlClashXPreHelperService`, and every
+/// The pre-release helper has its own executable name on each platform. Every
 /// name the Helper registers follows from that, so a stable and a pre-release
 /// install keep their own service, port key, unit and socket.
 static PRE: Lazy<bool> = Lazy::new(|| {
@@ -62,15 +68,11 @@ mod tests {
 
     #[test]
     fn names_follow_the_helper_binary() {
-        assert!(is_pre_helper(Path::new("FlClashXPreHelperService.exe")));
-        assert!(is_pre_helper(Path::new(
-            "/opt/FlClashXPre/FlClashXPreHelperService"
-        )));
-        assert!(!is_pre_helper(Path::new(
-            "/opt/FlClashX/FlClashXHelperService"
-        )));
-        assert_eq!(helper_name_for(true), "FlClashXPreHelperService");
-        assert_eq!(helper_name_for(false), "FlClashXHelperService");
+        assert!(is_pre_helper(Path::new(&format!("{PRE_HELPER}.exe"))));
+        assert!(is_pre_helper(Path::new(&format!("/opt/pre/{PRE_HELPER}"))));
+        assert!(!is_pre_helper(Path::new(&format!("/opt/stable/{STABLE_HELPER}"))));
+        assert_eq!(helper_name_for(true), PRE_HELPER);
+        assert_eq!(helper_name_for(false), STABLE_HELPER);
         assert_eq!(linux_service_for(true), "flclashx-pre-helper");
         assert_eq!(linux_runtime_dir_for(false), "flclashx");
     }

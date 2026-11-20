@@ -5,7 +5,8 @@ import 'package:cryptography/cryptography.dart';
 import 'package:cryptography/dart.dart';
 
 /// A list so a new key can ship in the app before the old one retires.
-const updateManifestKeys = ['MDf1zyd4RNKZ+Gx6yNgQKungx/XtHn+wNvMJT9xvEiA='];
+// Provision a Nur Connect public key before enabling provider updates.
+const updateManifestKeys = <String>[];
 
 const _domain = 'flclashx-update-manifest-v1';
 

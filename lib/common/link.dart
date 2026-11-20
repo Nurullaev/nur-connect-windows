@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'print.dart';
 import 'protocol.dart';
 import 'string.dart';
+import 'subscription_import.dart';
 
 String? profileUrlFromQrCodes(Iterable<String?> values) {
   for (final value in values) {
@@ -13,27 +14,24 @@ String? profileUrlFromQrCodes(Iterable<String?> values) {
     if (text == null || text.isEmpty) {
       continue;
     }
-    if (text.isUrl || text.isShareLink) {
-      return text;
-    }
-    final uri = Uri.tryParse(text);
-    if (uri == null || !protocolSchemes.contains(uri.scheme)) {
+    try {
+      return subscriptionLinkFromInput(text);
+    } on SubscriptionImportException {
       continue;
-    }
-    final url = _installConfigUrl(uri);
-    if (url != null && url.isUrl) {
-      return url;
     }
   }
   return null;
 }
 
 String? _installConfigUrl(Uri uri) {
-  if (uri.host != 'install-config') {
+  if (!protocolSchemes.contains(uri.scheme) || uri.host != 'install-config') {
     return null;
   }
-  final url = uri.queryParameters['url']?.trim();
-  return url == null || url.isEmpty ? null : url;
+  try {
+    return subscriptionLinkFromInput(uri.toString());
+  } on SubscriptionImportException {
+    return null;
+  }
 }
 
 class LinkManager {

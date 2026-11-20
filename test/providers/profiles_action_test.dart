@@ -1,5 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:fl_clash/common/common.dart';
@@ -107,6 +109,40 @@ void main() {
       () => core.decodeShareLinks([link]),
     ).thenAnswer((_) async => [proxies]);
   }
+
+  test('a confirmed refusal persists until a successful refresh', () async {
+    final profile = Profile.normal(
+      url: 'https://example.test/sub',
+      sendDeviceHeaders: false,
+    );
+    container.read(profilesProvider.notifier).put(profile);
+    final action = container.read(profilesActionProvider.notifier);
+    bool refused = true;
+    action.fetch =
+        (
+          url, {
+          Duration timeout = downloadTimeoutDuration,
+          Map<String, String> headers = const {},
+        }) async => Response<Uint8List>(
+          requestOptions: RequestOptions(path: url),
+          statusCode: 200,
+          headers: Headers.fromMap({
+            if (refused) 'x-hwid-max-devices-reached': ['true'],
+          }),
+          data: Uint8List.fromList(utf8.encode('proxies: []')),
+        );
+    await expectLater(
+      action.fetchMissingFile(profile.id),
+      throwsA(isA<SubscriptionImportException>()),
+    );
+    expect(
+      container.read(profilesProvider).single.accessRefusal,
+      SubscriptionImportIssue.deviceLimit,
+    );
+    refused = false;
+    await action.fetchMissingFile(profile.id);
+    expect(container.read(profilesProvider).single.accessRefusal, isNull);
+  });
 
   Future<void> pumpHost(WidgetTester tester) async {
     const size = Size(1200, 1000);

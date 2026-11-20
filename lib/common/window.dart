@@ -42,12 +42,12 @@ class Window implements WindowPort {
   }) async {
     if (!safeModeBuild) {
       if (system.isWindows) {
-        for (final scheme in protocolSchemes) {
+        for (final scheme in windowsRegisteredSchemes(pre: isPreDesktopApp)) {
           protocol.register(scheme);
         }
       }
       if (system.isLinux) {
-        unawaited(protocol.registerLinux(protocolSchemes));
+        unawaited(protocol.registerLinux(legacyProtocolSchemes));
       }
     }
     await desktopWindow.ensureInitialized();

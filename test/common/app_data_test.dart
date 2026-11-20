@@ -62,7 +62,9 @@ void main() {
         ..writeAsStringSync('a');
       final logs = Directory(join(homePath, 'logs'))
         ..createSync(recursive: true);
-      File(join(logs.path, 'FlClashX_2026-10-20.log')).writeAsStringSync('log');
+      File(
+        join(logs.path, 'NurConnect_2026-10-20.log'),
+      ).writeAsStringSync('log');
       final previous = db.database;
       db.database = db.Database(
         LazyDatabase(() async => throw const FileSystemException('corrupt')),

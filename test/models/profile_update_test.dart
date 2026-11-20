@@ -82,6 +82,89 @@ void main() {
   Future<String> saved(Profile profile) async =>
       (await profile.file).readAsString();
 
+  test(
+    'empty, HTML, Xray and invalid downloads leave the last file intact',
+    () async {
+      for (final body in [
+        '',
+        '<html>private-token</html>',
+        '{"outbounds":[]}',
+        'proxies: [bad',
+      ]) {
+        final before = profile(hosts: '');
+        final file = await before.file;
+        await file.writeAsString('proxies: [] # kept');
+        final response = _answer('bad');
+        response.data = Uint8List.fromList(utf8.encode(body));
+        await expectLater(
+          before.update(
+            validate: (_, _) async => 'invalid private-token',
+            fetch: _Fetcher({_primary: response}).call,
+          ),
+          throwsA(
+            isA<SubscriptionImportException>().having(
+              (e) => e.toString(),
+              'safe diagnostic',
+              isNot(contains('private-token')),
+            ),
+          ),
+        );
+        expect(await file.readAsString(), 'proxies: [] # kept');
+        expect(
+          file.parent.listSync().where(
+            (entry) => entry.path.startsWith('${file.path}.'),
+          ),
+          isEmpty,
+        );
+      }
+    },
+  );
+
+  test(
+    'an explicit HWID refusal keeps the last file and never tries a fallback',
+    () async {
+      for (final header in [
+        'x-hwid-max-devices-reached',
+        'x-hwid-not-supported',
+      ]) {
+        final before = profile();
+        await (await before.file).writeAsString('proxies: [] # kept');
+        final fetch = _Fetcher({
+          _primary: _answer('denied', headers: {header: 'true'}),
+          _moved: _answer('new'),
+        });
+        await expectLater(
+          before.update(validate: valid, fetch: fetch.call),
+          throwsA(isA<SubscriptionImportException>()),
+        );
+        expect(fetch.calls.map((call) => call.$1), [_primary]);
+        expect(await saved(before), 'proxies: [] # kept');
+      }
+    },
+  );
+
+  test('a fallback HWID refusal is not hidden by another fallback', () async {
+    final before = profile(hosts: 'new.example.com, third.example.com');
+    final fetch = _Fetcher({
+      _primary: _status(_primary, 503),
+      _moved: _answer(
+        'denied',
+        headers: {'x-hwid-max-devices-reached': 'true'},
+      ),
+    });
+    await expectLater(
+      before.update(validate: valid, fetch: fetch.call),
+      throwsA(
+        isA<SubscriptionImportException>().having(
+          (e) => e.isRefusal,
+          'refusal',
+          true,
+        ),
+      ),
+    );
+    expect(fetch.calls.map((call) => call.$1), [_primary, _moved]);
+  });
+
   test('a working host is the only one asked', () async {
     final fetch = _Fetcher({_primary: _answer('old')});
 

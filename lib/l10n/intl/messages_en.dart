@@ -33,7 +33,7 @@ class MessageLookup extends MessageLookupByLibrary {
   static String m4(detail) => "Couldn\'t clear the data: ${detail}";
 
   static String m5(code) =>
-      "Windows refused to run FlClashCore.exe (error ${code}). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow FlClashX in that policy or turn it off, then try again.";
+      "Windows refused to run NurConnectCore.exe (error ${code}). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow Nur Connect in that policy or turn it off, then try again.";
 
   static String m6(name) =>
       "The app failed to finish launching twice in a row. To break the loop, the profile ${name} has been deselected and automatic setup was skipped. You can select it again at any time.";
@@ -557,7 +557,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "core": MessageLookupByLibrary.simpleMessage("Core"),
     "coreBlockedByPolicyTip": m5,
     "coreBlockedBySmartAppControlTip": MessageLookupByLibrary.simpleMessage(
-      "Windows Smart App Control blocked FlClashCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start FlClashX again. Smart App Control cannot be turned back on without reinstalling Windows.",
+      "Windows Smart App Control blocked NurConnectCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start Nur Connect again. Smart App Control cannot be turned back on without reinstalling Windows.",
     ),
     "coreRestartByCommandFailed": MessageLookupByLibrary.simpleMessage(
       "The command could not restart the core",
@@ -630,7 +630,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "deleteMultipTip": m21,
     "deleteTip": m22,
     "desc": MessageLookupByLibrary.simpleMessage(
-      "A multi-platform proxy client based on Mihomo, simple and easy to use, open-source and ad-free.",
+      "A Windows proxy client based on Mihomo, open-source and ad-free.",
     ),
     "destination": MessageLookupByLibrary.simpleMessage("Destination"),
     "destinationGeoIP": MessageLookupByLibrary.simpleMessage(
@@ -681,7 +681,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "disclaimer": MessageLookupByLibrary.simpleMessage("Disclaimer"),
     "disclaimerDesc": MessageLookupByLibrary.simpleMessage(
-      "FlClashX is a free, open-source client built on the Mihomo core. Here is a short note on what it does, what it does not do and what data it collects. By tapping “I agree” you accept these terms.",
+      "Nur Connect is a free, open-source client built on the Mihomo core. Here is a short note on what it does, what it does not do and what data it collects. By tapping “I agree” you accept these terms.",
     ),
     "disclaimerLicenseContent": MessageLookupByLibrary.simpleMessage(
       "The source code is open under the GPL-3.0 license. The Mihomo core and other third-party components carry their own licenses. The authors are not responsible for modified builds or builds distributed by third parties.",
@@ -880,7 +880,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "healthCheck": MessageLookupByLibrary.simpleMessage("Health check"),
     "helperCorruptTip": MessageLookupByLibrary.simpleMessage(
-      "Helper service unavailable; TUN mode cannot be enabled. Reinstall FlClashX to restore it.",
+      "Helper service unavailable; TUN mode cannot be enabled. Reinstall Nur Connect to restore it.",
     ),
     "hex": MessageLookupByLibrary.simpleMessage("Hex"),
     "hideFromList": MessageLookupByLibrary.simpleMessage("Hide from list"),
@@ -951,7 +951,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "init": MessageLookupByLibrary.simpleMessage("Init"),
     "initFailed": MessageLookupByLibrary.simpleMessage("Startup failed"),
     "initFailedTip": MessageLookupByLibrary.simpleMessage(
-      "FlClashX ran into an error while starting and can\'t continue. Copy the details to report the problem. If it keeps happening, clearing the data usually lets the app start again.",
+      "Nur Connect ran into an error while starting and can\'t continue. Copy the details to report the problem. If it keeps happening, clearing the data usually lets the app start again.",
     ),
     "initiator": MessageLookupByLibrary.simpleMessage("Initiator"),
     "initiatorShort": MessageLookupByLibrary.simpleMessage("From"),
@@ -1262,6 +1262,41 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullTip": m57,
     "numberRangeTip": m58,
     "numberTip": m59,
+    "nurAddSubscription": MessageLookupByLibrary.simpleMessage(
+      "Add subscription",
+    ),
+    "nurConnect": MessageLookupByLibrary.simpleMessage("Connect"),
+    "nurDisconnect": MessageLookupByLibrary.simpleMessage("Disconnect"),
+    "nurHomeSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Subscription, server and connection",
+    ),
+    "nurImportEmptyResponse": MessageLookupByLibrary.simpleMessage(
+      "The server returned an empty subscription. Try again or check the link with your provider.",
+    ),
+    "nurImportFailed": MessageLookupByLibrary.simpleMessage(
+      "Could not import the subscription. Try again. Your saved profile has been kept.",
+    ),
+    "nurImportInvalidConfig": MessageLookupByLibrary.simpleMessage(
+      "The subscription could not be validated. Try updating it or contact your provider. Your saved profile has been kept.",
+    ),
+    "nurImportWrongFormat": MessageLookupByLibrary.simpleMessage(
+      "The link returned a web page or an unsupported format. Ask your provider for a subscription for Mihomo / Clash.",
+    ),
+    "nurImporting": MessageLookupByLibrary.simpleMessage(
+      "Importing subscription…",
+    ),
+    "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
+      "Paste the subscription link from your provider.",
+    ),
+    "nurTakeoverHint": MessageLookupByLibrary.simpleMessage(
+      "Enable TUN or system proxy to route traffic through Nur Connect.",
+    ),
+    "nurWelcomeHint": MessageLookupByLibrary.simpleMessage(
+      "Add a subscription to choose a server and connect.",
+    ),
+    "nurWelcomeTitle": MessageLookupByLibrary.simpleMessage(
+      "Start with your subscription",
+    ),
     "obfs": MessageLookupByLibrary.simpleMessage("Obfuscation"),
     "obfsHost": MessageLookupByLibrary.simpleMessage("Obfuscation host"),
     "obfsMode": MessageLookupByLibrary.simpleMessage("Obfuscation mode"),
@@ -1335,9 +1370,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "portValue": m61,
     "ports": MessageLookupByLibrary.simpleMessage("Ports"),
     "preChannelTip": MessageLookupByLibrary.simpleMessage(
-      "This pre-release is a separate app and can\'t see FlClashX\'s profiles. To bring them over, make a backup in FlClashX under Backup and restore and restore it here, or add your subscriptions again by link.",
+      "This pre-release is a separate app and can\'t see Nur Connect\'s profiles. To bring them over, make a backup in Nur Connect under Backup and restore and restore it here, or add your subscriptions again by link.",
     ),
-    "preChannelTipTitle": MessageLookupByLibrary.simpleMessage("FlClashX Pre"),
+    "preChannelTipTitle": MessageLookupByLibrary.simpleMessage(
+      "Nur Connect Pre",
+    ),
     "preSharedKey": MessageLookupByLibrary.simpleMessage("Pre-shared key"),
     "preferred": MessageLookupByLibrary.simpleMessage("Preferred"),
     "prerequisites": MessageLookupByLibrary.simpleMessage("Prerequisites"),
@@ -1748,10 +1785,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Sent. Confirm the import on the other device.",
     ),
     "sendFromPhonePageTitle": MessageLookupByLibrary.simpleMessage(
-      "Send a link to FlClashX",
+      "Send a link to Nur Connect",
     ),
     "sendFromPhonePermissionDenied": MessageLookupByLibrary.simpleMessage(
-      "Receiving a link from your phone needs the Nearby devices permission, which lets FlClashX reach the local network. Turn it on in the app\'s settings.",
+      "Receiving a link from your phone needs the Nearby devices permission, which lets Nur Connect reach the local network. Turn it on in the app\'s settings.",
     ),
     "sendFromPhoneTip": MessageLookupByLibrary.simpleMessage(
       "Scan the code with your phone\'s camera and paste the link on the page that opens. Both devices need to be on the same network. If the page does not open on Android 17 or later, give the phone\'s browser the Nearby devices permission.",
@@ -1794,7 +1831,7 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "shareLogs": MessageLookupByLibrary.simpleMessage("Share logs"),
     "shareQrcodeTip": MessageLookupByLibrary.simpleMessage(
-      "Scan with FlClashX on another device to import this profile.",
+      "Scan with Nur Connect on another device to import this profile.",
     ),
     "show": MessageLookupByLibrary.simpleMessage("Show"),
     "showLess": MessageLookupByLibrary.simpleMessage("Collapse"),
@@ -1852,10 +1889,10 @@ class MessageLookup extends MessageLookupByLibrary {
       "Continue without them",
     ),
     "stableImportTip": MessageLookupByLibrary.simpleMessage(
-      "FlClashX Pre couldn\'t take FlClashX\'s profiles and settings yet. If FlClashX is running, quit it and retry.",
+      "Nur Connect Pre couldn\'t take Nur Connect\'s profiles and settings yet. If Nur Connect is running, quit it and retry.",
     ),
     "stableImportTitle": MessageLookupByLibrary.simpleMessage(
-      "Bring over your FlClashX profiles",
+      "Bring over your Nur Connect profiles",
     ),
     "stackMode": MessageLookupByLibrary.simpleMessage("Stack mode"),
     "stackTrace": MessageLookupByLibrary.simpleMessage("Stack trace"),

@@ -1,11 +1,11 @@
 script_template: inno_setup.iss
-app_id: D915C0D1-2F5B-4676-97D5-6D55F3EF45A4
-app_name: FlClashX
-publisher: pluralplay
-publisher_url: https://github.com/pluralplay/FlClashX
-display_name: FlClashX
-executable_name: FlClashX.exe
-output_base_file_name: FlClashX.exe
+app_id: 6C4AE483-BA2C-4EE6-80A3-E4EFAC4D1D4D
+app_name: Nur Connect
+publisher: Nurullaev
+publisher_url: https://nurconnect.app
+display_name: Nur Connect
+executable_name: NurConnect.exe
+output_base_file_name: NurConnect.exe
 # Resolved against the project root: flutter_distributor turns this into an
 # absolute path via Directory.current.
 setup_icon_file: windows\runner\resources\app_icon.ico

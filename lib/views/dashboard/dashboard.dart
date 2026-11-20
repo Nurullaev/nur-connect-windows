@@ -10,6 +10,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'edit.dart';
+import 'nur_connect.dart';
 import 'provider_mode.dart';
 import 'layout.dart';
 import 'style.dart';
@@ -52,6 +53,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
   @override
   Widget build(BuildContext context) {
     final platform = widget.platform ?? SupportPlatform.currentPlatform;
+    if (platform == SupportPlatform.Windows) return const NurConnectDashboard();
     final scale = math.max(1.0, MediaQuery.textScalerOf(context).scale(1));
     final providerMode = ref.watch(providerModeProvider);
     final editable = !ref.watch(widgetEditingDeniedProvider);

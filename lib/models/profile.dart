@@ -155,6 +155,15 @@ extension ProfilesExt on List<Profile> {
 }
 
 extension ProfileExtension on Profile {
+  SubscriptionImportIssue? get accessRefusal {
+    final metadata = ProviderHeaders(providerHeaders);
+    if (metadata.deviceLimitReached) return SubscriptionImportIssue.deviceLimit;
+    if (metadata.deviceIdUnsupported) {
+      return SubscriptionImportIssue.deviceUnsupported;
+    }
+    return null;
+  }
+
   String get realLabel => label.takeFirstValid([defaultLabel]);
 
   String get defaultLabel => url.webUri?.host ?? id.toString();
@@ -237,6 +246,10 @@ extension ProfileExtension on Profile {
       );
     } on ProfileUpdateSupersededException {
       rethrow;
+    } on SubscriptionImportException catch (error, trace) {
+      if (error.isRefusal) rethrow;
+      firstError = error;
+      firstTrace = trace;
     } catch (error, trace) {
       firstError = error;
       firstTrace = trace;
@@ -270,6 +283,7 @@ extension ProfileExtension on Profile {
       } on ProfileUpdateSupersededException {
         rethrow;
       } catch (error) {
+        if (error is SubscriptionImportException && error.isRefusal) rethrow;
         commonPrint.log(
           'fallback ${fallback.host} failed: ${compactError(error)}',
           logLevel: LogLevel.warning,
@@ -291,21 +305,38 @@ extension ProfileExtension on Profile {
     final disposition = response.headers.value('content-disposition');
     final userinfo = response.headers.value('subscription-userinfo');
     final providerHeaders = providerHeadersOf(response.headers.map);
-    return copyWith(
-      label: label.takeFirstValid([
-        ProviderHeaders(providerHeaders).title,
-        getFileNameForDisposition(disposition),
-        defaultLabel,
-      ]),
-      subscriptionInfo: SubscriptionInfo.formHString(userinfo),
-      providerHeaders: providerHeaders,
-      autoUpdateDuration:
-          ProviderHeaders(providerHeaders).updateInterval ?? autoUpdateDuration,
-    ).saveFile(
-      await decompressDownload(response.data ?? Uint8List(0)),
-      validate: validate,
-      isCurrent: isCurrent,
-    );
+    final metadata = ProviderHeaders(providerHeaders);
+    if (metadata.deviceLimitReached) {
+      throw const SubscriptionImportException(
+        SubscriptionImportIssue.deviceLimit,
+      );
+    }
+    if (metadata.deviceIdUnsupported) {
+      throw const SubscriptionImportException(
+        SubscriptionImportIssue.deviceUnsupported,
+      );
+    }
+    final bytes = await decompressDownload(response.data ?? Uint8List(0));
+    checkSubscriptionResponse(bytes);
+    try {
+      return await copyWith(
+        label: label.takeFirstValid([
+          ProviderHeaders(providerHeaders).title,
+          getFileNameForDisposition(disposition),
+          defaultLabel,
+        ]),
+        subscriptionInfo: SubscriptionInfo.formHString(userinfo),
+        providerHeaders: providerHeaders,
+        autoUpdateDuration:
+            ProviderHeaders(providerHeaders).updateInterval ??
+            autoUpdateDuration,
+      ).saveFile(bytes, validate: validate, isCurrent: isCurrent);
+    } on MessageException {
+      // Core errors may include a line of the config with credentials.
+      throw const SubscriptionImportException(
+        SubscriptionImportIssue.invalidConfig,
+      );
+    }
   }
 
   /// The publishing rename is sync, so nothing runs between [isCurrent] and it.

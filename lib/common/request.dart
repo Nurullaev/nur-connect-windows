@@ -276,6 +276,11 @@ HostFailure hostFailureOf(Object error) {
   final cause = error is DioException ? error.error ?? error : error;
   final hard = switch (cause) {
     MessageException() => true,
+    SubscriptionImportException(
+      issue: SubscriptionImportIssue.invalidConfig ||
+          SubscriptionImportIssue.wrongFormat,
+    ) =>
+      true,
     HandshakeException() || CertificateException() => true,
     SocketException(:final osError, :final message) =>
       _hardSocketErrors.contains(osError?.errorCode) ||

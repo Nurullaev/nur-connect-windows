@@ -6,14 +6,14 @@ import 'package:fl_clash/models/models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 
-import 'constant.dart';
+import 'product_identity.dart';
 import 'path.dart';
 
 const logsDirectoryName = 'logs';
 
 typedef ArchiveRequest = ({String archivePath, List<String> files});
 
-/// Appends every log line to `logs/FlClashX_<day>.log` under the app home,
+/// Appends every log line to `logs/NurConnect_<day>.log` under the app home,
 /// starts `_<n>` files past [maxFileBytes] and drops days older than [keepDays].
 class FileLogger {
   FileLogger({
@@ -44,7 +44,7 @@ class FileLogger {
   int _size = 0;
 
   static final _dayPattern = RegExp(
-    r'^FlClashX_(\d{4}-\d{2}-\d{2})(?:_\d+)?\.log$',
+    r'^NurConnect_(\d{4}-\d{2}-\d{2})(?:_\d+)?\.log$',
   );
 
   static Future<String> _defaultDirectory() async =>
@@ -114,7 +114,7 @@ class FileLogger {
     return archivePath;
   }
 
-  static const _archivePrefix = '${appName}_logs_';
+  static const _archivePrefix = '${productFileName}_logs_';
 
   Future<String> _freshArchivePath(String directory, DateTime now) async {
     final time = [
@@ -182,8 +182,8 @@ class FileLogger {
     _day = day;
     for (var index = 0; ; index++) {
       final name = index == 0
-          ? '${appName}_$day.log'
-          : '${appName}_${day}_$index.log';
+          ? '${productFileName}_$day.log'
+          : '${productFileName}_${day}_$index.log';
       final file = File(join(directory, name));
       final size = await file.exists() ? await file.length() : 0;
       if (size + incoming <= maxFileBytes || size == 0) {

@@ -5,6 +5,7 @@ import 'package:fl_clash/common/constant.dart';
 import 'package:fl_clash/common/desktop_channel.dart';
 import 'package:fl_clash/common/path.dart';
 import 'package:fl_clash/common/print.dart';
+import 'package:fl_clash/common/product_identity.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 
@@ -195,7 +196,7 @@ Future<void> copyPreferencesFile({
 
 /// A shared hold on the instance lock keeps the stable app from writing.
 Future<StableRelease?> lockStableHome(String stableHome) async {
-  final lockFile = File(join(stableHome, 'FlClash.lock'));
+  final lockFile = File(join(stableHome, productLockFile));
   if (!await lockFile.exists()) {
     return () async {};
   }

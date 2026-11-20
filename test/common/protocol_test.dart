@@ -2,6 +2,23 @@ import 'package:fl_clash/common/protocol.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test(
+    'Windows owns only its channel scheme while accepting older imports',
+    () {
+      expect(windowsRegisteredSchemes(pre: false), ['nurconnect-win']);
+      expect(windowsRegisteredSchemes(pre: true), ['nurconnect-win-pre']);
+      expect(
+        protocolSchemes,
+        containsAll(['nurconnect-win', 'flclashx', 'clash']),
+      );
+      expect(windowsRegisteredSchemes(pre: false), isNot(contains('flclashx')));
+      expect(
+        windowsRegisteredSchemes(pre: true),
+        isNot(contains('nurconnect-win')),
+      );
+    },
+  );
+
   group('ProtocolRegistrationPlan', () {
     test('builds registry writes for URL protocol registration', () {
       const plan = ProtocolRegistrationPlan(
@@ -19,7 +36,7 @@ void main() {
 
   group('LinuxProtocolRegistrationPlan', () {
     const plan = LinuxProtocolRegistrationPlan(
-      schemes: protocolSchemes,
+      schemes: legacyProtocolSchemes,
       executable: '/home/me/Apps/FlClash.AppImage',
       applicationsDir: '/home/me/.local/share/applications',
     );

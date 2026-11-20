@@ -322,9 +322,30 @@ class ProfilesAction extends _$ProfilesAction {
         );
       } on ProfileUpdateSupersededException {
         return;
-      } catch (_) {
+      } catch (error) {
         if (!_isCurrentUpdate(profile, request)) {
           return;
+        }
+        if (error is SubscriptionImportException && error.isRefusal) {
+          final latest = ref.read(profilesProvider).getProfile(profile.id)!;
+          final headers = {...latest.providerHeaders}
+            ..remove('x-hwid-max-devices-reached')
+            ..remove('x-hwid-not-supported');
+          headers[error.issue == SubscriptionImportIssue.deviceLimit
+                  ? 'x-hwid-max-devices-reached'
+                  : 'x-hwid-not-supported'] =
+              'true';
+          // Keep the file for recovery; persist the confirmed refusal so a
+          // restart cannot reconnect with that cached configuration.
+          ref
+              .read(profilesProvider.notifier)
+              .put(latest.copyWith(providerHeaders: headers));
+          if (profile.id == ref.read(currentProfileIdProvider) &&
+              ref.read(isStartProvider)) {
+            await globalState.safeRun(
+              () => ref.read(setupActionProvider.notifier).setRunning(false),
+            );
+          }
         }
         rethrow;
       }
@@ -559,22 +580,38 @@ class ProfilesAction extends _$ProfilesAction {
     }
     final profile = await globalState.loadingRun(
       tag: LoadingTag.profiles,
-      () => link.isShareLink
-          ? _fromShareLinks(Profile.normal(label: label), [link])
-          : _withAgeSecretKey(
-              Profile.normal(
-                label: label,
-                url: link,
-                sendDeviceHeaders: sendDeviceHeaders,
-              ).copyWith(ageSecretKey: ageSecretKey),
-              download,
-            ),
+      () => importProfileFromLink(
+        link,
+        label: label,
+        ageSecretKey: ageSecretKey,
+        sendDeviceHeaders: sendDeviceHeaders,
+      ),
       title: currentAppLocalizations.addProfile,
     );
-    if (profile != null) {
-      putProfile(profile);
-      noticeDeviceHeaders(profile, manual: true);
-    }
+    return profile;
+  }
+
+  /// Throws on failure so the import dialog can keep the link and retry.
+  /// Nothing is published to the profile list until validation has succeeded.
+  Future<Profile> importProfileFromLink(
+    String input, {
+    String? label,
+    String ageSecretKey = '',
+    bool sendDeviceHeaders = true,
+  }) async {
+    final link = subscriptionLinkFromInput(input);
+    final profile = link.isShareLink
+        ? await _fromShareLinks(Profile.normal(label: label), [link])
+        : await _withAgeSecretKey(
+            Profile.normal(
+              label: label,
+              url: link,
+              sendDeviceHeaders: sendDeviceHeaders,
+            ).copyWith(ageSecretKey: ageSecretKey),
+            download,
+          );
+    putProfile(profile);
+    noticeDeviceHeaders(profile, manual: true);
     return profile;
   }
 

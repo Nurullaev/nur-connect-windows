@@ -63,7 +63,8 @@ class AppPath {
   }
 
   String get corePath {
-    return join(executableDirPath, 'FlClashCore$executableExtension');
+    final coreName = system.isWindows ? windowsCoreName : 'FlClashCore';
+    return join(executableDirPath, '$coreName$executableExtension');
   }
 
   /// TUN elevates a copy outside the app. On macOS, App Management denies
@@ -107,7 +108,7 @@ class AppPath {
 
   Future<String> get lockFilePath async {
     final homeDirPath = await appPath.homeDirPath;
-    return join(homeDirPath, 'FlClash.lock');
+    return join(homeDirPath, productLockFile);
   }
 
   Future<String> get coreCliPath async {
@@ -192,9 +193,9 @@ class AppPath {
 final appPath = AppPath();
 
 String getBackupFileName() {
-  return '${appName}_backup_${DateTime.now().show}.zip';
+  return '${productFileName}_backup_${DateTime.now().show}.zip';
 }
 
 String get logFileName {
-  return '${appName}_${DateTime.now().show}.log';
+  return '${productFileName}_${DateTime.now().show}.log';
 }

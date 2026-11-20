@@ -8,6 +8,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'setting.dart';
+import 'nur_servers.dart';
 import 'tab.dart';
 
 class ProxiesView extends ConsumerStatefulWidget {
@@ -141,6 +142,10 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
 
   @override
   Widget build(BuildContext context) {
+    if ((widget.platform ?? SupportPlatform.currentPlatform) ==
+        SupportPlatform.Windows) {
+      return NurServersView(picker: widget.picker);
+    }
     final proxiesType = ref.watch(
       proxiesStyleSettingProvider.select((state) => state.type),
     );

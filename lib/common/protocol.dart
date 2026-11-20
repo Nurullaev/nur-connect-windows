@@ -3,8 +3,25 @@ import 'dart:io';
 import 'package:win32_registry/win32_registry.dart';
 
 import 'print.dart';
+import 'product_identity.dart';
 
-const protocolSchemes = ['clash', 'clashmeta', 'flclash', 'flclashx', 'clashx'];
+const legacyProtocolSchemes = [
+  'clash',
+  'clashmeta',
+  'flclash',
+  'flclashx',
+  'clashx',
+];
+const protocolSchemes = [
+  windowsProtocolScheme,
+  windowsPreProtocolScheme,
+  ...legacyProtocolSchemes,
+];
+
+// Accept older import links, but register only our own Windows handler.
+List<String> windowsRegisteredSchemes({required bool pre}) => [
+  pre ? windowsPreProtocolScheme : windowsProtocolScheme,
+];
 
 class ProtocolRegistrationPlan {
   final String scheme;

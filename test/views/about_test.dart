@@ -68,7 +68,12 @@ void main() {
     expect(find.text('Original repository'), findsOneWidget);
     expect(find.text('github.com/chen08209/FlClash'), findsOneWidget);
     expect(find.text('github.com/MetaCubeX/mihomo'), findsOneWidget);
-    expect(find.text('t.me/flclashx'), findsOneWidget);
+    expect(
+      find.text('github.com/Nurullaev/nur-connect-windows'),
+      findsOneWidget,
+    );
+    expect(find.text('github.com/pluralplay/FlClashX'), findsOneWidget);
+    expect(find.text('t.me/flclashx'), findsNothing);
     expect(find.text('Fork author'), findsOneWidget);
     expect(find.text('pluralplay'), findsOneWidget);
     expect(find.byType(CircleAvatar), findsOneWidget);

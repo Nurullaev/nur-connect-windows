@@ -865,20 +865,20 @@ class AppLocalizations {
     );
   }
 
-  /// `Receiving a link from your phone needs the Nearby devices permission, which lets FlClashX reach the local network. Turn it on in the app's settings.`
+  /// `Receiving a link from your phone needs the Nearby devices permission, which lets Nur Connect reach the local network. Turn it on in the app's settings.`
   String get sendFromPhonePermissionDenied {
     return Intl.message(
-      'Receiving a link from your phone needs the Nearby devices permission, which lets FlClashX reach the local network. Turn it on in the app\'s settings.',
+      'Receiving a link from your phone needs the Nearby devices permission, which lets Nur Connect reach the local network. Turn it on in the app\'s settings.',
       name: 'sendFromPhonePermissionDenied',
       desc: '',
       args: [],
     );
   }
 
-  /// `Send a link to FlClashX`
+  /// `Send a link to Nur Connect`
   String get sendFromPhonePageTitle {
     return Intl.message(
-      'Send a link to FlClashX',
+      'Send a link to Nur Connect',
       name: 'sendFromPhonePageTitle',
       desc: '',
       args: [],
@@ -920,10 +920,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Scan with FlClashX on another device to import this profile.`
+  /// `Scan with Nur Connect on another device to import this profile.`
   String get shareQrcodeTip {
     return Intl.message(
-      'Scan with FlClashX on another device to import this profile.',
+      'Scan with Nur Connect on another device to import this profile.',
       name: 'shareQrcodeTip',
       desc: '',
       args: [],
@@ -1116,10 +1116,10 @@ class AppLocalizations {
     );
   }
 
-  /// `A multi-platform proxy client based on Mihomo, simple and easy to use, open-source and ad-free.`
+  /// `A Windows proxy client based on Mihomo, open-source and ad-free.`
   String get desc {
     return Intl.message(
-      'A multi-platform proxy client based on Mihomo, simple and easy to use, open-source and ad-free.',
+      'A Windows proxy client based on Mihomo, open-source and ad-free.',
       name: 'desc',
       desc: '',
       args: [],
@@ -2586,10 +2586,10 @@ class AppLocalizations {
     return Intl.message('Disclaimer', name: 'disclaimer', desc: '', args: []);
   }
 
-  /// `FlClashX is a free, open-source client built on the Mihomo core. Here is a short note on what it does, what it does not do and what data it collects. By tapping “I agree” you accept these terms.`
+  /// `Nur Connect is a free, open-source client built on the Mihomo core. Here is a short note on what it does, what it does not do and what data it collects. By tapping “I agree” you accept these terms.`
   String get disclaimerDesc {
     return Intl.message(
-      'FlClashX is a free, open-source client built on the Mihomo core. Here is a short note on what it does, what it does not do and what data it collects. By tapping “I agree” you accept these terms.',
+      'Nur Connect is a free, open-source client built on the Mihomo core. Here is a short note on what it does, what it does not do and what data it collects. By tapping “I agree” you accept these terms.',
       name: 'disclaimerDesc',
       desc: '',
       args: [],
@@ -4771,10 +4771,10 @@ class AppLocalizations {
     );
   }
 
-  /// `Helper service unavailable; TUN mode cannot be enabled. Reinstall FlClashX to restore it.`
+  /// `Helper service unavailable; TUN mode cannot be enabled. Reinstall Nur Connect to restore it.`
   String get helperCorruptTip {
     return Intl.message(
-      'Helper service unavailable; TUN mode cannot be enabled. Reinstall FlClashX to restore it.',
+      'Helper service unavailable; TUN mode cannot be enabled. Reinstall Nur Connect to restore it.',
       name: 'helperCorruptTip',
       desc: '',
       args: [],
@@ -4811,20 +4811,20 @@ class AppLocalizations {
     );
   }
 
-  /// `Windows refused to run FlClashCore.exe (error {code}). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow FlClashX in that policy or turn it off, then try again.`
+  /// `Windows refused to run NurConnectCore.exe (error {code}). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow Nur Connect in that policy or turn it off, then try again.`
   String coreBlockedByPolicyTip(Object code) {
     return Intl.message(
-      'Windows refused to run FlClashCore.exe (error $code). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow FlClashX in that policy or turn it off, then try again.',
+      'Windows refused to run NurConnectCore.exe (error $code). An app control policy such as Smart App Control or AppLocker blocks unsigned programs; allow Nur Connect in that policy or turn it off, then try again.',
       name: 'coreBlockedByPolicyTip',
       desc: '',
       args: [code],
     );
   }
 
-  /// `Windows Smart App Control blocked FlClashCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start FlClashX again. Smart App Control cannot be turned back on without reinstalling Windows.`
+  /// `Windows Smart App Control blocked NurConnectCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start Nur Connect again. Smart App Control cannot be turned back on without reinstalling Windows.`
   String get coreBlockedBySmartAppControlTip {
     return Intl.message(
-      'Windows Smart App Control blocked FlClashCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start FlClashX again. Smart App Control cannot be turned back on without reinstalling Windows.',
+      'Windows Smart App Control blocked NurConnectCore.exe because it is not signed. Open Windows Security → App & browser control → Smart App Control settings, choose Off, then start Nur Connect again. Smart App Control cannot be turned back on without reinstalling Windows.',
       name: 'coreBlockedBySmartAppControlTip',
       desc: '',
       args: [],
@@ -6879,10 +6879,10 @@ class AppLocalizations {
     );
   }
 
-  /// `FlClashX ran into an error while starting and can't continue. Copy the details to report the problem. If it keeps happening, clearing the data usually lets the app start again.`
+  /// `Nur Connect ran into an error while starting and can't continue. Copy the details to report the problem. If it keeps happening, clearing the data usually lets the app start again.`
   String get initFailedTip {
     return Intl.message(
-      'FlClashX ran into an error while starting and can\'t continue. Copy the details to report the problem. If it keeps happening, clearing the data usually lets the app start again.',
+      'Nur Connect ran into an error while starting and can\'t continue. Copy the details to report the problem. If it keeps happening, clearing the data usually lets the app start again.',
       name: 'initFailedTip',
       desc: '',
       args: [],
@@ -8207,20 +8207,20 @@ class AppLocalizations {
     );
   }
 
-  /// `FlClashX Pre`
+  /// `Nur Connect Pre`
   String get preChannelTipTitle {
     return Intl.message(
-      'FlClashX Pre',
+      'Nur Connect Pre',
       name: 'preChannelTipTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `This pre-release is a separate app and can't see FlClashX's profiles. To bring them over, make a backup in FlClashX under Backup and restore and restore it here, or add your subscriptions again by link.`
+  /// `This pre-release is a separate app and can't see Nur Connect's profiles. To bring them over, make a backup in Nur Connect under Backup and restore and restore it here, or add your subscriptions again by link.`
   String get preChannelTip {
     return Intl.message(
-      'This pre-release is a separate app and can\'t see FlClashX\'s profiles. To bring them over, make a backup in FlClashX under Backup and restore and restore it here, or add your subscriptions again by link.',
+      'This pre-release is a separate app and can\'t see Nur Connect\'s profiles. To bring them over, make a backup in Nur Connect under Backup and restore and restore it here, or add your subscriptions again by link.',
       name: 'preChannelTip',
       desc: '',
       args: [],
@@ -8412,20 +8412,20 @@ class AppLocalizations {
     );
   }
 
-  /// `Bring over your FlClashX profiles`
+  /// `Bring over your Nur Connect profiles`
   String get stableImportTitle {
     return Intl.message(
-      'Bring over your FlClashX profiles',
+      'Bring over your Nur Connect profiles',
       name: 'stableImportTitle',
       desc: '',
       args: [],
     );
   }
 
-  /// `FlClashX Pre couldn't take FlClashX's profiles and settings yet. If FlClashX is running, quit it and retry.`
+  /// `Nur Connect Pre couldn't take Nur Connect's profiles and settings yet. If Nur Connect is running, quit it and retry.`
   String get stableImportTip {
     return Intl.message(
-      'FlClashX Pre couldn\'t take FlClashX\'s profiles and settings yet. If FlClashX is running, quit it and retry.',
+      'Nur Connect Pre couldn\'t take Nur Connect\'s profiles and settings yet. If Nur Connect is running, quit it and retry.',
       name: 'stableImportTip',
       desc: '',
       args: [],
@@ -8772,6 +8772,131 @@ class AppLocalizations {
     return Intl.message(
       'Full settings are open until the app restarts',
       name: 'fullSettingsUnlocked',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add subscription`
+  String get nurAddSubscription {
+    return Intl.message(
+      'Add subscription',
+      name: 'nurAddSubscription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Paste the subscription link from your provider.`
+  String get nurSubscriptionHint {
+    return Intl.message(
+      'Paste the subscription link from your provider.',
+      name: 'nurSubscriptionHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Importing subscription…`
+  String get nurImporting {
+    return Intl.message(
+      'Importing subscription…',
+      name: 'nurImporting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The server returned an empty subscription. Try again or check the link with your provider.`
+  String get nurImportEmptyResponse {
+    return Intl.message(
+      'The server returned an empty subscription. Try again or check the link with your provider.',
+      name: 'nurImportEmptyResponse',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The link returned a web page or an unsupported format. Ask your provider for a subscription for Mihomo / Clash.`
+  String get nurImportWrongFormat {
+    return Intl.message(
+      'The link returned a web page or an unsupported format. Ask your provider for a subscription for Mihomo / Clash.',
+      name: 'nurImportWrongFormat',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `The subscription could not be validated. Try updating it or contact your provider. Your saved profile has been kept.`
+  String get nurImportInvalidConfig {
+    return Intl.message(
+      'The subscription could not be validated. Try updating it or contact your provider. Your saved profile has been kept.',
+      name: 'nurImportInvalidConfig',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Could not import the subscription. Try again. Your saved profile has been kept.`
+  String get nurImportFailed {
+    return Intl.message(
+      'Could not import the subscription. Try again. Your saved profile has been kept.',
+      name: 'nurImportFailed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Start with your subscription`
+  String get nurWelcomeTitle {
+    return Intl.message(
+      'Start with your subscription',
+      name: 'nurWelcomeTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add a subscription to choose a server and connect.`
+  String get nurWelcomeHint {
+    return Intl.message(
+      'Add a subscription to choose a server and connect.',
+      name: 'nurWelcomeHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Subscription, server and connection`
+  String get nurHomeSubtitle {
+    return Intl.message(
+      'Subscription, server and connection',
+      name: 'nurHomeSubtitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connect`
+  String get nurConnect {
+    return Intl.message('Connect', name: 'nurConnect', desc: '', args: []);
+  }
+
+  /// `Disconnect`
+  String get nurDisconnect {
+    return Intl.message(
+      'Disconnect',
+      name: 'nurDisconnect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enable TUN or system proxy to route traffic through Nur Connect.`
+  String get nurTakeoverHint {
+    return Intl.message(
+      'Enable TUN or system proxy to route traffic through Nur Connect.',
+      name: 'nurTakeoverHint',
       desc: '',
       args: [],
     );

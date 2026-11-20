@@ -219,6 +219,12 @@ class SetupAction extends _$SetupAction {
     bool resume = false,
     bool undoesFailedStart = false,
   }) {
+    if (running) {
+      final refusal = ref.read(currentProfileProvider)?.accessRefusal;
+      if (refusal != null) {
+        return Future<bool>.error(SubscriptionImportException(refusal));
+      }
+    }
     final request = _RunRequest(
       running: running,
       initialize: initialize,

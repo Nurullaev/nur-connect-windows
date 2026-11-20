@@ -1,5 +1,5 @@
 # Setup runs this after killing the app, which skips the exit path that turns
-# the system proxy off. Any FlClashX version sets 127.0.0.1:<port>; a proxy
+# the system proxy off. Nur Connect sets 127.0.0.1:<port>; a proxy
 # there with nothing listening is the dead one and goes back to direct.
 $ErrorActionPreference = 'Stop'
 $settings = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Internet Settings'
@@ -41,7 +41,7 @@ foreach ($name in $key.GetValueNames()) {
   $changed = $true
 }
 if ($changed) {
-  Add-Type -Namespace FlClashX -Name WinInet -MemberDefinition '[DllImport("wininet.dll")] public static extern bool InternetSetOption(IntPtr handle, int option, IntPtr buffer, int length);'
-  [FlClashX.WinInet]::InternetSetOption([IntPtr]::Zero, 39, [IntPtr]::Zero, 0) | Out-Null
-  [FlClashX.WinInet]::InternetSetOption([IntPtr]::Zero, 37, [IntPtr]::Zero, 0) | Out-Null
+  Add-Type -Namespace NurConnect -Name WinInet -MemberDefinition '[DllImport("wininet.dll")] public static extern bool InternetSetOption(IntPtr handle, int option, IntPtr buffer, int length);'
+  [NurConnect.WinInet]::InternetSetOption([IntPtr]::Zero, 39, [IntPtr]::Zero, 0) | Out-Null
+  [NurConnect.WinInet]::InternetSetOption([IntPtr]::Zero, 37, [IntPtr]::Zero, 0) | Out-Null
 }

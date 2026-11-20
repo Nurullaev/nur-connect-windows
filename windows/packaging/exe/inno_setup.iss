@@ -29,16 +29,11 @@ const
   SHCNE_ASSOCCHANGED = $08000000;
   SHCNF_IDLIST = $0000;
   HelperService = '{{HELPER_SERVICE}}';
-  AdoptLegacy = {{ADOPT_LEGACY}};
-  LegacyUninstallKey = 'Software\Microsoft\Windows\CurrentVersion\Uninstall\728B3532-C74B-4870-9068-BE70FE12A3E6_is1';
-  LegacyHelperService = 'FlClashHelperService';
 
 var
   IsUpgrade: Boolean;
   PreviousVersion: String;
   HelperHeld: Boolean;
-  LegacyRoot: Integer;
-  LegacyDir: String;
 
 procedure SHChangeNotify(wEventId: Integer; uFlags: Integer; dwItem1: Integer; dwItem2: Integer); external 'SHChangeNotify@shell32.dll stdcall';
 
@@ -64,7 +59,7 @@ var
 begin
   Dir := AddBackslash(ExpandConstant('{app}'));
   StringChangeEx(Dir, '''', '''''', True);
-  RunHidden('powershell.exe', '-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "Get-Process -Name FlClashCore -ErrorAction SilentlyContinue | Where-Object { $_.Path -and $_.Path.StartsWith(''' + Dir + ''', [StringComparison]::OrdinalIgnoreCase) } | Stop-Process -Force"');
+  RunHidden('powershell.exe', '-NoProfile -NonInteractive -ExecutionPolicy Bypass -Command "Get-Process -Name {{CORE_EXECUTABLE_NAME}} -ErrorAction SilentlyContinue | Where-Object { $_.Path -and $_.Path.StartsWith(''' + Dir + ''', [StringComparison]::OrdinalIgnoreCase) } | Stop-Process -Force"');
 end;
 
 // The client goes first so it cannot bring the Helper back, and the Helper is
@@ -143,69 +138,11 @@ begin
     Result := Version;
 end;
 
-// 0.4.x registered under upstream FlClash's AppId, so only an entry that
-// names FlClashX is ours.
-function FindLegacyInstall(Root: Integer): Boolean;
-var
-  Name: String;
-begin
-  Result := RegQueryStringValue(Root, LegacyUninstallKey, 'DisplayName', Name) and
-            (Pos('FlClashX', Name) = 1) and
-            RegQueryStringValue(Root, LegacyUninstallKey, 'InstallLocation', LegacyDir);
-  if Result then
-  begin
-    LegacyRoot := Root;
-    LegacyDir := RemoveBackslashUnlessRoot(LegacyDir);
-  end;
-end;
-
-function HasLegacyInstall(): Boolean;
-begin
-  Result := LegacyDir <> '';
-end;
-
-// The old uninstaller would remove the new files and offer to delete the
-// user data both versions share, so its entry goes without running it.
-procedure RetireLegacyInstall;
-var
-  Uninstaller: String;
-  ImagePath: String;
-begin
-  if not HasLegacyInstall or (CompareText(LegacyDir, ExpandConstant('{app}')) <> 0) then
-    Exit;
-  if RegQueryStringValue(LegacyRoot, LegacyUninstallKey, 'UninstallString', Uninstaller) then
-  begin
-    Uninstaller := RemoveQuotes(Uninstaller);
-    if CompareText(Uninstaller, ExpandConstant('{uninstallexe}')) <> 0 then
-    begin
-      DeleteFile(Uninstaller);
-      DeleteFile(ChangeFileExt(Uninstaller, '.dat'));
-      DeleteFile(ChangeFileExt(Uninstaller, '.msg'));
-    end;
-  end;
-  RegDeleteKeyIncludingSubkeys(LegacyRoot, LegacyUninstallKey);
-  if RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SYSTEM\CurrentControlSet\Services\' + LegacyHelperService, 'ImagePath', ImagePath) and
-     (Pos(Lowercase(AddBackslash(LegacyDir)), Lowercase(ImagePath)) > 0) then
-  begin
-    RunHidden('net.exe', 'stop "' + LegacyHelperService + '"');
-    RunHidden('sc.exe', 'delete "' + LegacyHelperService + '"');
-    KillProcess(LegacyHelperService + '.exe');
-    DeleteFile(AddBackslash(LegacyDir) + LegacyHelperService + '.exe');
-  end;
-end;
-
 function InitializeSetup(): Boolean;
 begin
-  if AdoptLegacy and not FindLegacyInstall(HKEY_LOCAL_MACHINE) and not FindLegacyInstall(HKEY_LOCAL_MACHINE_32) then
-    FindLegacyInstall(HKEY_CURRENT_USER);
   IsUpgrade := IsAppInstalled();
   if IsUpgrade then
-    PreviousVersion := GetInstalledVersion()
-  else if HasLegacyInstall then
-  begin
-    IsUpgrade := True;
-    RegQueryStringValue(LegacyRoot, LegacyUninstallKey, 'DisplayVersion', PreviousVersion);
-  end;
+    PreviousVersion := GetInstalledVersion();
   Result := True;
 end;
 
@@ -223,8 +160,6 @@ end;
 
 procedure InitializeWizard();
 begin
-  if HasLegacyInstall and not IsAppInstalled() then
-    WizardForm.DirEdit.Text := LegacyDir;
   if IsUpgrade then
   begin
     WizardForm.Caption := '{{DISPLAY_NAME}} - ' + CustomMessage('Upgrade');
@@ -267,7 +202,6 @@ begin
   begin
     SHChangeNotify(SHCNE_ASSOCCHANGED, SHCNF_IDLIST, 0, 0);
     ClearStaleProxy;
-    RetireLegacyInstall;
     ReleaseHelper;
   end;
 end;

@@ -52,7 +52,7 @@ Future<BuildReport> buildPlatform(BuildRequest request) async {
   final stopwatch = Stopwatch()..start();
   final target = request.target;
   final rootDir = request.rootDir;
-  final config = BuildConfig.load(rootDir: rootDir);
+  final config = BuildConfig.load(rootDir: rootDir, platform: target.goos);
   // Its values reach the fingerprints, which the hook only checks once it runs.
   final configFile = File(p.join(rootDir, 'build_config.yaml'));
   final configInputs = [if (configFile.existsSync()) configFile.path];

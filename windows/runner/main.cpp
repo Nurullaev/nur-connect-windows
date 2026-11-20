@@ -1,6 +1,7 @@
 #include <flutter/dart_project.h>
 #include <flutter/flutter_view_controller.h>
 #include <windows.h>
+#include <shobjidl.h>
 
 #include <app_links/app_links_plugin_c_api.h>
 #include <proxy/proxy_plugin_c_api.h>
@@ -46,6 +47,11 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   // Initialize COM, so that it is available for use in the library and/or
   // plugins.
   ::CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+#ifdef FLCLASHX_PRE
+  ::SetCurrentProcessExplicitAppUserModelID(L"org.nurconnect.windows.pre");
+#else
+  ::SetCurrentProcessExplicitAppUserModelID(L"org.nurconnect.windows");
+#endif
 
   flutter::DartProject project(L"data");
   // Impeller freezes the window on resize on some GPUs (flutter/flutter#193504).
@@ -57,9 +63,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
   Win32Window::Point origin(10, 10);
   Win32Window::Size size(1280, 720);
 #ifdef FLCLASHX_PRE
-  constexpr wchar_t kTitle[] = L"FlClashX Pre";
+  constexpr wchar_t kTitle[] = L"Nur Connect Pre";
 #else
-  constexpr wchar_t kTitle[] = L"FlClashX";
+  constexpr wchar_t kTitle[] = L"Nur Connect";
 #endif
   if (!window.Create(kTitle, origin, size)) {
     return EXIT_FAILURE;

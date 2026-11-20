@@ -1,9 +1,12 @@
 import 'dart:convert';
+import 'dart:ffi' show Abi;
 import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
+
+import 'lib/common/product_identity.dart';
 
 const _appName = 'FlClashX';
 const _bundleId = 'com.follow.clashx';
@@ -241,7 +244,32 @@ const preDesktop = DesktopIdentity(
   windowsDataDir: r'com.follow\clashx.pre',
 );
 
-const _preWindowsAppId = '3B6E2F0A-9C41-4D57-8A2E-7F1D5C0B9E63';
+const stableWindows = DesktopIdentity(
+  pre: false,
+  executable: windowsExecutableName,
+  helper: windowsHelperName,
+  displayName: productName,
+  bundleId: windowsAppId,
+  packageName: 'nur-connect-windows',
+  installDir: productName,
+  helperUnit: '',
+  windowsDataDir: windowsDataDirectory,
+);
+
+const preWindows = DesktopIdentity(
+  pre: true,
+  executable: windowsPreExecutableName,
+  helper: windowsPreHelperName,
+  displayName: '$productName Pre',
+  bundleId: '$windowsAppId.pre',
+  packageName: 'nur-connect-windows-pre',
+  installDir: '$productName Pre',
+  helperUnit: '',
+  windowsDataDir: windowsPreDataDirectory,
+);
+
+DesktopIdentity windowsIdentityOf(String env) =>
+    env == 'pre' ? preWindows : stableWindows;
 
 DesktopIdentity desktopIdentityOf(String env) =>
     env == 'pre' ? preDesktop : stableDesktop;
@@ -255,11 +283,16 @@ List<String> channelScripts(List<String> scripts, DesktopIdentity identity) => [
     line.replaceAll(stableDesktop.helperUnit, identity.helperUnit),
 ];
 
-void renameForChannel(String dir, DesktopIdentity identity, {String ext = ''}) {
+void renameForChannel(
+  String dir,
+  DesktopIdentity identity, {
+  String ext = '',
+  DesktopIdentity base = stableDesktop,
+}) {
   if (!identity.pre) return;
   for (final (from, to) in [
-    (stableDesktop.executable, identity.executable),
-    (stableDesktop.helper, identity.helper),
+    (base.executable, identity.executable),
+    (base.helper, identity.helper),
   ]) {
     final file = File(p.join(dir, '$from$ext'));
     if (file.existsSync()) file.renameSync(p.join(dir, '$to$ext'));
@@ -289,7 +322,7 @@ List<int> utf16le(String value) => [
 /// `FlClashX-<platform>-<arch>` plus the format's extension; the release
 /// templates and the AUR package link these names.
 String artifactName(String platform, String arch, String extension) =>
-    '$_appName-$platform-$arch$extension';
+    '${platform == 'windows' ? productFileName : _appName}-$platform-$arch$extension';
 
 void _showHelp(ArgParser parser) {
   stderr.writeln('Usage: dart setup.dart [platform] [options]');
@@ -632,7 +665,8 @@ Future<void> _packageWindows(
   Set<String> targets, {
   required String env,
 }) async {
-  final identity = desktopIdentityOf(env);
+  final identity = windowsIdentityOf(env);
+  requireWindowsSdkArchitecture(build.arch, Abi.current());
   await build.mustRun('flutter', [
     'build',
     'windows',
@@ -650,13 +684,16 @@ Future<void> _packageWindows(
   );
   var bundle = built;
   if (identity.pre) {
-    requireChannelMarker(p.join(built, '$_appName.exe'), utf16le('clashx.pre'));
+    requireChannelMarker(
+      p.join(built, '$windowsExecutableName.exe'),
+      utf16le('NurConnectWindows.pre'),
+    );
     bundle = p.join(build.rootDir, 'build', 'windows', winArch, 'pre_bundle');
     if (Directory(bundle).existsSync()) {
       Directory(bundle).deleteSync(recursive: true);
     }
     await build.copyTree(built, bundle);
-    renameForChannel(bundle, identity, ext: '.exe');
+    renameForChannel(bundle, identity, ext: '.exe', base: stableWindows);
   }
   if (targets.contains('zip')) {
     final zip = build.dist(artifactName('windows', build.arch, '.zip'));
@@ -720,11 +757,11 @@ String renderInnoSetup(
   required String outputDir,
   required String outputBaseName,
   required String rootDir,
-  DesktopIdentity identity = stableDesktop,
+  DesktopIdentity identity = stableWindows,
 }) {
   final displayName = identity.pre
       ? identity.displayName
-      : (config['display_name'] ?? _appName) as String;
+      : (config['display_name'] ?? productName) as String;
   final privileges = (config['privileges_required'] ?? 'admin') as String;
   final locales = (config['locales'] as List?) ?? const [];
   final chineseIsl = p.join(
@@ -745,7 +782,7 @@ String renderInnoSetup(
   if (languages.isEmpty) languages.add(_innoLanguages['en']!);
   final iconFile = (config['setup_icon_file'] as String?) ?? '';
   final values = {
-    'APP_ID': identity.pre ? _preWindowsAppId : config['app_id'] as String,
+    'APP_ID': identity.pre ? windowsPreInstallerId : config['app_id'] as String,
     'APP_VERSION': version,
     'DISPLAY_NAME': displayName,
     'PUBLISHER_NAME': (config['publisher'] ?? '') as String,
@@ -761,10 +798,10 @@ String renderInnoSetup(
     'SOURCE_DIR': sourceDir,
     'EXECUTABLE_NAME': identity.pre
         ? '${identity.executable}.exe'
-        : (config['executable_name'] ?? '$_appName.exe') as String,
+        : (config['executable_name'] ?? '$windowsExecutableName.exe') as String,
     'HELPER_SERVICE': identity.helper,
     'USER_DATA_DIR': identity.windowsDataDir,
-    'ADOPT_LEGACY': identity.pre ? 'False' : 'True',
+    'CORE_EXECUTABLE_NAME': windowsCoreName,
     'LANGUAGES': languages.join('\n'),
     'RUN_FLAGS': privileges == 'admin' ? 'runascurrentuser' : '',
     'CLEAR_PROXY_SCRIPT': p.join(
@@ -1115,10 +1152,27 @@ Future<void> _packageAppImage(
   Directory(appDir).deleteSync(recursive: true);
 }
 
+String windowsSdkArch(Abi abi) => switch (abi) {
+  Abi.windowsArm64 => 'arm64',
+  Abi.windowsX64 => 'amd64',
+  _ => throw UnsupportedError('Unsupported Windows Dart SDK: $abi'),
+};
+
+/// Flutter selects the Windows target from its Dart SDK's ABI. It has no
+/// --target-platform option here; use the x64 SDK for an x64 package on Arm.
+void requireWindowsSdkArchitecture(String requested, Abi sdkAbi) {
+  final actual = windowsSdkArch(sdkAbi);
+  if (actual != requested) {
+    throw ArgumentError(
+      'Windows $requested requires a $requested Flutter/Dart SDK; '
+      'the current SDK is $actual. Switch SDKs before packaging.',
+    );
+  }
+}
+
 String _detectArch() {
   if (Platform.isWindows) {
-    final pa = Platform.environment['PROCESSOR_ARCHITECTURE'] ?? 'AMD64';
-    return pa.toUpperCase() == 'ARM64' ? 'arm64' : 'amd64';
+    return windowsSdkArch(Abi.current());
   }
   final result = Process.runSync('uname', ['-m']);
   final machine = (result.stdout as String).trim();

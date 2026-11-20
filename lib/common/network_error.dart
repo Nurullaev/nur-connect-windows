@@ -28,9 +28,15 @@ final class _Failure {
       detail = null;
 }
 
-String? networkErrorMessage(Object error, AppLocalizations appLocalizations) {
+String? networkErrorMessage(
+  Object error,
+  AppLocalizations appLocalizations, {
+  bool includeDetails = true,
+}) {
   final failure = _failureOf(error);
-  return failure == null ? null : _messageOf(failure, appLocalizations);
+  return failure == null
+      ? null
+      : _messageOf(failure, appLocalizations, includeDetails: includeDetails);
 }
 
 /// A failure a later attempt may not see: the route or the name service
@@ -130,7 +136,11 @@ _Failure? _fromCore(CoreMethodException error) {
   };
 }
 
-String _messageOf(_Failure failure, AppLocalizations appLocalizations) {
+String _messageOf(
+  _Failure failure,
+  AppLocalizations appLocalizations, {
+  bool includeDetails = true,
+}) {
   return switch (failure.kind) {
     _Kind.timeout => appLocalizations.networkTimeoutError,
     _Kind.hostLookup => appLocalizations.networkHostLookupError,
@@ -140,18 +150,24 @@ String _messageOf(_Failure failure, AppLocalizations appLocalizations) {
     _Kind.httpStatus => _httpStatusMessage(
       failure.statusCode ?? 0,
       appLocalizations,
+      includeDetails: includeDetails,
     ),
     _Kind.unknown => switch (failure.detail) {
-      final detail? when detail.isNotEmpty =>
+      final detail? when includeDetails && detail.isNotEmpty =>
         appLocalizations.networkRequestFailed(detail),
       _ => appLocalizations.unknownNetworkError,
     },
   };
 }
 
-String _httpStatusMessage(int statusCode, AppLocalizations appLocalizations) {
+String _httpStatusMessage(
+  int statusCode,
+  AppLocalizations appLocalizations, {
+  bool includeDetails = true,
+}) {
   return switch (statusCode) {
-    401 || 403 || 407 => appLocalizations.networkAccessDeniedError(statusCode),
+    401 || 403 || 407 when includeDetails =>
+      appLocalizations.networkAccessDeniedError(statusCode),
     404 || 410 => appLocalizations.networkNotFoundError(statusCode),
     429 => appLocalizations.networkRateLimitedError,
     >= 500 && <= 599 => appLocalizations.networkServerError(statusCode),

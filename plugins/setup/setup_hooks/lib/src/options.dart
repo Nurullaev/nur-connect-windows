@@ -38,23 +38,41 @@ class BuildConfig {
     helperName: 'FlClashXHelperService',
   );
 
-  static BuildConfig load({required String rootDir}) {
+  static const _windowsDefaults = BuildConfig(
+    tags: 'with_gvisor',
+    goLdflags: '-w -s',
+    coreVersion: '',
+    coreDir: 'core',
+    coreName: 'NurConnectCore',
+    outputDir: 'libclash',
+    helperDir: 'services/helper',
+    helperName: 'NurConnectWindowsHelper',
+  );
+
+  static BuildConfig load({required String rootDir, String? platform}) {
+    final defaults = platform == 'windows' ? _windowsDefaults : _defaults;
     final file = File(p.join(rootDir, 'build_config.yaml'));
     if (!file.existsSync()) {
       _log.fine('No build_config.yaml found, using defaults');
-      return _defaults;
+      return defaults;
     }
     final yaml = loadYaml(file.readAsStringSync()) as YamlMap?;
-    if (yaml == null) return _defaults;
+    if (yaml == null) return defaults;
     return BuildConfig(
-      tags: yaml['tags'] as String? ?? _defaults.tags,
-      goLdflags: yaml['go_ldflags'] as String? ?? _defaults.goLdflags,
-      coreVersion: yaml['core_version'] as String? ?? _defaults.coreVersion,
-      coreDir: yaml['core_dir'] as String? ?? _defaults.coreDir,
-      coreName: yaml['core_name'] as String? ?? _defaults.coreName,
-      outputDir: yaml['output_dir'] as String? ?? _defaults.outputDir,
-      helperDir: yaml['helper_dir'] as String? ?? _defaults.helperDir,
-      helperName: yaml['helper_name'] as String? ?? _defaults.helperName,
+      tags: yaml['tags'] as String? ?? defaults.tags,
+      goLdflags: yaml['go_ldflags'] as String? ?? defaults.goLdflags,
+      coreVersion: yaml['core_version'] as String? ?? defaults.coreVersion,
+      coreDir: yaml['core_dir'] as String? ?? defaults.coreDir,
+      coreName:
+          yaml[platform == 'windows' ? 'windows_core_name' : 'core_name']
+              as String? ??
+          defaults.coreName,
+      outputDir: yaml['output_dir'] as String? ?? defaults.outputDir,
+      helperDir: yaml['helper_dir'] as String? ?? defaults.helperDir,
+      helperName:
+          yaml[platform == 'windows' ? 'windows_helper_name' : 'helper_name']
+              as String? ??
+          defaults.helperName,
     );
   }
 

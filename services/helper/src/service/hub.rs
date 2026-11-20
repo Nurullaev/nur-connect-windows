@@ -34,9 +34,9 @@ use windows_sys::Win32::System::JobObjects::{
     all(feature = "windows-service", target_os = "windows"),
     target_os = "linux"
 )))]
-const LISTEN_PORT: u16 = 47890;
+const LISTEN_PORT: u16 = 47891;
 #[cfg(not(target_os = "linux"))]
-const CORE_PIPE_PREFIX: &str = r"\\.\pipe\FlClashCore_";
+const CORE_PIPE_PREFIX: &str = r"\\.\pipe\NurConnectCore_";
 #[cfg(target_os = "linux")]
 const CORE_SOCKET_PREFIX: &str = "/tmp/FlClashSocket_";
 #[cfg(target_os = "linux")]
@@ -973,7 +973,7 @@ mod tests {
     }
 
     #[cfg(not(target_os = "linux"))]
-    const ALLOWED_CORE_ADDRESS: &str = r"\\.\pipe\FlClashCore_0123456789abcdef0123456789abcdef";
+    const ALLOWED_CORE_ADDRESS: &str = r"\\.\pipe\NurConnectCore_0123456789abcdef0123456789abcdef";
     #[cfg(target_os = "linux")]
     const ALLOWED_CORE_ADDRESS: &str = "/tmp/FlClashSocket_4821.sock";
 
@@ -1582,20 +1582,20 @@ mod tests {
     #[test]
     fn only_accepts_random_core_pipe_namespace() {
         assert!(is_allowed_core_address(
-            r"\\.\pipe\FlClashCore_0123456789abcdef0123456789abcdef"
+            r"\\.\pipe\NurConnectCore_0123456789abcdef0123456789abcdef"
         ));
         assert!(!is_allowed_core_address(r"\\.\pipe\FlClashCore"));
         assert!(!is_allowed_core_address(
             r"\\.\pipe\Other_0123456789abcdef0123456789abcdef"
         ));
         assert!(!is_allowed_core_address(
-            r"\\.\pipe\FlClashCore_0123456789abcdef"
+            r"\\.\pipe\NurConnectCore_0123456789abcdef"
         ));
         assert!(!is_allowed_core_address(
-            r"\\.\pipe\FlClashCore_0123456789abcdef0123456789abcdeg"
+            r"\\.\pipe\NurConnectCore_0123456789abcdef0123456789abcdeg"
         ));
         assert!(!is_allowed_core_address(
-            r"\\.\pipe\FlClashCore_ABCDEF0123456789abcdef0123456789"
+            r"\\.\pipe\NurConnectCore_ABCDEF0123456789abcdef0123456789"
         ));
     }
 

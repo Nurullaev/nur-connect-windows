@@ -22,7 +22,7 @@ void main() {
 
     expect(peer, contains('r"${helperPortKeyFor('{}')}"'));
     expect(peer, contains('const PORT_VALUE: &str = "$helperPortValue";'));
-    expect(helperPortKey, helperPortKeyFor('FlClashXHelperService'));
+    expect(helperPortKey, helperPortKeyFor(appHelperService));
   });
 
   test('only the stable app falls back to the fixed Helper port', () {
@@ -60,11 +60,20 @@ void main() {
       );
     }
     expect(
-      isPreExecutable(r'C:\Program Files\FlClashX Pre\FlClashXPre.exe'),
+      isPreExecutable(r'C:\Program Files\Nur Connect Pre\NurConnectPre.exe'),
       isTrue,
     );
     expect(isPreExecutable('/opt/FlClashXPre/FlClashXPre'), isTrue);
     expect(isPreExecutable('/opt/FlClashX/FlClashX'), isFalse);
+    expect(
+      helperServiceFor(pre: false, windows: true),
+      'NurConnectWindowsHelper',
+    );
+    expect(
+      helperServiceFor(pre: true, windows: true),
+      'NurConnectWindowsPreHelper',
+    );
+    expect(isPreExecutable(r'C:\FlClashXPre\FlClashXPre.exe'), isFalse);
   });
 
   test(
@@ -73,7 +82,7 @@ void main() {
       final adapter = _ResponseAdapter((options) {
         expect(options.path, endsWith('/start'));
         expect(options.data, {
-          'address': r'\\.\pipe\FlClashCore_abc',
+          'address': r'\\.\pipe\NurConnectCore_abc',
           'sessionId': _sessionId,
         });
         return _jsonResponse({'sessionId': _sessionId, 'pid': 6456});
@@ -81,7 +90,7 @@ void main() {
       final client = _client(adapter);
 
       final response = await client.start(
-        address: r'\\.\pipe\FlClashCore_abc',
+        address: r'\\.\pipe\NurConnectCore_abc',
         sessionId: _sessionId,
       );
 

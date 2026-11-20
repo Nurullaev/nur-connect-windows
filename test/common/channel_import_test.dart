@@ -27,7 +27,7 @@ void main() {
     await File(join(stable, 'database.sqlite-journal')).writeAsString('jrnl');
     await File(join(stable, 'database.sqlite-shm')).writeAsString('shm');
     await File(join(stable, 'profiles', '1.yaml')).writeAsString('proxies: []');
-    await File(join(stable, 'FlClash.lock')).writeAsString('');
+    await File(join(stable, 'NurConnect.lock')).writeAsString('');
     await File(join(stable, 'config.yaml')).writeAsString('stable paths');
     await Directory(pre).create(recursive: true);
   });
@@ -81,7 +81,7 @@ void main() {
     expect(exists(join('profiles', '1.yaml')), isTrue);
     for (final left in [
       'database.sqlite-shm',
-      'FlClash.lock',
+      'NurConnect.lock',
       'config.yaml',
       '.stable-import',
       '.stable-import-pending',
@@ -327,7 +327,7 @@ void main() {
           'print("locked", flush=True)',
           'time.sleep(30)',
         ].join('\n'),
-        join(stable, 'FlClash.lock'),
+        join(stable, 'NurConnect.lock'),
       ]);
       addTearDown(holder.kill);
       await holder.stdout.first;

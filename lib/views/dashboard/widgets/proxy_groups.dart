@@ -28,6 +28,13 @@ Future<void> showProxiesSheet(BuildContext context, {String? groupName}) async {
         .read(proxiesActionProvider.notifier)
         .updateCurrentGroupName(groupName);
   }
+  if (system.isWindows) {
+    await showSheet<void>(
+      context: context,
+      builder: (_) => const ProxiesView(picker: true),
+    );
+    return;
+  }
   final query = queryProvider(QueryTag.proxies);
   final pageQuery = container.read(query);
   container.read(query.notifier).value = '';

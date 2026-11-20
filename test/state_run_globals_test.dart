@@ -47,7 +47,7 @@ void main() {
 
       expect(
         globalState.ua,
-        'FlClashX/v1.2.3 Platform/${Platform.operatingSystem}',
+        'Nur-Connect-Windows/v1.2.3 Platform/${Platform.operatingSystem}',
       );
     });
 
@@ -57,14 +57,14 @@ void main() {
 
       expect(
         globalState.ua,
-        'FlClashX/v1.2.3 core/v1.19.32 Platform/${Platform.operatingSystem}',
+        'Nur-Connect-Windows/v1.2.3 core/v1.19.32 Platform/${Platform.operatingSystem}',
       );
     });
 
     test('an Android TV names itself androidtv', () {
       expect(
         _packageInfo.uaWith('v1.19.32', tv: true),
-        'FlClashX/v1.2.3 core/v1.19.32 Platform/androidtv',
+        'Nur-Connect-Windows/v1.2.3 core/v1.19.32 Platform/androidtv',
       );
     });
   });
