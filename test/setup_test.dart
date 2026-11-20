@@ -9,6 +9,24 @@ import '../setup.dart' as setup;
 
 void main() {
   group('setup.dart', () {
+    test(
+      'Windows checksum sidecars match the published artifact name',
+      () async {
+        final dir = Directory.systemTemp.createTempSync('nur-update-checksum-');
+        addTearDown(() => dir.deleteSync(recursive: true));
+        final file = File(
+          p.join(dir.path, 'NurConnect-windows-amd64-setup.exe'),
+        )..writeAsStringSync('hello\n');
+        final sidecar = await setup.writeSha256Sidecar(file);
+        expect(sidecar.path, '${file.path}.sha256');
+        expect(
+          await sidecar.readAsString(),
+          '5891b5b522d5df086d0ff0b110fbd9d21bb4fc7163af34d08286a2e846f6be03  '
+          'NurConnect-windows-amd64-setup.exe\n',
+        );
+      },
+    );
+
     test('Windows packaging requires the SDK ABI to match the artifact', () {
       expect(setup.windowsSdkArch(Abi.windowsArm64), 'arm64');
       expect(setup.windowsSdkArch(Abi.windowsX64), 'amd64');

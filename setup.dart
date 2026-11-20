@@ -3,6 +3,7 @@ import 'dart:ffi' show Abi;
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:crypto/crypto.dart';
 import 'package:path/path.dart' as p;
 import 'package:yaml/yaml.dart';
 
@@ -695,6 +696,19 @@ Future<void> _packageWindows(
     await build.copyTree(built, bundle);
     renameForChannel(bundle, identity, ext: '.exe', base: stableWindows);
   }
+  File(
+    p.join(build.rootDir, 'LICENSE'),
+  ).copySync(p.join(bundle, 'LICENSE.txt'));
+  File(
+    p.join(build.rootDir, 'NOTICE.md'),
+  ).copySync(p.join(bundle, 'NOTICE.md'));
+  File(p.join(bundle, 'SOURCE.txt')).writeAsStringSync(
+    '$productName for Windows ${build.version}\n'
+    'Source: https://github.com/$productRepository\n'
+    'Build instructions: docs/windows/first-build.md in the source tree.\n'
+    'The corresponding source archive is provided alongside this preview.\n'
+    'License: GNU GPL v3; see LICENSE.txt and NOTICE.md.\n',
+  );
   if (targets.contains('zip')) {
     final zip = build.dist(artifactName('windows', build.arch, '.zip'));
     if (File(zip).existsSync()) File(zip).deleteSync();
@@ -704,6 +718,7 @@ Future<void> _packageWindows(
       'Compress-Archive -Path "$bundle\\*" -DestinationPath "$zip" -Force',
     ]);
     stdout.writeln('created: $zip');
+    await writeSha256Sidecar(File(zip));
   }
   if (targets.contains('exe')) {
     final config = build.packagingConfig('exe');
@@ -727,7 +742,18 @@ Future<void> _packageWindows(
     stdout.writeln(
       'created: ${build.dist(artifactName('windows', build.arch, '-setup.exe'))}',
     );
+    await writeSha256Sidecar(
+      File(build.dist(artifactName('windows', build.arch, '-setup.exe'))),
+    );
   }
+}
+
+/// GitHub updates require a checksum asset beside the installer.
+Future<File> writeSha256Sidecar(File artifact) async {
+  final digest = await sha256.bind(artifact.openRead()).first;
+  final sidecar = File('${artifact.path}.sha256');
+  await sidecar.writeAsString('$digest  ${p.basename(artifact.path)}\n');
+  return sidecar;
 }
 
 String _innoSetupCompiler() {

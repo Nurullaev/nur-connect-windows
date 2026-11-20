@@ -20,6 +20,26 @@ import '../helpers/test_profiles.dart';
 
 class MockCoreHandlerInterface extends Mock implements CoreHandlerInterface {}
 
+class _CheckingCommonAction extends CommonAction {
+  late Future<Map<String, dynamic>?> Function() fetch;
+  int checks = 0;
+  final offered = <String>[];
+
+  @override
+  Future<Map<String, dynamic>?> checkForUpdate() {
+    checks++;
+    return fetch();
+  }
+
+  @override
+  Future<void> checkUpdateResultHandle({
+    Map<String, dynamic>? data,
+    bool isUser = false,
+  }) async {
+    if (data != null) offered.add(data['tag_name'] as String);
+  }
+}
+
 const runningVersion = '0.8.96';
 
 void main() {
@@ -173,6 +193,49 @@ void main() {
   });
 
   group('CommonAction.autoCheckUpdate', () {
+    ProviderContainer withChecker(_CheckingCommonAction action) {
+      final container = ProviderContainer(
+        overrides: [
+          profilesProvider.overrideWith(TestProfiles.new),
+          commonActionProvider.overrideWith(() => action),
+          appVisibleProvider.overrideWithBuild((_, _) => true),
+        ],
+      );
+      addTearDown(container.dispose);
+      container
+          .read(appSettingProvider.notifier)
+          .update((s) => s.copyWith(autoCheckUpdate: true));
+      return container;
+    }
+
+    test('concurrent startup and timer checks offer one update', () async {
+      final pending = Completer<Map<String, dynamic>?>();
+      final action = _CheckingCommonAction()..fetch = () => pending.future;
+      final container = withChecker(action);
+      final checker = container.read(commonActionProvider.notifier);
+      final first = checker.autoCheckUpdate();
+      expect(await checker.autoCheckUpdate(), isFalse);
+      expect(action.checks, 1);
+      pending.complete({'tag_name': 'v0.9.0'});
+      expect(await first, isTrue);
+      expect(action.offered, ['v0.9.0']);
+    });
+
+    test('a network failure releases the guard and can be retried', () async {
+      final action = _CheckingCommonAction()
+        ..fetch = () => Future.error(StateError('offline'));
+      final container = withChecker(action);
+      final checker = container.read(commonActionProvider.notifier);
+      expect(await checker.autoCheckUpdate(), isFalse);
+      await expectLater(
+        checker.autoCheckUpdate(throwOnError: true),
+        throwsStateError,
+      );
+      action.fetch = () async => {'tag_name': 'v0.9.0'};
+      expect(await checker.autoCheckUpdate(), isTrue);
+      expect(action.offered, ['v0.9.0']);
+    });
+
     test('returns without a network call when the setting is off', () async {
       final container = buildContainer();
       container

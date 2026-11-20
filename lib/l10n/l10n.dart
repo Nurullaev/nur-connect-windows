@@ -8901,6 +8901,21 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Later`
+  String get nurUpdateLater {
+    return Intl.message('Later', name: 'nurUpdateLater', desc: '', args: []);
+  }
+
+  /// `Nur Connect will offer a new version when it is available. Updates are installed with your confirmation.`
+  String get nurUpdatesHint {
+    return Intl.message(
+      'Nur Connect will offer a new version when it is available. Updates are installed with your confirmation.',
+      name: 'nurUpdatesHint',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

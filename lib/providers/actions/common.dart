@@ -4,6 +4,8 @@ part of '../action.dart';
 class CommonAction extends _$CommonAction {
   CoreController get _core => ref.read(coreHandlerProvider);
   bool _isUpdatingTraffic = false;
+  bool _checkingAutomaticUpdate = false;
+  bool _updateDialogOpen = false;
 
   @override
   void build() {}
@@ -91,6 +93,9 @@ class CommonAction extends _$CommonAction {
   /// The provider's update manifest for this channel, when its header names
   /// one; it then stands in for GitHub as the update source.
   Future<Map<String, dynamic>?> checkForUpdate() async {
+    // Nur Connect Windows releases belong to our repository. A subscription's
+    // FlClashX update header must not replace the app's own update source.
+    if (system.isWindows) return request.checkForUpdate();
     final headers = ref.read(currentProfileProvider)?.headers;
     final manifestUrl = globalState.isPre
         ? headers?.preUpdateManifestUrl
@@ -124,25 +129,38 @@ class CommonAction extends _$CommonAction {
     currentVersion: globalState.packageInfo.displayVersion,
   );
 
-  Future<bool> autoCheckUpdate() async {
-    if (!ref.read(appSettingProvider).autoCheckUpdate) return false;
-    final Map<String, dynamic>? res;
+  Future<bool> autoCheckUpdate({bool throwOnError = false}) async {
+    if (_checkingAutomaticUpdate ||
+        !ref.read(appSettingProvider).autoCheckUpdate) {
+      return false;
+    }
+    _checkingAutomaticUpdate = true;
     try {
-      res = await checkForUpdate();
-    } catch (error) {
-      commonPrint.log(
-        'checkForUpdate failed: ${compactError(error)}',
-        logLevel: LogLevel.warning,
-      );
-      return false;
+      final Map<String, dynamic>? res;
+      try {
+        res = await checkForUpdate();
+      } catch (error) {
+        commonPrint.log(
+          'checkForUpdate failed: ${compactError(error)}',
+          logLevel: LogLevel.warning,
+        );
+        if (throwOnError) rethrow;
+        return false;
+      }
+      if (!ref.mounted ||
+          res == null ||
+          res['_required'] != true &&
+              res['tag_name'] == ref.read(appSettingProvider).hiddenUpdate) {
+        return false;
+      }
+      if (system.isWindows && !ref.read(appVisibleProvider)) {
+        await window?.show();
+      }
+      await checkUpdateResultHandle(data: res);
+      return true;
+    } finally {
+      _checkingAutomaticUpdate = false;
     }
-    if (res == null ||
-        res['_required'] != true &&
-            res['tag_name'] == ref.read(appSettingProvider).hiddenUpdate) {
-      return false;
-    }
-    await checkUpdateResultHandle(data: res);
-    return true;
   }
 
   TextSpan _releaseSpan(BuildContext context, String? body) {
@@ -215,44 +233,53 @@ class CommonAction extends _$CommonAction {
     Map<String, dynamic>? data,
     bool isUser = false,
   }) async {
+    if (_updateDialogOpen) return;
     if (data != null) {
-      final context = globalState.navigatorKey.currentContext!;
-      final notes = _releaseSpan(context, data['body'] as String?);
-      final platform = await _updatePlatform();
-      final required = data['_required'] == true;
-      final downloader = UpdateDownloader(root: _updateCacheRoot);
-      await dialogs.showCommonDialog<void>(
-        // A required update is not put off by a tap beside it.
-        dismissible: !required,
-        child: UpdateDialog(
-          version: data['tag_name'] as String,
-          notes: notes,
-          onOpenReleasePage: () =>
-              unawaited(launchUrl(releasePageOf(data, repository: repository))),
-          onHide: isUser || required
-              ? null
-              : () => ref
-                    .read(appSettingProvider.notifier)
-                    .update(
-                      (state) => state.copyWith(
-                        hiddenUpdate: data['tag_name'] as String,
+      final context = globalState.navigatorKey.currentContext;
+      if (context == null || !context.mounted) return;
+      _updateDialogOpen = true;
+      try {
+        final notes = _releaseSpan(context, data['body'] as String?);
+        final platform = await _updatePlatform();
+        final required = data['_required'] == true;
+        final downloader = UpdateDownloader(root: _updateCacheRoot);
+        await dialogs.showCommonDialog<void>(
+          // A required update is not put off by a tap beside it.
+          dismissible: !required,
+          child: UpdateDialog(
+            version: data['tag_name'] as String,
+            windowsPrompt: system.isWindows,
+            notes: notes,
+            onOpenReleasePage: () => unawaited(
+              launchUrl(releasePageOf(data, repository: repository)),
+            ),
+            onHide: system.isWindows || isUser || required
+                ? null
+                : () => ref
+                      .read(appSettingProvider.notifier)
+                      .update(
+                        (state) => state.copyWith(
+                          hiddenUpdate: data['tag_name'] as String,
+                        ),
                       ),
-                    ),
-          createController: () {
-            final controller = UpdateController(
-              release: data,
-              platform: platform,
-              downloader: downloader,
-              repository: repository,
-              pre: globalState.isPre,
-              manifest: data['_isManifest'] == true,
-              installBlocker: _updateInstallBlocker,
-            );
-            app?.onPackageInstallStatus = controller.onInstallStatus;
-            return controller;
-          },
-        ),
-      );
+            createController: () {
+              final controller = UpdateController(
+                release: data,
+                platform: platform,
+                downloader: downloader,
+                repository: repository,
+                pre: globalState.isPre,
+                manifest: data['_isManifest'] == true,
+                installBlocker: _updateInstallBlocker,
+              );
+              app?.onPackageInstallStatus = controller.onInstallStatus;
+              return controller;
+            },
+          ),
+        );
+      } finally {
+        _updateDialogOpen = false;
+      }
     } else if (isUser) {
       unawaited(
         dialogs.showAlert(

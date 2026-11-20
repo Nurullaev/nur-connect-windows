@@ -16,6 +16,7 @@ class UpdateDialog extends StatefulWidget {
   /// later automatic checks skip this release, not the ones after it.
   final VoidCallback? onHide;
   final VoidCallback onOpenReleasePage;
+  final bool windowsPrompt;
 
   const UpdateDialog({
     super.key,
@@ -24,6 +25,7 @@ class UpdateDialog extends StatefulWidget {
     required this.notes,
     required this.onOpenReleasePage,
     this.onHide,
+    this.windowsPrompt = false,
   });
 
   @override
@@ -46,18 +48,30 @@ class _UpdateDialogState extends State<UpdateDialog> {
 
   /// Stacked with the first at the bottom, so the step forward sits on top.
   List<Widget> _actions(AppLocalizations l10n, UpdateState state) {
-    final close = _action(l10n.close, _close);
+    final close = _action(
+      widget.windowsPrompt &&
+              (state.phase == UpdatePhase.idle ||
+                  state.phase == UpdatePhase.ready)
+          ? l10n.nurUpdateLater
+          : l10n.close,
+      _close,
+    );
     return switch (state.phase) {
       UpdatePhase.idle => [
-        if (widget.onHide case final hide?)
+        if (!widget.windowsPrompt && widget.onHide != null)
           _action(l10n.updateHide, () {
-            hide();
+            widget.onHide!();
             _close();
           })
         else
           close,
         if (_controller.canDownload)
-          _action(l10n.goDownload, _controller.download),
+          _action(
+            widget.windowsPrompt ? l10n.update : l10n.goDownload,
+            _controller.download,
+          )
+        else if (widget.windowsPrompt)
+          _action(l10n.update, widget.onOpenReleasePage),
       ],
       UpdatePhase.downloading => [
         _action(l10n.cancel, _controller.cancel),

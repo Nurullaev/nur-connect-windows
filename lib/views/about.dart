@@ -43,22 +43,25 @@ final coreVersionProvider = FutureProvider.autoDispose<String?>((ref) async {
   return version.isEmpty ? null : version;
 });
 
+Future<void> checkAppUpdates(BuildContext context, WidgetRef ref) async {
+  if (ref.read(loadingProvider(LoadingTag.checkUpdate))) return;
+  final commonAction = ref.read(commonActionProvider.notifier);
+  final result = await globalState.loadingRun(
+    () async => (release: await commonAction.checkForUpdate()),
+    title: context.appLocalizations.checkUpdate,
+    tag: LoadingTag.checkUpdate,
+  );
+  if (result == null) return;
+  unawaited(
+    commonAction.checkUpdateResultHandle(data: result.release, isUser: true),
+  );
+}
+
 class AboutView extends ConsumerWidget {
   const AboutView({super.key});
 
-  Future<void> _checkUpdate(BuildContext context, WidgetRef ref) async {
-    if (ref.read(loadingProvider(LoadingTag.checkUpdate))) return;
-    final commonAction = ref.read(commonActionProvider.notifier);
-    final result = await globalState.loadingRun(
-      () async => (release: await commonAction.checkForUpdate()),
-      title: context.appLocalizations.checkUpdate,
-      tag: LoadingTag.checkUpdate,
-    );
-    if (result == null) return;
-    unawaited(
-      commonAction.checkUpdateResultHandle(data: result.release, isUser: true),
-    );
-  }
+  Future<void> _checkUpdate(BuildContext context, WidgetRef ref) =>
+      checkAppUpdates(context, ref);
 
   Widget _buildLinkItem({
     required Glyph glyph,

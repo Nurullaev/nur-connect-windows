@@ -9,6 +9,7 @@ import 'package:fl_clash/features/update/controller.dart';
 import 'package:fl_clash/features/update/download.dart';
 import 'package:fl_clash/features/update/platform.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart' as p;
 
 const _name = 'FlClashX-macos-arm64.dmg';
 const _url = 'https://github.com/pluralplay/FlClashX/releases/download/v0.5.1';
@@ -322,7 +323,7 @@ void main() {
       final update = controller(keeping: keeping.future);
       final first = update.download();
       while ((await files()).isEmpty ||
-          !(await files()).single.path.endsWith('/0.5.1/$_name')) {
+          !(await files()).single.path.endsWith(p.join('0.5.1', _name))) {
         await pumpEventQueue();
       }
       update.cancel();
@@ -381,7 +382,7 @@ void main() {
     final update = controller();
     await update.download();
     expect(stale.existsSync(), isFalse);
-    expect((await files()).single.path, endsWith('/0.5.1/$_name'));
+    expect((await files()).single.path, endsWith(p.join('0.5.1', _name)));
     update.dispose();
   });
 

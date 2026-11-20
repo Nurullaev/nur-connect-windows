@@ -12,9 +12,9 @@
 - Windows 设置：TUN、系统代理、开机启动、语言、主题和诊断。
 - 独立的进程、服务、数据目录和导入协议。
 
-首个预览版本为 **0.1.0-pre.1**。请参阅[构建状态及限制](docs/windows/first-build.md)和[路线图](docs/windows/roadmap.md)。应用图标暂时沿用上游资源。新界面文本支持俄语和英语，其他语言暂用英语。分支的 GitHub Actions 尚未启用。
+首个预览版本为 **0.1.0-pre.1**。请参阅[构建状态及限制](docs/windows/first-build.md)和[路线图](docs/windows/roadmap.md)。应用和安装程序采用 Nur Connect 品牌图标。新界面文本支持俄语和英语，其他语言暂用英语。分支的 GitHub Actions 尚未启用。
 
-在 Windows 上安装 Flutter、Go、Rust MSVC（本机 API 使用 `1.99.0`）、Visual Studio C++/CMake/Windows SDK 和 Inno Setup 6 后：
+在 Windows 上安装 Flutter、Go、Rust MSVC（本机 API 使用 `1.99.0`）、Visual Studio C++/CMake/Windows SDK/ATL 和 Inno Setup 6 后：
 
 ```powershell
 flutter pub get

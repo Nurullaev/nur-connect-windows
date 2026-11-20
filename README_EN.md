@@ -11,10 +11,11 @@ An independent Windows client built on [FlClashX](https://github.com/pluralplay/
 - Server search, sorting and latency checks that preserve your selection.
 - Windows settings: TUN, system proxy, startup, background launch, language, theme and diagnostics.
 - Independent app, helper, data-directory and URI identities.
+- Automatic release checks with Update / Later prompts; see [updates](docs/windows/updates.md).
 
-The first preview is **0.1.0-pre.1**. See [build status and limitations](docs/windows/first-build.md) and the [roadmap](docs/windows/roadmap.md). App icons remain temporary upstream assets. New messages support Russian and English; other locales fall back to English. Fork Actions remain disabled until our release workflows are prepared.
+The first preview is **0.1.0-pre.1**. See [build status and limitations](docs/windows/first-build.md) and the [roadmap](docs/windows/roadmap.md). The application and installer use the Nur Connect brand icon. New messages support Russian and English; other locales fall back to English. Fork Actions remain disabled until our release workflows are prepared.
 
-Build on Windows with Flutter, Go, Rust MSVC (`1.99.0` for the native API), Visual Studio C++ tools/CMake/Windows SDK and Inno Setup 6:
+Build on Windows with Flutter, Go, Rust MSVC (`1.99.0` for the native API), Visual Studio C++ tools/CMake/Windows SDK/ATL and Inno Setup 6:
 
 ```powershell
 flutter pub get

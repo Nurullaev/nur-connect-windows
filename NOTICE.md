@@ -26,9 +26,12 @@ Further changes on 2026-11-21: a Windows server picker with local search,
 latency checks and persisted selection; dedicated Windows settings; our website
 links, Windows-only User-Agent and preview versioning.
 
-The original icons remain temporary development assets. An independent visual
-identity and a complete dependency/asset license inventory are pending before
-distribution. No release, certification, sponsorship or endorsement by the
+Further changes on 2026-11-21: scheduled Windows update checks, Update/Later
+prompts, own GitHub release source and installer checksum sidecars. Application
+and installer icons use the owner-supplied Nur Connect brand artwork; provenance
+is recorded in assets/branding/README.md. Functional status tray symbols remain
+from the upstream project. A complete dependency/asset license inventory remains
+pending before a stable release. No release, certification, sponsorship or endorsement by the
 upstream authors is implied.
 
 Source projects:

@@ -123,6 +123,24 @@ class NurWindowsSettings extends ConsumerWidget {
             ],
           ),
           generateSection(
+            title: l10n.update,
+            items: [
+              ConfigToggleItem(
+                title: (l) => l.autoCheckUpdate,
+                managedKey: 'app.autoCheckUpdate',
+                selector: appSettingProvider.select((s) => s.autoCheckUpdate),
+                onChanged: (ref, value) => ref
+                    .read(appSettingProvider.notifier)
+                    .update((s) => s.copyWith(autoCheckUpdate: value)),
+              ),
+              ListItem(
+                title: Text(l10n.checkUpdate),
+                onTap: () async => checkAppUpdates(context, ref),
+              ),
+            ],
+            footer: l10n.nurUpdatesHint,
+          ),
+          generateSection(
             title: l10n.profiles,
             items: [
               ListItem.open(

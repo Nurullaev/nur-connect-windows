@@ -382,9 +382,12 @@ abstract class AppSettingProps with _$AppSettingProps {
 
   factory AppSettingProps.safeFromJson(Map<String, Object?>? json) {
     if (json == null) {
-      return defaultAppSettingProps;
+      return AppSettingProps(autoCheckUpdate: system.isWindows);
     }
-    return decodeSalvaging('app settings', json, AppSettingProps.fromJson);
+    return decodeSalvaging('app settings', {
+      if (system.isWindows) 'autoCheckUpdate': true,
+      ...json,
+    }, AppSettingProps.fromJson);
   }
 }
 
@@ -659,7 +662,7 @@ abstract class Config with _$Config {
 
   factory Config.strictFromJson(Map<String, Object?> json) =>
       _withLegacyOverrideDns(
-        _$ConfigFromJson(_withLegacyRouteMode(json)),
+        _$ConfigFromJson(_withLegacyRouteMode(_withWindowsUpdateDefault(json))),
         json,
       );
 
@@ -670,11 +673,21 @@ abstract class Config with _$Config {
         hotKeyActions: defaultHotKeyActions,
         appSettingProps: AppSettingProps(
           dashboardWidgets: platformDefaultDashboardWidgets,
+          autoCheckUpdate: system.isWindows,
         ),
       );
     }
     return Config.fromJson(json);
   }
+}
+
+/// A missing setting gets the Windows default; an explicit false stays false.
+Map<String, Object?> _withWindowsUpdateDefault(Map<String, Object?> json) {
+  if (!system.isWindows || json['appSettingProps'] != null) return json;
+  return {
+    ...json,
+    'appSettingProps': {'autoCheckUpdate': true},
+  };
 }
 
 const _legacyOverrideDnsKey = 'overrideDns';

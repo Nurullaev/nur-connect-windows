@@ -7,6 +7,7 @@ import 'package:fl_clash/features/update/platform.dart';
 import 'package:fl_clash/plugins/app.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:path/path.dart' as p;
 
 Matcher _fails(UpdateErrorKind kind) =>
     throwsA(isA<UpdateException>().having((e) => e.kind, 'kind', kind));
@@ -213,8 +214,10 @@ void main() {
         );
         expect(Directory(bundle).existsSync(), isTrue);
         expect(
-          Directory('${root.path}/Applications').listSync().map((e) => e.path),
-          [bundle],
+          Directory(
+            '${root.path}/Applications',
+          ).listSync().map((e) => p.normalize(e.path)),
+          [p.normalize(bundle)],
         );
       },
     );

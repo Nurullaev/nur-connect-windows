@@ -1348,6 +1348,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "nurTakeoverHint": MessageLookupByLibrary.simpleMessage(
       "Включите TUN или системный прокси, чтобы направить трафик через Nur Connect.",
     ),
+    "nurUpdateLater": MessageLookupByLibrary.simpleMessage("Позже"),
+    "nurUpdatesHint": MessageLookupByLibrary.simpleMessage(
+      "Когда появится новая версия, Nur Connect предложит обновиться. Установка — с вашего подтверждения.",
+    ),
     "nurWelcomeHint": MessageLookupByLibrary.simpleMessage(
       "Добавьте подписку, чтобы выбрать сервер и подключиться.",
     ),

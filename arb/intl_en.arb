@@ -1052,5 +1052,7 @@
   "nurHomeSubtitle": "Subscription, server and connection",
   "nurConnect": "Connect",
   "nurDisconnect": "Disconnect",
-  "nurTakeoverHint": "Enable TUN or system proxy to route traffic through Nur Connect."
+  "nurTakeoverHint": "Enable TUN or system proxy to route traffic through Nur Connect.",
+  "nurUpdateLater": "Later",
+  "nurUpdatesHint": "Nur Connect will offer a new version when it is available. Updates are installed with your confirmation."
 }

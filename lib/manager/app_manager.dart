@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/system_dns.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/features/update/schedule.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
@@ -23,10 +24,50 @@ class AppStateManager extends ConsumerStatefulWidget {
 
 class _AppStateManagerState extends ConsumerState<AppStateManager>
     with WidgetsBindingObserver {
+  final _updateSchedule = UpdateCheckSchedule();
+  Timer? _updateTimer;
+
+  Future<void> _checkAppUpdate() async {
+    if (!mounted ||
+        !ref.read(initProvider) ||
+        !ref.read(appSettingProvider).autoCheckUpdate) {
+      return;
+    }
+    try {
+      await _updateSchedule.run(() async {
+        final common = ref.read(commonActionProvider.notifier);
+        await common.removeInstalledUpdates();
+        await common.autoCheckUpdate(throwOnError: true);
+      });
+    } catch (error) {
+      commonPrint.log(
+        'Automatic update check: ${compactError(error)}',
+        logLevel: LogLevel.warning,
+      );
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    if (system.isWindows) {
+      _updateTimer = Timer.periodic(const Duration(minutes: 5), (_) {
+        unawaited(_checkAppUpdate());
+      });
+      ref.listenManual(initProvider, (_, ready) {
+        if (ready) unawaited(_checkAppUpdate());
+      });
+      ref.listenManual(appVisibleProvider, (_, visible) {
+        if (visible) unawaited(_checkAppUpdate());
+      });
+      ref.listenManual(appSettingProvider.select((s) => s.autoCheckUpdate), (
+        _,
+        enabled,
+      ) {
+        if (enabled) unawaited(_checkAppUpdate());
+      });
+    }
     // A desktop build started to the tray mounts while hidden, and a paused
     // render never runs a post-frame callback.
     scheduleMicrotask(() {
@@ -77,6 +118,7 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
 
   @override
   void dispose() {
+    _updateTimer?.cancel();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }

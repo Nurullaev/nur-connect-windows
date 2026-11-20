@@ -1291,6 +1291,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "nurTakeoverHint": MessageLookupByLibrary.simpleMessage(
       "Enable TUN or system proxy to route traffic through Nur Connect.",
     ),
+    "nurUpdateLater": MessageLookupByLibrary.simpleMessage("Later"),
+    "nurUpdatesHint": MessageLookupByLibrary.simpleMessage(
+      "Nur Connect will offer a new version when it is available. Updates are installed with your confirmation.",
+    ),
     "nurWelcomeHint": MessageLookupByLibrary.simpleMessage(
       "Add a subscription to choose a server and connect.",
     ),

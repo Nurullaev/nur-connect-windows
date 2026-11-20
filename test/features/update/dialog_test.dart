@@ -55,6 +55,7 @@ void main() {
     WidgetTester tester, {
     UpdateInstallKind kind = UpdateInstallKind.macos,
     bool reminder = false,
+    bool windowsPrompt = false,
   }) async {
     controller = _Scripted(kind);
     releasePageOpens = 0;
@@ -76,6 +77,7 @@ void main() {
                     notes: const TextSpan(text: 'Release notes'),
                     onOpenReleasePage: () => releasePageOpens++,
                     onHide: reminder ? () => hides++ : null,
+                    windowsPrompt: windowsPrompt,
                   ),
                 ),
                 child: const Text('open'),
@@ -94,6 +96,34 @@ void main() {
     controller.value = state;
     await tester.pump();
   }
+
+  testWidgets('Windows offers Update and Later without hiding this release', (
+    tester,
+  ) async {
+    final l10n = await pump(tester, reminder: true, windowsPrompt: true);
+    expect(find.text(l10n.update), findsOneWidget);
+    expect(find.text(l10n.nurUpdateLater), findsOneWidget);
+    expect(find.text(l10n.updateHide), findsNothing);
+    await tester.tap(find.text(l10n.update));
+    expect(controller.calls, ['download']);
+    await tester.tap(find.text(l10n.nurUpdateLater));
+    await tester.pumpAndSettle();
+    expect(hides, 0);
+    expect(find.byType(UpdateDialog), findsNothing);
+  });
+
+  testWidgets('a Windows portable copy offers the release page', (
+    tester,
+  ) async {
+    final l10n = await pump(
+      tester,
+      kind: UpdateInstallKind.unsupported,
+      windowsPrompt: true,
+    );
+    await tester.tap(find.text(l10n.update));
+    expect(releasePageOpens, 1);
+    expect(controller.calls, isEmpty);
+  });
 
   testWidgets('offers download, the release page and closing', (tester) async {
     final l10n = await pump(tester);

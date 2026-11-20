@@ -1052,5 +1052,7 @@
   "nurHomeSubtitle": "Подписка, сервер и подключение",
   "nurConnect": "Подключиться",
   "nurDisconnect": "Отключиться",
-  "nurTakeoverHint": "Включите TUN или системный прокси, чтобы направить трафик через Nur Connect."
+  "nurTakeoverHint": "Включите TUN или системный прокси, чтобы направить трафик через Nur Connect.",
+  "nurUpdateLater": "Позже",
+  "nurUpdatesHint": "Когда появится новая версия, Nur Connect предложит обновиться. Установка — с вашего подтверждения."
 }
