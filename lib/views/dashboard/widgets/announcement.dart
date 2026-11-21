@@ -120,11 +120,38 @@ class _AnnouncementCardState extends ConsumerState<AnnouncementCard> {
         ],
       );
       if (widget.inline) {
+        // Centred under the plan, the mark leads the first line instead of
+        // standing in a column of its own.
         return Semantics(
           key: const ValueKey('announcement-inline'),
           container: true,
           label: appLocalizations.announcement,
-          child: row,
+          child: Text.rich(
+            TextSpan(
+              children: [
+                WidgetSpan(
+                  alignment: PlaceholderAlignment.middle,
+                  child: Padding(
+                    padding: const EdgeInsetsDirectional.only(end: 8),
+                    child: GlyphIcon(
+                      AppGlyphs.info,
+                      size: 16,
+                      color: colorScheme.primary,
+                    ),
+                  ),
+                ),
+                _spanOf(
+                  compactAnnouncement(text),
+                  AppTextStyle.footnote
+                      .of(context)
+                      .copyWith(color: colorScheme.onSurface),
+                  colorScheme.primary,
+                ),
+              ],
+            ),
+            key: const ValueKey('announcement-inline-text'),
+            textAlign: TextAlign.center,
+          ),
         );
       }
       return DashboardCard(

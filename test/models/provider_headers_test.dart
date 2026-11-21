@@ -784,4 +784,29 @@ void main() {
       );
     });
   });
+
+  test('the Happ hide flags read 1, true or yes and nothing else', () {
+    for (final on in ['1', 'true', 'TRUE', ' yes ']) {
+      final headers = _profile(
+        headers: {'hide-settings': on, 'hide-url': on},
+      ).headers;
+      expect(headers.hideSettings, isTrue, reason: on);
+      expect(headers.hideUrl, isTrue, reason: on);
+    }
+    for (final off in ['0', 'false', '', 'no']) {
+      final headers = _profile(
+        headers: {'hide-settings': off, 'hide-url': off},
+      ).headers;
+      expect(headers.hideSettings, isFalse, reason: off);
+      expect(headers.hideUrl, isFalse, reason: off);
+    }
+    expect(_profile().headers.hideSettings, isFalse);
+    expect(
+      providerHeadersOf({
+        'Hide-Settings': ['1'],
+        'hide-url': ['1'],
+      }),
+      {'hide-settings': '1', 'hide-url': '1'},
+    );
+  });
 }

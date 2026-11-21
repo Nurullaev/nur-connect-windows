@@ -396,6 +396,8 @@ const providerHeaderNames = {
   'banner-text',
   'banner-button-text',
   'banner-button-url',
+  'hide-settings',
+  'hide-url',
   'profile-update-interval',
   'x-hwid-max-devices-reached',
   'x-hwid-not-supported',

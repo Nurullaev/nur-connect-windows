@@ -693,6 +693,32 @@ void main() {
     expect(find.text('Proxies'), findsOneWidget);
   });
 
+  testWidgets('a panel hiding its settings keeps the config out of the sheet', (
+    tester,
+  ) async {
+    await writeAppliedConfig(tester);
+    setUpProfiles(
+      [
+        _profile(1).copyWith(providerHeaders: const {'hide-settings': '1'}),
+      ],
+      overrides: [
+        providersProvider.overrideWithBuild(
+          (_, _) => [_provider('nodes', 'Proxy', 5)],
+        ),
+      ],
+    );
+    container.read(currentProfileIdProvider.notifier).value = 1;
+    await pumpCard(tester);
+
+    await openDetail(tester);
+
+    expect(find.byType(ProfileDetailSheet), findsOneWidget);
+    expect(find.byTooltip('Runtime config'), findsNothing);
+    expect(find.byType(ExternalProvidersSliver), findsNothing);
+    expect(find.text('Extend mode'), findsNothing);
+    expect(find.text('Proxies'), findsOneWidget);
+  });
+
   testWidgets('tapping a custom profile edits it in a sheet, built as it '
       'opens', (tester) async {
     final profile = Profile.custom(label: 'mine');

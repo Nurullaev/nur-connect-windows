@@ -406,9 +406,51 @@ class ProfileItem extends ConsumerWidget {
     final appLocalizations = context.appLocalizations;
     final isUrl = profile.type == ProfileType.url;
     final isCustom = profile.type == ProfileType.custom;
-    final simple = ref.watch(simpleModeProvider);
-    return [
+    final headers = profile.headers;
+    // A panel's Happ flags hide its config and its link as the simple mode
+    // hides the fine settings: nothing here shows the profile's keys or URL.
+    final simple = ref.watch(simpleModeProvider) || headers.hideSettings;
+    final showUrl = isUrl && !headers.hideUrl;
+    final more = [
       if (!simple)
+        CommonPopupMenuItem(
+          glyph: AppGlyphs.eye,
+          label: appLocalizations.runtimeConfig,
+          onPressed: () {
+            _handlePreview(context);
+          },
+        ),
+      if (showUrl)
+        CommonPopupMenuItem(
+          glyph: AppGlyphs.copy,
+          label: appLocalizations.copyLink,
+          onPressed: () {
+            _handleCopyLink(context);
+          },
+        ),
+      if (showUrl)
+        CommonPopupMenuItem(
+          glyph: AppGlyphs.qrCode,
+          label: appLocalizations.qrcode,
+          onPressed: () {
+            dialogs.showQrCode(
+              title: profile.realLabel,
+              data: profile.url,
+              message: appLocalizations.shareQrcodeTip,
+            );
+          },
+        ),
+      if (!simple)
+        CommonPopupMenuItem(
+          glyph: AppGlyphs.export,
+          label: appLocalizations.exportFile,
+          onPressed: () {
+            _handleExportFile(context);
+          },
+        ),
+    ];
+    return [
+      if (!simple && !headers.hideUrl)
         CommonPopupMenuItem(
           glyph: AppGlyphs.edit,
           label: appLocalizations.edit,
@@ -452,48 +494,11 @@ class ProfileItem extends ConsumerWidget {
           label: appLocalizations.profileDetails,
           onPressed: () => showProfileDetailSheet(context),
         ),
-      if (!isCustom && (isUrl || !simple))
+      if (!isCustom && more.isNotEmpty)
         CommonPopupMenuItem(
           glyph: AppGlyphs.moreCircle,
           label: appLocalizations.more,
-          subItems: [
-            if (!simple)
-              CommonPopupMenuItem(
-                glyph: AppGlyphs.eye,
-                label: appLocalizations.runtimeConfig,
-                onPressed: () {
-                  _handlePreview(context);
-                },
-              ),
-            if (isUrl)
-              CommonPopupMenuItem(
-                glyph: AppGlyphs.copy,
-                label: appLocalizations.copyLink,
-                onPressed: () {
-                  _handleCopyLink(context);
-                },
-              ),
-            if (isUrl)
-              CommonPopupMenuItem(
-                glyph: AppGlyphs.qrCode,
-                label: appLocalizations.qrcode,
-                onPressed: () {
-                  dialogs.showQrCode(
-                    title: profile.realLabel,
-                    data: profile.url,
-                    message: appLocalizations.shareQrcodeTip,
-                  );
-                },
-              ),
-            if (!simple)
-              CommonPopupMenuItem(
-                glyph: AppGlyphs.export,
-                label: appLocalizations.exportFile,
-                onPressed: () {
-                  _handleExportFile(context);
-                },
-              ),
-          ],
+          subItems: more,
         ),
       CommonPopupMenuItem(
         danger: true,

@@ -376,6 +376,14 @@ void main() {
       expect(card.contains(banner.center), isTrue);
       expect(card.contains(announcement.center), isTrue);
       expect(banner.top, lessThan(announcement.top));
+      expect(
+        tester
+            .widget<Text>(
+              find.byKey(const ValueKey('announcement-inline-text')),
+            )
+            .textAlign,
+        TextAlign.center,
+      );
       expect(rect('nur-home-servers-header').top, greaterThan(card.bottom));
       expect(rect('Finland').top, greaterThan(card.bottom));
       expect(find.byKey(const ValueKey('nur-home-servers')), findsNothing);

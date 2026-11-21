@@ -248,6 +248,45 @@ void main() {
     expect(find.text(l.subscriptionInfo), findsNothing);
   });
 
+  testWidgets('a panel hiding its settings and link leaves both out of the '
+      'menu', (tester) async {
+    final l = currentAppLocalizations;
+    final hidden = urlProfile(
+      'hidden',
+    ).copyWith(providerHeaders: const {'hide-settings': '1', 'hide-url': '1'});
+    await pumpProfiles(tester, profiles: [hidden]);
+
+    await openProfileMenu(tester, 'hidden');
+    Finder inMenu(String label) => find.descendant(
+      of: find.byType(CommonPopupMenu),
+      matching: find.text(label),
+    );
+    expect(inMenu(l.delete), findsOneWidget);
+    expect(inMenu(l.sync), findsOneWidget);
+    for (final label in [l.edit, l.extend, l.more, l.runtimeConfig]) {
+      expect(inMenu(label), findsNothing, reason: label);
+    }
+  });
+
+  testWidgets('hiding the link alone keeps the config under more', (
+    tester,
+  ) async {
+    final l = currentAppLocalizations;
+    final linkless = urlProfile(
+      'linkless',
+    ).copyWith(providerHeaders: const {'hide-url': '1'});
+    await pumpProfiles(tester, profiles: [linkless]);
+
+    await openProfileMenu(tester, 'linkless');
+    expect(find.text(l.edit), findsNothing);
+    expect(find.text(l.extend), findsOneWidget);
+    await tester.tap(find.text(l.more).last);
+    await tester.pumpAndSettle();
+    expect(find.text(l.runtimeConfig), findsOneWidget);
+    expect(find.text(l.copyLink), findsNothing);
+    expect(find.text(l.qrcode), findsNothing);
+  });
+
   testWidgets('only the current profile offers its details', (tester) async {
     final l = currentAppLocalizations;
     final current = urlProfile('current');

@@ -168,7 +168,10 @@ class _ProfileDetailSheetState extends ConsumerState<ProfileDetailSheet>
     final isUpdating = ref.watch(isUpdatingProvider(profile.updatingKey));
     final appLocalizations = context.appLocalizations;
     final subscriptionInfo = profile.subscriptionInfo;
-    final simple = ref.watch(simpleModeProvider);
+    // A panel hiding its settings keeps the config, extend mode and its
+    // resources out of the sheet, as the simple mode does.
+    final simple =
+        ref.watch(simpleModeProvider) || profile.headers.hideSettings;
     return CommonScaffold(
       title: profile.realLabel,
       iconActions: [

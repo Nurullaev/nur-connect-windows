@@ -26,6 +26,20 @@ class ProviderHeaders {
 
   String? get supportUrl => text('support-url');
 
+  /// Happ's `hide-settings`: the panel keeps its servers' settings to itself,
+  /// so the app shows no config to read, edit, extend or export.
+  bool get hideSettings => _switchOn('hide-settings');
+
+  /// Happ's `hide-url`: the subscription link stays out of sight, with no
+  /// copy, QR code or edit field.
+  bool get hideUrl => _switchOn('hide-url');
+
+  /// Happ's switches come as `1`; `true` and `yes` read the same.
+  bool _switchOn(String name) => switch (text(name)?.toLowerCase()) {
+    '1' || 'true' || 'yes' => true,
+    _ => false,
+  };
+
   String? get title => _plainOrBase64(text('profile-title'));
 
   String? get webPageUrl => _url('profile-web-page-url');
