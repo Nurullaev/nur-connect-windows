@@ -236,12 +236,13 @@ class _ConnectionCardState extends ConsumerState<_ConnectionCard> {
         : l10n.disconnected;
     return DashboardCard(
       key: const ValueKey('nur-connection'),
+      padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 20,
+        spacing: 12,
         children: [
           Row(
-            spacing: 14,
+            spacing: 12,
             children: [
               DecoratedBox(
                 decoration: BoxDecoration(
@@ -249,10 +250,10 @@ class _ConnectionCardState extends ConsumerState<_ConnectionCard> {
                   color: context.colorScheme.primary.withValues(alpha: 0.10),
                 ),
                 child: Padding(
-                  padding: const EdgeInsets.all(18),
+                  padding: const EdgeInsets.all(10),
                   child: GlyphIcon(
                     AppGlyphs.status,
-                    size: 36,
+                    size: 24,
                     color: context.colorScheme.primary,
                   ),
                 ),
@@ -263,7 +264,10 @@ class _ConnectionCardState extends ConsumerState<_ConnectionCard> {
                   children: [
                     Text(
                       status,
-                      style: AppTextStyle.title2.of(context, emphasized: true),
+                      style: AppTextStyle.headline.of(
+                        context,
+                        emphasized: true,
+                      ),
                     ),
                     if (ready)
                       Text(
@@ -278,7 +282,7 @@ class _ConnectionCardState extends ConsumerState<_ConnectionCard> {
           const _ConnectionModeSelector(),
           if (!routing) Text(l10n.nurTakeoverHint),
           SizedBox(
-            height: 56,
+            height: 44,
             child: FilledButton(
               key: const ValueKey('nur-connect-toggle'),
               onPressed: changing || safeMode || (!running && refusal != null)
@@ -337,46 +341,45 @@ class _ConnectionModeSelector extends ConsumerWidget {
     };
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      spacing: 8,
+      spacing: 6,
       children: [
-        Text(l10n.nurConnectionMode, style: AppTextStyle.callout.of(context)),
-        SegmentedButton<_ConnectionCaptureMode>(
-          key: const ValueKey('nur-connection-mode'),
-          expandedInsets: EdgeInsets.zero,
-          showSelectedIcon: false,
-          emptySelectionAllowed: true,
-          segments: [
-            const ButtonSegment(
-              value: _ConnectionCaptureMode.vpn,
-              icon: GlyphIcon(AppGlyphs.vpn),
-              label: Text('VPN (TUN)'),
-            ),
-            ButtonSegment(
-              value: _ConnectionCaptureMode.proxy,
-              enabled: ref.watch(systemProxyAllowedProvider),
-              icon: const GlyphIcon(AppGlyphs.shuffle),
-              label: Text(l10n.nurProxyMode),
-            ),
-          ],
-          selected: selected,
-          onSelectionChanged: unavailable
-              ? null
-              : (values) {
-                  if (values.isNotEmpty) _select(ref, values.single);
-                },
+        Semantics(
+          label: l10n.nurConnectionMode,
+          child: SegmentedButton<_ConnectionCaptureMode>(
+            key: const ValueKey('nur-connection-mode'),
+            expandedInsets: EdgeInsets.zero,
+            showSelectedIcon: false,
+            emptySelectionAllowed: true,
+            segments: [
+              ButtonSegment(
+                value: _ConnectionCaptureMode.vpn,
+                icon: const GlyphIcon(AppGlyphs.vpn),
+                label: const Text('VPN (TUN)'),
+                tooltip: l10n.nurVpnDescription,
+              ),
+              ButtonSegment(
+                value: _ConnectionCaptureMode.proxy,
+                enabled: ref.watch(systemProxyAllowedProvider),
+                icon: const GlyphIcon(AppGlyphs.shuffle),
+                label: Text(l10n.nurProxyMode),
+                tooltip: l10n.nurProxyDescription,
+              ),
+            ],
+            selected: selected,
+            onSelectionChanged: unavailable
+                ? null
+                : (values) {
+                    if (values.isNotEmpty) _select(ref, values.single);
+                  },
+          ),
         ),
-        Text(
-          locked
-              ? l10n.managedByProvider
-              : running
-              ? l10n.nurDisconnectToChangeMode
-              : proxy && !vpn
-              ? l10n.nurProxyDescription
-              : l10n.nurVpnDescription,
-          style: AppTextStyle.caption1
-              .of(context)
-              .copyWith(color: context.colorScheme.onSurfaceVariant),
-        ),
+        if (locked || running)
+          Text(
+            locked ? l10n.managedByProvider : l10n.nurDisconnectToChangeMode,
+            style: AppTextStyle.caption1
+                .of(context)
+                .copyWith(color: context.colorScheme.onSurfaceVariant),
+          ),
       ],
     );
   }
