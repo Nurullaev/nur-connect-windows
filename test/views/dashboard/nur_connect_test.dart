@@ -352,6 +352,34 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  testWidgets('the connect button leads and the notices follow the plan card', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      size: const Size(440, 1400),
+      subscription: _profile.copyWith(
+        providerHeaders: const {
+          'announce': 'Traffic is free until the end of the month',
+          'banner-text': 'Invite friends, pay less',
+          'banner-button-text': 'Invite',
+          'banner-button-url': 'https://t.me/example_bot?start=partner',
+        },
+      ),
+    );
+    double top(String key) => tester.getTopLeft(find.byKey(ValueKey(key))).dy;
+    final power = top('nur-connect-toggle');
+    final plan = top('profile-card-dense');
+    final announcement = top('announcement-compact');
+    final banner = top('nur-banner');
+    final server = top('nur-selected-server');
+    expect(power, lessThan(plan));
+    expect(plan, lessThan(announcement));
+    expect(announcement, lessThan(banner));
+    expect(banner, lessThan(server));
+    expect(tester.takeException(), isNull);
+  });
+
   testWidgets('without a provider name the header keeps the app name', (
     tester,
   ) async {

@@ -19,7 +19,12 @@ UpdateParams updateParams(Ref ref) {
 }
 
 @riverpod
-({PatchClashConfig patchConfig, bool appendSystemDns, bool bypassPrivateRoute})
+({
+  PatchClashConfig patchConfig,
+  bool appendSystemDns,
+  bool bypassPrivateRoute,
+  String splitTunnel,
+})
 setupPatch(Ref ref) {
   return (
     patchConfig: ref.watch(
@@ -34,6 +39,11 @@ setupPatch(Ref ref) {
         ref.watch(
           networkSettingProvider.select((state) => state.bypassPrivateRoute),
         ),
+    // Its rules hang on the routing mode, which otherwise skips the rebuild.
+    splitTunnel: splitTunnelKey(
+      ref.watch(networkSettingProvider.select((state) => state.splitTunnel)),
+      ref.watch(patchClashConfigProvider.select((state) => state.mode)),
+    ),
   );
 }
 

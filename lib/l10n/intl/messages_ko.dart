@@ -1606,6 +1606,37 @@ class MessageLookup extends MessageLookupByLibrary {
     "splitStrategyNotEmpty": MessageLookupByLibrary.simpleMessage(
       "분할 전략을 입력하세요",
     ),
+    "splitTunnel": MessageLookupByLibrary.simpleMessage("분할 터널링"),
+    "splitTunnelAddByName": MessageLookupByLibrary.simpleMessage("파일 이름 입력"),
+    "splitTunnelAddFile": MessageLookupByLibrary.simpleMessage("프로그램 선택…"),
+    "splitTunnelAppLabel": MessageLookupByLibrary.simpleMessage("파일 이름"),
+    "splitTunnelApps": MessageLookupByLibrary.simpleMessage("프로그램"),
+    "splitTunnelAppsHint": MessageLookupByLibrary.simpleMessage(
+      "Discord나 Steam처럼 여러 프로세스를 실행하는 앱이 있습니다. 각 .exe 파일을 추가하세요.",
+    ),
+    "splitTunnelDesc": MessageLookupByLibrary.simpleMessage(
+      "프로그램은 파일 이름으로 통째로 선택됩니다. 브라우저는 전체가 VPN을 거치거나 전혀 거치지 않습니다. 프록시 모드에서는 시스템 프록시를 쓰는 프로그램에만 적용됩니다.",
+    ),
+    "splitTunnelEmptyHint": MessageLookupByLibrary.simpleMessage(
+      "프로그램을 추가하세요. 목록이 비어 있는 동안에는 모든 트래픽이 평소대로 흐릅니다.",
+    ),
+    "splitTunnelEnable": MessageLookupByLibrary.simpleMessage("분할 터널링 사용"),
+    "splitTunnelExceptSelected": MessageLookupByLibrary.simpleMessage(
+      "선택한 앱 제외",
+    ),
+    "splitTunnelFromConnections": MessageLookupByLibrary.simpleMessage(
+      "활성 연결에서",
+    ),
+    "splitTunnelInvalidName": MessageLookupByLibrary.simpleMessage(
+      "chrome.exe 같은 파일 이름을 입력하세요",
+    ),
+    "splitTunnelMode": MessageLookupByLibrary.simpleMessage("VPN 사용"),
+    "splitTunnelNoApps": MessageLookupByLibrary.simpleMessage("켜짐, 아직 프로그램 없음"),
+    "splitTunnelNoConnections": MessageLookupByLibrary.simpleMessage(
+      "활성 연결이 있는 프로그램이 없습니다. 연결하고 프로그램을 연 뒤 다시 시도하세요.",
+    ),
+    "splitTunnelOff": MessageLookupByLibrary.simpleMessage("꺼짐"),
+    "splitTunnelOnlySelected": MessageLookupByLibrary.simpleMessage("선택한 앱만"),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("SSID가 비어 있습니다"),
     "stableImportRetry": MessageLookupByLibrary.simpleMessage("다시 시도"),
     "stableImportSkip": MessageLookupByLibrary.simpleMessage("가져오지 않고 계속"),

@@ -8022,8 +8022,7 @@ class AppLocalizations {
   String customImportDroppedSubRules(num count, Object label) {
     return Intl.plural(
       count,
-      one:
-          '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
+      one: '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
       other:
           '$label SUB-RULE rules were dropped, since custom profiles do not support sub-rules',
       name: 'customImportDroppedSubRules',
@@ -8997,6 +8996,171 @@ class AppLocalizations {
     return Intl.message(
       'Renew your subscription to connect.',
       name: 'nurRenewToConnect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Split tunneling`
+  String get splitTunnel {
+    return Intl.message(
+      'Split tunneling',
+      name: 'splitTunnel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Use split tunneling`
+  String get splitTunnelEnable {
+    return Intl.message(
+      'Use split tunneling',
+      name: 'splitTunnelEnable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Through VPN`
+  String get splitTunnelMode {
+    return Intl.message(
+      'Through VPN',
+      name: 'splitTunnelMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Only selected`
+  String get splitTunnelOnlySelected {
+    return Intl.message(
+      'Only selected',
+      name: 'splitTunnelOnlySelected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `All except selected`
+  String get splitTunnelExceptSelected {
+    return Intl.message(
+      'All except selected',
+      name: 'splitTunnelExceptSelected',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `A program is matched by its file name and as a whole: a browser goes through VPN entirely or not at all. In proxy mode it affects only programs that use the system proxy.`
+  String get splitTunnelDesc {
+    return Intl.message(
+      'A program is matched by its file name and as a whole: a browser goes through VPN entirely or not at all. In proxy mode it affects only programs that use the system proxy.',
+      name: 'splitTunnelDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Programs`
+  String get splitTunnelApps {
+    return Intl.message(
+      'Programs',
+      name: 'splitTunnelApps',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a program…`
+  String get splitTunnelAddFile {
+    return Intl.message(
+      'Choose a program…',
+      name: 'splitTunnelAddFile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `From active connections`
+  String get splitTunnelFromConnections {
+    return Intl.message(
+      'From active connections',
+      name: 'splitTunnelFromConnections',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a file name`
+  String get splitTunnelAddByName {
+    return Intl.message(
+      'Enter a file name',
+      name: 'splitTunnelAddByName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `File name`
+  String get splitTunnelAppLabel {
+    return Intl.message(
+      'File name',
+      name: 'splitTunnelAppLabel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a file name such as chrome.exe`
+  String get splitTunnelInvalidName {
+    return Intl.message(
+      'Enter a file name such as chrome.exe',
+      name: 'splitTunnelInvalidName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No programs have active connections. Connect, open the program and try again.`
+  String get splitTunnelNoConnections {
+    return Intl.message(
+      'No programs have active connections. Connect, open the program and try again.',
+      name: 'splitTunnelNoConnections',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Add programs. While the list is empty, all traffic goes as usual.`
+  String get splitTunnelEmptyHint {
+    return Intl.message(
+      'Add programs. While the list is empty, all traffic goes as usual.',
+      name: 'splitTunnelEmptyHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Some apps run several processes, such as Discord or Steam: add each of their .exe files.`
+  String get splitTunnelAppsHint {
+    return Intl.message(
+      'Some apps run several processes, such as Discord or Steam: add each of their .exe files.',
+      name: 'splitTunnelAppsHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Off`
+  String get splitTunnelOff {
+    return Intl.message('Off', name: 'splitTunnelOff', desc: '', args: []);
+  }
+
+  /// `On, no programs yet`
+  String get splitTunnelNoApps {
+    return Intl.message(
+      'On, no programs yet',
+      name: 'splitTunnelNoApps',
       desc: '',
       args: [],
     );

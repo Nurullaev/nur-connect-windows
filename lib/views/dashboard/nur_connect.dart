@@ -68,10 +68,20 @@ class NurConnectDashboard extends ConsumerWidget {
       body: LayoutBuilder(
         builder: (context, constraints) {
           final twoColumns = constraints.maxWidth / scale >= 900;
-          const details = Column(
+          // The panel's notices sit under the plan, as in the other Nur
+          // Connect apps, so the connect button leads the page.
+          final notices = [
+            if (announcement) const AnnouncementCard(compact: true),
+            if (banner != null) _BannerCard(banner: banner),
+          ];
+          final details = Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: 16,
-            children: [ProfilesCard(), _ServerCard()],
+            children: [
+              const ProfilesCard(dense: true),
+              ...notices,
+              const _ServerCard(),
+            ],
           );
           return DashboardDensityScope(
             // Natural-height cards avoid fixed-height overflow at large text.
@@ -94,11 +104,10 @@ class NurConnectDashboard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     spacing: 20,
                     children: [
-                      if (announcement) const AnnouncementCard(compact: true),
-                      if (banner != null) _BannerCard(banner: banner),
-                      if (profile == null)
-                        _WelcomeCard(hasProfiles: hasProfiles)
-                      else if (twoColumns)
+                      if (profile == null) ...[
+                        _WelcomeCard(hasProfiles: hasProfiles),
+                        ...notices,
+                      ] else if (twoColumns)
                         Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           spacing: 32,

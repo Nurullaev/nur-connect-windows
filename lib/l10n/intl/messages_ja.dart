@@ -1641,6 +1641,39 @@ class MessageLookup extends MessageLookupByLibrary {
     "splitStrategyNotEmpty": MessageLookupByLibrary.simpleMessage(
       "振り分け戦略は空にできません",
     ),
+    "splitTunnel": MessageLookupByLibrary.simpleMessage("スプリットトンネル"),
+    "splitTunnelAddByName": MessageLookupByLibrary.simpleMessage("ファイル名を入力"),
+    "splitTunnelAddFile": MessageLookupByLibrary.simpleMessage("プログラムを選ぶ…"),
+    "splitTunnelAppLabel": MessageLookupByLibrary.simpleMessage("ファイル名"),
+    "splitTunnelApps": MessageLookupByLibrary.simpleMessage("プログラム"),
+    "splitTunnelAppsHint": MessageLookupByLibrary.simpleMessage(
+      "Discord や Steam のように複数のプロセスを動かすアプリがあります。それぞれの .exe を追加してください。",
+    ),
+    "splitTunnelDesc": MessageLookupByLibrary.simpleMessage(
+      "プログラムはファイル名で丸ごと選ばれます。ブラウザーは全体が VPN を通るか、まったく通らないかのどちらかです。プロキシモードではシステムプロキシを使うプログラムにだけ効きます。",
+    ),
+    "splitTunnelEmptyHint": MessageLookupByLibrary.simpleMessage(
+      "プログラムを追加してください。リストが空のあいだは、すべての通信がいつも通りに流れます。",
+    ),
+    "splitTunnelEnable": MessageLookupByLibrary.simpleMessage("スプリットトンネルを使う"),
+    "splitTunnelExceptSelected": MessageLookupByLibrary.simpleMessage(
+      "選んだアプリ以外",
+    ),
+    "splitTunnelFromConnections": MessageLookupByLibrary.simpleMessage(
+      "現在の接続から",
+    ),
+    "splitTunnelInvalidName": MessageLookupByLibrary.simpleMessage(
+      "chrome.exe のようなファイル名を入力してください",
+    ),
+    "splitTunnelMode": MessageLookupByLibrary.simpleMessage("VPN を通す"),
+    "splitTunnelNoApps": MessageLookupByLibrary.simpleMessage(
+      "オン、プログラムはまだありません",
+    ),
+    "splitTunnelNoConnections": MessageLookupByLibrary.simpleMessage(
+      "接続中のプログラムがありません。接続してプログラムを開き、もう一度お試しください。",
+    ),
+    "splitTunnelOff": MessageLookupByLibrary.simpleMessage("オフ"),
+    "splitTunnelOnlySelected": MessageLookupByLibrary.simpleMessage("選んだアプリだけ"),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("SSIDが空です"),
     "stableImportRetry": MessageLookupByLibrary.simpleMessage("再試行"),
     "stableImportSkip": MessageLookupByLibrary.simpleMessage("移行せずに続行"),

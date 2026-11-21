@@ -1482,6 +1482,35 @@ class MessageLookup extends MessageLookupByLibrary {
     "speedStatistics": MessageLookupByLibrary.simpleMessage("网速统计"),
     "splitStrategy": MessageLookupByLibrary.simpleMessage("分流策略"),
     "splitStrategyNotEmpty": MessageLookupByLibrary.simpleMessage("分流策略不能为空"),
+    "splitTunnel": MessageLookupByLibrary.simpleMessage("分应用代理"),
+    "splitTunnelAddByName": MessageLookupByLibrary.simpleMessage("输入文件名"),
+    "splitTunnelAddFile": MessageLookupByLibrary.simpleMessage("选择程序…"),
+    "splitTunnelAppLabel": MessageLookupByLibrary.simpleMessage("文件名"),
+    "splitTunnelApps": MessageLookupByLibrary.simpleMessage("程序"),
+    "splitTunnelAppsHint": MessageLookupByLibrary.simpleMessage(
+      "有些应用会运行多个进程，例如 Discord 或 Steam：请添加它们的每个 .exe 文件。",
+    ),
+    "splitTunnelDesc": MessageLookupByLibrary.simpleMessage(
+      "程序按文件名整体匹配：浏览器要么整个走 VPN，要么完全不走。在代理模式下，只对使用系统代理的程序生效。",
+    ),
+    "splitTunnelEmptyHint": MessageLookupByLibrary.simpleMessage(
+      "请添加程序。列表为空时，所有流量照常走。",
+    ),
+    "splitTunnelEnable": MessageLookupByLibrary.simpleMessage("启用分应用代理"),
+    "splitTunnelExceptSelected": MessageLookupByLibrary.simpleMessage("除所选应用外"),
+    "splitTunnelFromConnections": MessageLookupByLibrary.simpleMessage(
+      "从当前连接中选择",
+    ),
+    "splitTunnelInvalidName": MessageLookupByLibrary.simpleMessage(
+      "请输入文件名，例如 chrome.exe",
+    ),
+    "splitTunnelMode": MessageLookupByLibrary.simpleMessage("走 VPN"),
+    "splitTunnelNoApps": MessageLookupByLibrary.simpleMessage("已开启，尚未添加程序"),
+    "splitTunnelNoConnections": MessageLookupByLibrary.simpleMessage(
+      "没有正在连接的程序。请先连接，打开程序后再试。",
+    ),
+    "splitTunnelOff": MessageLookupByLibrary.simpleMessage("已关闭"),
+    "splitTunnelOnlySelected": MessageLookupByLibrary.simpleMessage("仅所选应用"),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("SSIDs为空"),
     "stableImportRetry": MessageLookupByLibrary.simpleMessage("重试"),
     "stableImportSkip": MessageLookupByLibrary.simpleMessage("不迁移，继续"),

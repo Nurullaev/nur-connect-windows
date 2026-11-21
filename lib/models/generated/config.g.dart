@@ -290,6 +290,33 @@ Map<String, dynamic> _$AuthenticationPropsToJson(
   'password': instance.password,
 };
 
+_SplitTunnelProps _$SplitTunnelPropsFromJson(Map<String, dynamic> json) =>
+    _SplitTunnelProps(
+      enabled: json['enabled'] as bool? ?? false,
+      mode:
+          $enumDecodeNullable(
+            _$SplitTunnelModeEnumMap,
+            json['mode'],
+            unknownValue: SplitTunnelMode.onlySelected,
+          ) ??
+          SplitTunnelMode.onlySelected,
+      apps:
+          (json['apps'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+          const [],
+    );
+
+Map<String, dynamic> _$SplitTunnelPropsToJson(_SplitTunnelProps instance) =>
+    <String, dynamic>{
+      'enabled': instance.enabled,
+      'mode': _$SplitTunnelModeEnumMap[instance.mode]!,
+      'apps': instance.apps,
+    };
+
+const _$SplitTunnelModeEnumMap = {
+  SplitTunnelMode.onlySelected: 'onlySelected',
+  SplitTunnelMode.exceptSelected: 'exceptSelected',
+};
+
 _NetworkProps _$NetworkPropsFromJson(Map<String, dynamic> json) =>
     _NetworkProps(
       systemProxy: json['systemProxy'] as bool? ?? false,
@@ -304,6 +331,11 @@ _NetworkProps _$NetworkPropsFromJson(Map<String, dynamic> json) =>
           : AuthenticationProps.fromJson(
               json['authentication'] as Map<String, dynamic>?,
             ),
+      splitTunnel: json['splitTunnel'] == null
+          ? const SplitTunnelProps()
+          : SplitTunnelProps.fromJson(
+              json['splitTunnel'] as Map<String, dynamic>?,
+            ),
     );
 
 Map<String, dynamic> _$NetworkPropsToJson(_NetworkProps instance) =>
@@ -314,6 +346,7 @@ Map<String, dynamic> _$NetworkPropsToJson(_NetworkProps instance) =>
       'autoSetSystemDns': instance.autoSetSystemDns,
       'appendSystemDns': instance.appendSystemDns,
       'authentication': instance.authentication,
+      'splitTunnel': instance.splitTunnel,
     };
 
 _ProxiesStyleProps _$ProxiesStylePropsFromJson(Map<String, dynamic> json) =>

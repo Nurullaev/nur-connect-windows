@@ -1910,6 +1910,47 @@ class MessageLookup extends MessageLookupByLibrary {
     "splitStrategyNotEmpty": MessageLookupByLibrary.simpleMessage(
       "Split strategy cannot be empty",
     ),
+    "splitTunnel": MessageLookupByLibrary.simpleMessage("Split tunneling"),
+    "splitTunnelAddByName": MessageLookupByLibrary.simpleMessage(
+      "Enter a file name",
+    ),
+    "splitTunnelAddFile": MessageLookupByLibrary.simpleMessage(
+      "Choose a program…",
+    ),
+    "splitTunnelAppLabel": MessageLookupByLibrary.simpleMessage("File name"),
+    "splitTunnelApps": MessageLookupByLibrary.simpleMessage("Programs"),
+    "splitTunnelAppsHint": MessageLookupByLibrary.simpleMessage(
+      "Some apps run several processes, such as Discord or Steam: add each of their .exe files.",
+    ),
+    "splitTunnelDesc": MessageLookupByLibrary.simpleMessage(
+      "A program is matched by its file name and as a whole: a browser goes through VPN entirely or not at all. In proxy mode it affects only programs that use the system proxy.",
+    ),
+    "splitTunnelEmptyHint": MessageLookupByLibrary.simpleMessage(
+      "Add programs. While the list is empty, all traffic goes as usual.",
+    ),
+    "splitTunnelEnable": MessageLookupByLibrary.simpleMessage(
+      "Use split tunneling",
+    ),
+    "splitTunnelExceptSelected": MessageLookupByLibrary.simpleMessage(
+      "All except selected",
+    ),
+    "splitTunnelFromConnections": MessageLookupByLibrary.simpleMessage(
+      "From active connections",
+    ),
+    "splitTunnelInvalidName": MessageLookupByLibrary.simpleMessage(
+      "Enter a file name such as chrome.exe",
+    ),
+    "splitTunnelMode": MessageLookupByLibrary.simpleMessage("Through VPN"),
+    "splitTunnelNoApps": MessageLookupByLibrary.simpleMessage(
+      "On, no programs yet",
+    ),
+    "splitTunnelNoConnections": MessageLookupByLibrary.simpleMessage(
+      "No programs have active connections. Connect, open the program and try again.",
+    ),
+    "splitTunnelOff": MessageLookupByLibrary.simpleMessage("Off"),
+    "splitTunnelOnlySelected": MessageLookupByLibrary.simpleMessage(
+      "Only selected",
+    ),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("SSIDs are empty"),
     "stableImportRetry": MessageLookupByLibrary.simpleMessage("Retry"),
     "stableImportSkip": MessageLookupByLibrary.simpleMessage(

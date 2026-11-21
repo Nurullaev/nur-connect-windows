@@ -1064,5 +1064,22 @@
   "nurDisconnectToChangeMode": "断开连接后才能更改连接模式。",
   "nurBot": "机器人",
   "nurSubscriptionEnded": "订阅已结束",
-  "nurRenewToConnect": "请续订以继续连接。"
+  "nurRenewToConnect": "请续订以继续连接。",
+  "splitTunnel": "分应用代理",
+  "splitTunnelEnable": "启用分应用代理",
+  "splitTunnelMode": "走 VPN",
+  "splitTunnelOnlySelected": "仅所选应用",
+  "splitTunnelExceptSelected": "除所选应用外",
+  "splitTunnelDesc": "程序按文件名整体匹配：浏览器要么整个走 VPN，要么完全不走。在代理模式下，只对使用系统代理的程序生效。",
+  "splitTunnelApps": "程序",
+  "splitTunnelAddFile": "选择程序…",
+  "splitTunnelFromConnections": "从当前连接中选择",
+  "splitTunnelAddByName": "输入文件名",
+  "splitTunnelAppLabel": "文件名",
+  "splitTunnelInvalidName": "请输入文件名，例如 chrome.exe",
+  "splitTunnelNoConnections": "没有正在连接的程序。请先连接，打开程序后再试。",
+  "splitTunnelEmptyHint": "请添加程序。列表为空时，所有流量照常走。",
+  "splitTunnelAppsHint": "有些应用会运行多个进程，例如 Discord 或 Steam：请添加它们的每个 .exe 文件。",
+  "splitTunnelOff": "已关闭",
+  "splitTunnelNoApps": "已开启，尚未添加程序"
 }

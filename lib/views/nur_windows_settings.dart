@@ -9,6 +9,7 @@ import 'package:fl_clash/views/backup_and_restore.dart';
 import 'package:fl_clash/views/config/advanced.dart';
 import 'package:fl_clash/views/config/general.dart';
 import 'package:fl_clash/views/config/network.dart';
+import 'package:fl_clash/views/config/split_tunnel.dart';
 import 'package:fl_clash/views/hotkey.dart';
 import 'package:fl_clash/views/profiles/profiles.dart';
 import 'package:fl_clash/views/theme.dart';
@@ -40,6 +41,10 @@ class NurWindowsSettings extends ConsumerWidget {
         ),
         children: [
           const ManagedSettingsHint(keys: generalPageKeys),
+          generateSection(
+            title: l10n.splitTunnel,
+            items: const [SplitTunnelItem()],
+          ),
           generateSection(
             title: l10n.startupAndBackground,
             items: [

@@ -44,3 +44,20 @@ String? defaultGlobalTarget(List<Group> groups, [String? serverGroup]) {
   }
   return groupName;
 }
+
+/// The servers listed for [group]. GLOBAL also carries the subscription's
+/// groups: a plain selector among them only repeats servers already listed
+/// and reads as one more server, so it is left out, while an automatic group
+/// stays a choice of its own. [groups] is every group, hidden ones included.
+List<Proxy> nurConnectServerChoices(Group group, List<Group> groups) {
+  final selectors = {
+    if (group.name == GroupName.GLOBAL.name)
+      for (final item in groups)
+        if (item.type == GroupType.Selector) item.name,
+  };
+  return [
+    for (final proxy in group.all)
+      if (!isBuiltinOutbound(proxy.name) && !selectors.contains(proxy.name))
+        proxy,
+  ];
+}

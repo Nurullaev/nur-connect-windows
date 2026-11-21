@@ -60,16 +60,19 @@ final class SetupPatchProvider
             bool appendSystemDns,
             bool bypassPrivateRoute,
             PatchClashConfig patchConfig,
+            String splitTunnel,
           }),
           ({
             bool appendSystemDns,
             bool bypassPrivateRoute,
             PatchClashConfig patchConfig,
+            String splitTunnel,
           }),
           ({
             bool appendSystemDns,
             bool bypassPrivateRoute,
             PatchClashConfig patchConfig,
+            String splitTunnel,
           })
         >
     with
@@ -78,6 +81,7 @@ final class SetupPatchProvider
             bool appendSystemDns,
             bool bypassPrivateRoute,
             PatchClashConfig patchConfig,
+            String splitTunnel,
           })
         > {
   SetupPatchProvider._()
@@ -101,6 +105,7 @@ final class SetupPatchProvider
       bool appendSystemDns,
       bool bypassPrivateRoute,
       PatchClashConfig patchConfig,
+      String splitTunnel,
     })
   >
   $createElement($ProviderPointer pointer) => $ProviderElement(pointer);
@@ -110,6 +115,7 @@ final class SetupPatchProvider
     bool appendSystemDns,
     bool bypassPrivateRoute,
     PatchClashConfig patchConfig,
+    String splitTunnel,
   })
   create(Ref ref) {
     return setupPatch(ref);
@@ -121,6 +127,7 @@ final class SetupPatchProvider
       bool appendSystemDns,
       bool bypassPrivateRoute,
       PatchClashConfig patchConfig,
+      String splitTunnel,
     })
     value,
   ) {
@@ -132,13 +139,14 @@ final class SetupPatchProvider
               bool appendSystemDns,
               bool bypassPrivateRoute,
               PatchClashConfig patchConfig,
+              String splitTunnel,
             })
           >(value),
     );
   }
 }
 
-String _$setupPatchHash() => r'd09fb41d40ced4cd47c9131fe55e983e35128724';
+String _$setupPatchHash() => r'f580197e9f554c9077519d9bb8e3ee3b34fc8d27';
 
 @ProviderFor(trayState)
 final trayStateProvider = TrayStateProvider._();
@@ -737,7 +745,7 @@ final class GenColorSchemeProvider
   }
 }
 
-String _$genColorSchemeHash() => r'c6838e224d41780617f7338c5e56173a7620cd87';
+String _$genColorSchemeHash() => r'ee1de95e577da7504d40a299d6726d1bf490c4b1';
 
 final class GenColorSchemeFamily extends $Family
     with
@@ -812,7 +820,7 @@ final class CurrentBrightnessProvider
   }
 }
 
-String _$currentBrightnessHash() => r'ab56c47af4fcae773c8f9f81c91800c1e1890b70';
+String _$currentBrightnessHash() => r'809551392d35e6a8880b3933ecb78072c948ae7a';
 
 @ProviderFor(ManagedClashKeys)
 final managedClashKeysProvider = ManagedClashKeysProvider._();

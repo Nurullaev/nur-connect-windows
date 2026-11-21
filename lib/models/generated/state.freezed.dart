@@ -5944,7 +5944,8 @@ $ProxiesDataCopyWith<$Res> get proxiesData {
 mixin _$MakeRealProfileState {
 
  String get profilesPath; int get profileId; Map<String, dynamic> get rawConfig; PatchClashConfig get realPatchConfig; ProfileOverrides get overrides; bool get bypassPrivateRoute;/// Set for a subscription, whose own DNS values an emptied entry replaces.
- bool get keepEmptyDnsOverrides; bool get appendSystemDns; List<ProxyGroup> get proxyGroups; List<Rule> get rules; List<Rule> get addedRules; String get defaultUA; List<String> get authentication; Map<String, dynamic> get injectedProxyProviders; Map<String, dynamic> get injectedRuleProviders; String? get matchTarget; bool get safeMode; List<Map<String, Object?>> get proxyChains;
+ bool get keepEmptyDnsOverrides; bool get appendSystemDns; List<ProxyGroup> get proxyGroups; List<Rule> get rules; List<Rule> get addedRules; String get defaultUA; List<String> get authentication; Map<String, dynamic> get injectedProxyProviders; Map<String, dynamic> get injectedRuleProviders; String? get matchTarget; bool get safeMode; List<Map<String, Object?>> get proxyChains;/// Put before the rules, or in their place when [splitTunnelReplace].
+ List<String> get splitTunnelRules; bool get splitTunnelReplace;
 /// Create a copy of MakeRealProfileState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -5956,20 +5957,20 @@ $MakeRealProfileStateCopyWith<MakeRealProfileState> get copyWith => _$MakeRealPr
 @override
 bool operator ==(Object other) {
   final _this = this as MakeRealProfileState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MakeRealProfileState&&(identical(other.profilesPath, _this.profilesPath) || other.profilesPath == _this.profilesPath)&&(identical(other.profileId, _this.profileId) || other.profileId == _this.profileId)&&const DeepCollectionEquality().equals(other.rawConfig, _this.rawConfig)&&(identical(other.realPatchConfig, _this.realPatchConfig) || other.realPatchConfig == _this.realPatchConfig)&&(identical(other.overrides, _this.overrides) || other.overrides == _this.overrides)&&(identical(other.bypassPrivateRoute, _this.bypassPrivateRoute) || other.bypassPrivateRoute == _this.bypassPrivateRoute)&&(identical(other.keepEmptyDnsOverrides, _this.keepEmptyDnsOverrides) || other.keepEmptyDnsOverrides == _this.keepEmptyDnsOverrides)&&(identical(other.appendSystemDns, _this.appendSystemDns) || other.appendSystemDns == _this.appendSystemDns)&&const DeepCollectionEquality().equals(other.proxyGroups, _this.proxyGroups)&&const DeepCollectionEquality().equals(other.rules, _this.rules)&&const DeepCollectionEquality().equals(other.addedRules, _this.addedRules)&&(identical(other.defaultUA, _this.defaultUA) || other.defaultUA == _this.defaultUA)&&const DeepCollectionEquality().equals(other.authentication, _this.authentication)&&const DeepCollectionEquality().equals(other.injectedProxyProviders, _this.injectedProxyProviders)&&const DeepCollectionEquality().equals(other.injectedRuleProviders, _this.injectedRuleProviders)&&(identical(other.matchTarget, _this.matchTarget) || other.matchTarget == _this.matchTarget)&&(identical(other.safeMode, _this.safeMode) || other.safeMode == _this.safeMode)&&const DeepCollectionEquality().equals(other.proxyChains, _this.proxyChains));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MakeRealProfileState&&(identical(other.profilesPath, _this.profilesPath) || other.profilesPath == _this.profilesPath)&&(identical(other.profileId, _this.profileId) || other.profileId == _this.profileId)&&const DeepCollectionEquality().equals(other.rawConfig, _this.rawConfig)&&(identical(other.realPatchConfig, _this.realPatchConfig) || other.realPatchConfig == _this.realPatchConfig)&&(identical(other.overrides, _this.overrides) || other.overrides == _this.overrides)&&(identical(other.bypassPrivateRoute, _this.bypassPrivateRoute) || other.bypassPrivateRoute == _this.bypassPrivateRoute)&&(identical(other.keepEmptyDnsOverrides, _this.keepEmptyDnsOverrides) || other.keepEmptyDnsOverrides == _this.keepEmptyDnsOverrides)&&(identical(other.appendSystemDns, _this.appendSystemDns) || other.appendSystemDns == _this.appendSystemDns)&&const DeepCollectionEquality().equals(other.proxyGroups, _this.proxyGroups)&&const DeepCollectionEquality().equals(other.rules, _this.rules)&&const DeepCollectionEquality().equals(other.addedRules, _this.addedRules)&&(identical(other.defaultUA, _this.defaultUA) || other.defaultUA == _this.defaultUA)&&const DeepCollectionEquality().equals(other.authentication, _this.authentication)&&const DeepCollectionEquality().equals(other.injectedProxyProviders, _this.injectedProxyProviders)&&const DeepCollectionEquality().equals(other.injectedRuleProviders, _this.injectedRuleProviders)&&(identical(other.matchTarget, _this.matchTarget) || other.matchTarget == _this.matchTarget)&&(identical(other.safeMode, _this.safeMode) || other.safeMode == _this.safeMode)&&const DeepCollectionEquality().equals(other.proxyChains, _this.proxyChains)&&const DeepCollectionEquality().equals(other.splitTunnelRules, _this.splitTunnelRules)&&(identical(other.splitTunnelReplace, _this.splitTunnelReplace) || other.splitTunnelReplace == _this.splitTunnelReplace));
 }
 
 
 @override
 int get hashCode {
   final _this = this as MakeRealProfileState;
-  return Object.hash(runtimeType,_this.profilesPath,_this.profileId,const DeepCollectionEquality().hash(_this.rawConfig),_this.realPatchConfig,_this.overrides,_this.bypassPrivateRoute,_this.keepEmptyDnsOverrides,_this.appendSystemDns,const DeepCollectionEquality().hash(_this.proxyGroups),const DeepCollectionEquality().hash(_this.rules),const DeepCollectionEquality().hash(_this.addedRules),_this.defaultUA,const DeepCollectionEquality().hash(_this.authentication),const DeepCollectionEquality().hash(_this.injectedProxyProviders),const DeepCollectionEquality().hash(_this.injectedRuleProviders),_this.matchTarget,_this.safeMode,const DeepCollectionEquality().hash(_this.proxyChains));
+  return Object.hashAll([runtimeType,_this.profilesPath,_this.profileId,const DeepCollectionEquality().hash(_this.rawConfig),_this.realPatchConfig,_this.overrides,_this.bypassPrivateRoute,_this.keepEmptyDnsOverrides,_this.appendSystemDns,const DeepCollectionEquality().hash(_this.proxyGroups),const DeepCollectionEquality().hash(_this.rules),const DeepCollectionEquality().hash(_this.addedRules),_this.defaultUA,const DeepCollectionEquality().hash(_this.authentication),const DeepCollectionEquality().hash(_this.injectedProxyProviders),const DeepCollectionEquality().hash(_this.injectedRuleProviders),_this.matchTarget,_this.safeMode,const DeepCollectionEquality().hash(_this.proxyChains),const DeepCollectionEquality().hash(_this.splitTunnelRules),_this.splitTunnelReplace]);
 }
 
 @override
 String toString() {
   final _this = this as MakeRealProfileState;
-  return 'MakeRealProfileState(profilesPath: ${_this.profilesPath}, profileId: ${_this.profileId}, rawConfig: ${_this.rawConfig}, realPatchConfig: ${_this.realPatchConfig}, overrides: ${_this.overrides}, bypassPrivateRoute: ${_this.bypassPrivateRoute}, keepEmptyDnsOverrides: ${_this.keepEmptyDnsOverrides}, appendSystemDns: ${_this.appendSystemDns}, proxyGroups: ${_this.proxyGroups}, rules: ${_this.rules}, addedRules: ${_this.addedRules}, defaultUA: ${_this.defaultUA}, authentication: ${_this.authentication}, injectedProxyProviders: ${_this.injectedProxyProviders}, injectedRuleProviders: ${_this.injectedRuleProviders}, matchTarget: ${_this.matchTarget}, safeMode: ${_this.safeMode}, proxyChains: ${_this.proxyChains})';
+  return 'MakeRealProfileState(profilesPath: ${_this.profilesPath}, profileId: ${_this.profileId}, rawConfig: ${_this.rawConfig}, realPatchConfig: ${_this.realPatchConfig}, overrides: ${_this.overrides}, bypassPrivateRoute: ${_this.bypassPrivateRoute}, keepEmptyDnsOverrides: ${_this.keepEmptyDnsOverrides}, appendSystemDns: ${_this.appendSystemDns}, proxyGroups: ${_this.proxyGroups}, rules: ${_this.rules}, addedRules: ${_this.addedRules}, defaultUA: ${_this.defaultUA}, authentication: ${_this.authentication}, injectedProxyProviders: ${_this.injectedProxyProviders}, injectedRuleProviders: ${_this.injectedRuleProviders}, matchTarget: ${_this.matchTarget}, safeMode: ${_this.safeMode}, proxyChains: ${_this.proxyChains}, splitTunnelRules: ${_this.splitTunnelRules}, splitTunnelReplace: ${_this.splitTunnelReplace})';
 }
 
 
@@ -5980,7 +5981,7 @@ abstract mixin class $MakeRealProfileStateCopyWith<$Res>  {
   factory $MakeRealProfileStateCopyWith(MakeRealProfileState value, $Res Function(MakeRealProfileState) _then) = _$MakeRealProfileStateCopyWithImpl;
 @useResult
 $Res call({
- String profilesPath, int profileId, Map<String, dynamic> rawConfig, PatchClashConfig realPatchConfig, ProfileOverrides overrides, bool bypassPrivateRoute, bool keepEmptyDnsOverrides, bool appendSystemDns, List<ProxyGroup> proxyGroups, List<Rule> rules, List<Rule> addedRules, String defaultUA, List<String> authentication, Map<String, dynamic> injectedProxyProviders, Map<String, dynamic> injectedRuleProviders, String? matchTarget, bool safeMode, List<Map<String, Object?>> proxyChains
+ String profilesPath, int profileId, Map<String, dynamic> rawConfig, PatchClashConfig realPatchConfig, ProfileOverrides overrides, bool bypassPrivateRoute, bool keepEmptyDnsOverrides, bool appendSystemDns, List<ProxyGroup> proxyGroups, List<Rule> rules, List<Rule> addedRules, String defaultUA, List<String> authentication, Map<String, dynamic> injectedProxyProviders, Map<String, dynamic> injectedRuleProviders, String? matchTarget, bool safeMode, List<Map<String, Object?>> proxyChains, List<String> splitTunnelRules, bool splitTunnelReplace
 });
 
 
@@ -5997,7 +5998,7 @@ class _$MakeRealProfileStateCopyWithImpl<$Res>
 
 /// Create a copy of MakeRealProfileState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? profilesPath = null,Object? profileId = null,Object? rawConfig = null,Object? realPatchConfig = null,Object? overrides = null,Object? bypassPrivateRoute = null,Object? keepEmptyDnsOverrides = null,Object? appendSystemDns = null,Object? proxyGroups = null,Object? rules = null,Object? addedRules = null,Object? defaultUA = null,Object? authentication = null,Object? injectedProxyProviders = null,Object? injectedRuleProviders = null,Object? matchTarget = freezed,Object? safeMode = null,Object? proxyChains = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? profilesPath = null,Object? profileId = null,Object? rawConfig = null,Object? realPatchConfig = null,Object? overrides = null,Object? bypassPrivateRoute = null,Object? keepEmptyDnsOverrides = null,Object? appendSystemDns = null,Object? proxyGroups = null,Object? rules = null,Object? addedRules = null,Object? defaultUA = null,Object? authentication = null,Object? injectedProxyProviders = null,Object? injectedRuleProviders = null,Object? matchTarget = freezed,Object? safeMode = null,Object? proxyChains = null,Object? splitTunnelRules = null,Object? splitTunnelReplace = null,}) {
   return _then(MakeRealProfileState(
 profilesPath: null == profilesPath ? _self.profilesPath : profilesPath // ignore: cast_nullable_to_non_nullable
 as String,profileId: null == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
@@ -6017,7 +6018,9 @@ as Map<String, dynamic>,injectedRuleProviders: null == injectedRuleProviders ? _
 as Map<String, dynamic>,matchTarget: freezed == matchTarget ? _self.matchTarget : matchTarget // ignore: cast_nullable_to_non_nullable
 as String?,safeMode: null == safeMode ? _self.safeMode : safeMode // ignore: cast_nullable_to_non_nullable
 as bool,proxyChains: null == proxyChains ? _self.proxyChains : proxyChains // ignore: cast_nullable_to_non_nullable
-as List<Map<String, Object?>>,
+as List<Map<String, Object?>>,splitTunnelRules: null == splitTunnelRules ? _self.splitTunnelRules : splitTunnelRules // ignore: cast_nullable_to_non_nullable
+as List<String>,splitTunnelReplace: null == splitTunnelReplace ? _self.splitTunnelReplace : splitTunnelReplace // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 /// Create a copy of MakeRealProfileState
@@ -6120,10 +6123,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String profilesPath,  int profileId,  Map<String, dynamic> rawConfig,  PatchClashConfig realPatchConfig,  ProfileOverrides overrides,  bool bypassPrivateRoute,  bool keepEmptyDnsOverrides,  bool appendSystemDns,  List<ProxyGroup> proxyGroups,  List<Rule> rules,  List<Rule> addedRules,  String defaultUA,  List<String> authentication,  Map<String, dynamic> injectedProxyProviders,  Map<String, dynamic> injectedRuleProviders,  String? matchTarget,  bool safeMode,  List<Map<String, Object?>> proxyChains)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String profilesPath,  int profileId,  Map<String, dynamic> rawConfig,  PatchClashConfig realPatchConfig,  ProfileOverrides overrides,  bool bypassPrivateRoute,  bool keepEmptyDnsOverrides,  bool appendSystemDns,  List<ProxyGroup> proxyGroups,  List<Rule> rules,  List<Rule> addedRules,  String defaultUA,  List<String> authentication,  Map<String, dynamic> injectedProxyProviders,  Map<String, dynamic> injectedRuleProviders,  String? matchTarget,  bool safeMode,  List<Map<String, Object?>> proxyChains,  List<String> splitTunnelRules,  bool splitTunnelReplace)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MakeRealProfileState() when $default != null:
-return $default(_that.profilesPath,_that.profileId,_that.rawConfig,_that.realPatchConfig,_that.overrides,_that.bypassPrivateRoute,_that.keepEmptyDnsOverrides,_that.appendSystemDns,_that.proxyGroups,_that.rules,_that.addedRules,_that.defaultUA,_that.authentication,_that.injectedProxyProviders,_that.injectedRuleProviders,_that.matchTarget,_that.safeMode,_that.proxyChains);case _:
+return $default(_that.profilesPath,_that.profileId,_that.rawConfig,_that.realPatchConfig,_that.overrides,_that.bypassPrivateRoute,_that.keepEmptyDnsOverrides,_that.appendSystemDns,_that.proxyGroups,_that.rules,_that.addedRules,_that.defaultUA,_that.authentication,_that.injectedProxyProviders,_that.injectedRuleProviders,_that.matchTarget,_that.safeMode,_that.proxyChains,_that.splitTunnelRules,_that.splitTunnelReplace);case _:
   return orElse();
 
 }
@@ -6141,10 +6144,10 @@ return $default(_that.profilesPath,_that.profileId,_that.rawConfig,_that.realPat
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String profilesPath,  int profileId,  Map<String, dynamic> rawConfig,  PatchClashConfig realPatchConfig,  ProfileOverrides overrides,  bool bypassPrivateRoute,  bool keepEmptyDnsOverrides,  bool appendSystemDns,  List<ProxyGroup> proxyGroups,  List<Rule> rules,  List<Rule> addedRules,  String defaultUA,  List<String> authentication,  Map<String, dynamic> injectedProxyProviders,  Map<String, dynamic> injectedRuleProviders,  String? matchTarget,  bool safeMode,  List<Map<String, Object?>> proxyChains)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String profilesPath,  int profileId,  Map<String, dynamic> rawConfig,  PatchClashConfig realPatchConfig,  ProfileOverrides overrides,  bool bypassPrivateRoute,  bool keepEmptyDnsOverrides,  bool appendSystemDns,  List<ProxyGroup> proxyGroups,  List<Rule> rules,  List<Rule> addedRules,  String defaultUA,  List<String> authentication,  Map<String, dynamic> injectedProxyProviders,  Map<String, dynamic> injectedRuleProviders,  String? matchTarget,  bool safeMode,  List<Map<String, Object?>> proxyChains,  List<String> splitTunnelRules,  bool splitTunnelReplace)  $default,) {final _that = this;
 switch (_that) {
 case _MakeRealProfileState():
-return $default(_that.profilesPath,_that.profileId,_that.rawConfig,_that.realPatchConfig,_that.overrides,_that.bypassPrivateRoute,_that.keepEmptyDnsOverrides,_that.appendSystemDns,_that.proxyGroups,_that.rules,_that.addedRules,_that.defaultUA,_that.authentication,_that.injectedProxyProviders,_that.injectedRuleProviders,_that.matchTarget,_that.safeMode,_that.proxyChains);case _:
+return $default(_that.profilesPath,_that.profileId,_that.rawConfig,_that.realPatchConfig,_that.overrides,_that.bypassPrivateRoute,_that.keepEmptyDnsOverrides,_that.appendSystemDns,_that.proxyGroups,_that.rules,_that.addedRules,_that.defaultUA,_that.authentication,_that.injectedProxyProviders,_that.injectedRuleProviders,_that.matchTarget,_that.safeMode,_that.proxyChains,_that.splitTunnelRules,_that.splitTunnelReplace);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -6161,10 +6164,10 @@ return $default(_that.profilesPath,_that.profileId,_that.rawConfig,_that.realPat
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String profilesPath,  int profileId,  Map<String, dynamic> rawConfig,  PatchClashConfig realPatchConfig,  ProfileOverrides overrides,  bool bypassPrivateRoute,  bool keepEmptyDnsOverrides,  bool appendSystemDns,  List<ProxyGroup> proxyGroups,  List<Rule> rules,  List<Rule> addedRules,  String defaultUA,  List<String> authentication,  Map<String, dynamic> injectedProxyProviders,  Map<String, dynamic> injectedRuleProviders,  String? matchTarget,  bool safeMode,  List<Map<String, Object?>> proxyChains)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String profilesPath,  int profileId,  Map<String, dynamic> rawConfig,  PatchClashConfig realPatchConfig,  ProfileOverrides overrides,  bool bypassPrivateRoute,  bool keepEmptyDnsOverrides,  bool appendSystemDns,  List<ProxyGroup> proxyGroups,  List<Rule> rules,  List<Rule> addedRules,  String defaultUA,  List<String> authentication,  Map<String, dynamic> injectedProxyProviders,  Map<String, dynamic> injectedRuleProviders,  String? matchTarget,  bool safeMode,  List<Map<String, Object?>> proxyChains,  List<String> splitTunnelRules,  bool splitTunnelReplace)?  $default,) {final _that = this;
 switch (_that) {
 case _MakeRealProfileState() when $default != null:
-return $default(_that.profilesPath,_that.profileId,_that.rawConfig,_that.realPatchConfig,_that.overrides,_that.bypassPrivateRoute,_that.keepEmptyDnsOverrides,_that.appendSystemDns,_that.proxyGroups,_that.rules,_that.addedRules,_that.defaultUA,_that.authentication,_that.injectedProxyProviders,_that.injectedRuleProviders,_that.matchTarget,_that.safeMode,_that.proxyChains);case _:
+return $default(_that.profilesPath,_that.profileId,_that.rawConfig,_that.realPatchConfig,_that.overrides,_that.bypassPrivateRoute,_that.keepEmptyDnsOverrides,_that.appendSystemDns,_that.proxyGroups,_that.rules,_that.addedRules,_that.defaultUA,_that.authentication,_that.injectedProxyProviders,_that.injectedRuleProviders,_that.matchTarget,_that.safeMode,_that.proxyChains,_that.splitTunnelRules,_that.splitTunnelReplace);case _:
   return null;
 
 }
@@ -6176,7 +6179,7 @@ return $default(_that.profilesPath,_that.profileId,_that.rawConfig,_that.realPat
 
 
 class _MakeRealProfileState implements MakeRealProfileState {
-  const _MakeRealProfileState({required this.profilesPath, required this.profileId, required  Map<String, dynamic> rawConfig, required this.realPatchConfig, this.overrides = const ProfileOverrides(), this.bypassPrivateRoute = false, this.keepEmptyDnsOverrides = false, required this.appendSystemDns, required  List<ProxyGroup> proxyGroups, required  List<Rule> rules, required  List<Rule> addedRules, required this.defaultUA,  List<String> authentication = const [],  Map<String, dynamic> injectedProxyProviders = const {},  Map<String, dynamic> injectedRuleProviders = const {}, this.matchTarget, this.safeMode = false,  List<Map<String, Object?>> proxyChains = const []}): _rawConfig = rawConfig,_proxyGroups = proxyGroups,_rules = rules,_addedRules = addedRules,_authentication = authentication,_injectedProxyProviders = injectedProxyProviders,_injectedRuleProviders = injectedRuleProviders,_proxyChains = proxyChains;
+  const _MakeRealProfileState({required this.profilesPath, required this.profileId, required  Map<String, dynamic> rawConfig, required this.realPatchConfig, this.overrides = const ProfileOverrides(), this.bypassPrivateRoute = false, this.keepEmptyDnsOverrides = false, required this.appendSystemDns, required  List<ProxyGroup> proxyGroups, required  List<Rule> rules, required  List<Rule> addedRules, required this.defaultUA,  List<String> authentication = const [],  Map<String, dynamic> injectedProxyProviders = const {},  Map<String, dynamic> injectedRuleProviders = const {}, this.matchTarget, this.safeMode = false,  List<Map<String, Object?>> proxyChains = const [],  List<String> splitTunnelRules = const [], this.splitTunnelReplace = false}): _rawConfig = rawConfig,_proxyGroups = proxyGroups,_rules = rules,_addedRules = addedRules,_authentication = authentication,_injectedProxyProviders = injectedProxyProviders,_injectedRuleProviders = injectedRuleProviders,_proxyChains = proxyChains,_splitTunnelRules = splitTunnelRules;
   
 
 @override final  String profilesPath;
@@ -6246,6 +6249,16 @@ class _MakeRealProfileState implements MakeRealProfileState {
   return EqualUnmodifiableListView(_proxyChains);
 }
 
+/// Put before the rules, or in their place when [splitTunnelReplace].
+ final  List<String> _splitTunnelRules;
+/// Put before the rules, or in their place when [splitTunnelReplace].
+@override@JsonKey() List<String> get splitTunnelRules {
+  if (_splitTunnelRules is EqualUnmodifiableListView) return _splitTunnelRules;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_splitTunnelRules);
+}
+
+@override@JsonKey() final  bool splitTunnelReplace;
 
 /// Create a copy of MakeRealProfileState
 /// with the given fields replaced by the non-null parameter values.
@@ -6257,18 +6270,18 @@ _$MakeRealProfileStateCopyWith<_MakeRealProfileState> get copyWith => __$MakeRea
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MakeRealProfileState&&(identical(other.profilesPath, profilesPath) || other.profilesPath == profilesPath)&&(identical(other.profileId, profileId) || other.profileId == profileId)&&const DeepCollectionEquality().equals(other.rawConfig, _rawConfig)&&(identical(other.realPatchConfig, realPatchConfig) || other.realPatchConfig == realPatchConfig)&&(identical(other.overrides, overrides) || other.overrides == overrides)&&(identical(other.bypassPrivateRoute, bypassPrivateRoute) || other.bypassPrivateRoute == bypassPrivateRoute)&&(identical(other.keepEmptyDnsOverrides, keepEmptyDnsOverrides) || other.keepEmptyDnsOverrides == keepEmptyDnsOverrides)&&(identical(other.appendSystemDns, appendSystemDns) || other.appendSystemDns == appendSystemDns)&&const DeepCollectionEquality().equals(other.proxyGroups, _proxyGroups)&&const DeepCollectionEquality().equals(other.rules, _rules)&&const DeepCollectionEquality().equals(other.addedRules, _addedRules)&&(identical(other.defaultUA, defaultUA) || other.defaultUA == defaultUA)&&const DeepCollectionEquality().equals(other.authentication, _authentication)&&const DeepCollectionEquality().equals(other.injectedProxyProviders, _injectedProxyProviders)&&const DeepCollectionEquality().equals(other.injectedRuleProviders, _injectedRuleProviders)&&(identical(other.matchTarget, matchTarget) || other.matchTarget == matchTarget)&&(identical(other.safeMode, safeMode) || other.safeMode == safeMode)&&const DeepCollectionEquality().equals(other.proxyChains, _proxyChains));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MakeRealProfileState&&(identical(other.profilesPath, profilesPath) || other.profilesPath == profilesPath)&&(identical(other.profileId, profileId) || other.profileId == profileId)&&const DeepCollectionEquality().equals(other.rawConfig, _rawConfig)&&(identical(other.realPatchConfig, realPatchConfig) || other.realPatchConfig == realPatchConfig)&&(identical(other.overrides, overrides) || other.overrides == overrides)&&(identical(other.bypassPrivateRoute, bypassPrivateRoute) || other.bypassPrivateRoute == bypassPrivateRoute)&&(identical(other.keepEmptyDnsOverrides, keepEmptyDnsOverrides) || other.keepEmptyDnsOverrides == keepEmptyDnsOverrides)&&(identical(other.appendSystemDns, appendSystemDns) || other.appendSystemDns == appendSystemDns)&&const DeepCollectionEquality().equals(other.proxyGroups, _proxyGroups)&&const DeepCollectionEquality().equals(other.rules, _rules)&&const DeepCollectionEquality().equals(other.addedRules, _addedRules)&&(identical(other.defaultUA, defaultUA) || other.defaultUA == defaultUA)&&const DeepCollectionEquality().equals(other.authentication, _authentication)&&const DeepCollectionEquality().equals(other.injectedProxyProviders, _injectedProxyProviders)&&const DeepCollectionEquality().equals(other.injectedRuleProviders, _injectedRuleProviders)&&(identical(other.matchTarget, matchTarget) || other.matchTarget == matchTarget)&&(identical(other.safeMode, safeMode) || other.safeMode == safeMode)&&const DeepCollectionEquality().equals(other.proxyChains, _proxyChains)&&const DeepCollectionEquality().equals(other.splitTunnelRules, _splitTunnelRules)&&(identical(other.splitTunnelReplace, splitTunnelReplace) || other.splitTunnelReplace == splitTunnelReplace));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,profilesPath,profileId,const DeepCollectionEquality().hash(_rawConfig),realPatchConfig,overrides,bypassPrivateRoute,keepEmptyDnsOverrides,appendSystemDns,const DeepCollectionEquality().hash(_proxyGroups),const DeepCollectionEquality().hash(_rules),const DeepCollectionEquality().hash(_addedRules),defaultUA,const DeepCollectionEquality().hash(_authentication),const DeepCollectionEquality().hash(_injectedProxyProviders),const DeepCollectionEquality().hash(_injectedRuleProviders),matchTarget,safeMode,const DeepCollectionEquality().hash(_proxyChains));
+    return Object.hashAll([runtimeType,profilesPath,profileId,const DeepCollectionEquality().hash(_rawConfig),realPatchConfig,overrides,bypassPrivateRoute,keepEmptyDnsOverrides,appendSystemDns,const DeepCollectionEquality().hash(_proxyGroups),const DeepCollectionEquality().hash(_rules),const DeepCollectionEquality().hash(_addedRules),defaultUA,const DeepCollectionEquality().hash(_authentication),const DeepCollectionEquality().hash(_injectedProxyProviders),const DeepCollectionEquality().hash(_injectedRuleProviders),matchTarget,safeMode,const DeepCollectionEquality().hash(_proxyChains),const DeepCollectionEquality().hash(_splitTunnelRules),splitTunnelReplace]);
 }
 
 @override
 String toString() {
-    return 'MakeRealProfileState(profilesPath: $profilesPath, profileId: $profileId, rawConfig: $rawConfig, realPatchConfig: $realPatchConfig, overrides: $overrides, bypassPrivateRoute: $bypassPrivateRoute, keepEmptyDnsOverrides: $keepEmptyDnsOverrides, appendSystemDns: $appendSystemDns, proxyGroups: $proxyGroups, rules: $rules, addedRules: $addedRules, defaultUA: $defaultUA, authentication: $authentication, injectedProxyProviders: $injectedProxyProviders, injectedRuleProviders: $injectedRuleProviders, matchTarget: $matchTarget, safeMode: $safeMode, proxyChains: $proxyChains)';
+    return 'MakeRealProfileState(profilesPath: $profilesPath, profileId: $profileId, rawConfig: $rawConfig, realPatchConfig: $realPatchConfig, overrides: $overrides, bypassPrivateRoute: $bypassPrivateRoute, keepEmptyDnsOverrides: $keepEmptyDnsOverrides, appendSystemDns: $appendSystemDns, proxyGroups: $proxyGroups, rules: $rules, addedRules: $addedRules, defaultUA: $defaultUA, authentication: $authentication, injectedProxyProviders: $injectedProxyProviders, injectedRuleProviders: $injectedRuleProviders, matchTarget: $matchTarget, safeMode: $safeMode, proxyChains: $proxyChains, splitTunnelRules: $splitTunnelRules, splitTunnelReplace: $splitTunnelReplace)';
 }
 
 
@@ -6279,7 +6292,7 @@ abstract mixin class _$MakeRealProfileStateCopyWith<$Res> implements $MakeRealPr
   factory _$MakeRealProfileStateCopyWith(_MakeRealProfileState value, $Res Function(_MakeRealProfileState) _then) = __$MakeRealProfileStateCopyWithImpl;
 @override @useResult
 $Res call({
- String profilesPath, int profileId, Map<String, dynamic> rawConfig, PatchClashConfig realPatchConfig, ProfileOverrides overrides, bool bypassPrivateRoute, bool keepEmptyDnsOverrides, bool appendSystemDns, List<ProxyGroup> proxyGroups, List<Rule> rules, List<Rule> addedRules, String defaultUA, List<String> authentication, Map<String, dynamic> injectedProxyProviders, Map<String, dynamic> injectedRuleProviders, String? matchTarget, bool safeMode, List<Map<String, Object?>> proxyChains
+ String profilesPath, int profileId, Map<String, dynamic> rawConfig, PatchClashConfig realPatchConfig, ProfileOverrides overrides, bool bypassPrivateRoute, bool keepEmptyDnsOverrides, bool appendSystemDns, List<ProxyGroup> proxyGroups, List<Rule> rules, List<Rule> addedRules, String defaultUA, List<String> authentication, Map<String, dynamic> injectedProxyProviders, Map<String, dynamic> injectedRuleProviders, String? matchTarget, bool safeMode, List<Map<String, Object?>> proxyChains, List<String> splitTunnelRules, bool splitTunnelReplace
 });
 
 
@@ -6296,7 +6309,7 @@ class __$MakeRealProfileStateCopyWithImpl<$Res>
 
 /// Create a copy of MakeRealProfileState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? profilesPath = null,Object? profileId = null,Object? rawConfig = null,Object? realPatchConfig = null,Object? overrides = null,Object? bypassPrivateRoute = null,Object? keepEmptyDnsOverrides = null,Object? appendSystemDns = null,Object? proxyGroups = null,Object? rules = null,Object? addedRules = null,Object? defaultUA = null,Object? authentication = null,Object? injectedProxyProviders = null,Object? injectedRuleProviders = null,Object? matchTarget = freezed,Object? safeMode = null,Object? proxyChains = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? profilesPath = null,Object? profileId = null,Object? rawConfig = null,Object? realPatchConfig = null,Object? overrides = null,Object? bypassPrivateRoute = null,Object? keepEmptyDnsOverrides = null,Object? appendSystemDns = null,Object? proxyGroups = null,Object? rules = null,Object? addedRules = null,Object? defaultUA = null,Object? authentication = null,Object? injectedProxyProviders = null,Object? injectedRuleProviders = null,Object? matchTarget = freezed,Object? safeMode = null,Object? proxyChains = null,Object? splitTunnelRules = null,Object? splitTunnelReplace = null,}) {
   return _then(_MakeRealProfileState(
 profilesPath: null == profilesPath ? _self.profilesPath : profilesPath // ignore: cast_nullable_to_non_nullable
 as String,profileId: null == profileId ? _self.profileId : profileId // ignore: cast_nullable_to_non_nullable
@@ -6316,7 +6329,9 @@ as Map<String, dynamic>,injectedRuleProviders: null == injectedRuleProviders ? _
 as Map<String, dynamic>,matchTarget: freezed == matchTarget ? _self.matchTarget : matchTarget // ignore: cast_nullable_to_non_nullable
 as String?,safeMode: null == safeMode ? _self.safeMode : safeMode // ignore: cast_nullable_to_non_nullable
 as bool,proxyChains: null == proxyChains ? _self._proxyChains : proxyChains // ignore: cast_nullable_to_non_nullable
-as List<Map<String, Object?>>,
+as List<Map<String, Object?>>,splitTunnelRules: null == splitTunnelRules ? _self._splitTunnelRules : splitTunnelRules // ignore: cast_nullable_to_non_nullable
+as List<String>,splitTunnelReplace: null == splitTunnelReplace ? _self.splitTunnelReplace : splitTunnelReplace // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

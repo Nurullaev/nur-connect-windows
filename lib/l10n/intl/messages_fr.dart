@@ -2060,6 +2060,49 @@ class MessageLookup extends MessageLookupByLibrary {
     "splitStrategyNotEmpty": MessageLookupByLibrary.simpleMessage(
       "La stratégie de répartition ne peut pas être vide",
     ),
+    "splitTunnel": MessageLookupByLibrary.simpleMessage("Tunnel fractionné"),
+    "splitTunnelAddByName": MessageLookupByLibrary.simpleMessage(
+      "Saisir un nom de fichier",
+    ),
+    "splitTunnelAddFile": MessageLookupByLibrary.simpleMessage(
+      "Choisir un programme…",
+    ),
+    "splitTunnelAppLabel": MessageLookupByLibrary.simpleMessage(
+      "Nom de fichier",
+    ),
+    "splitTunnelApps": MessageLookupByLibrary.simpleMessage("Programmes"),
+    "splitTunnelAppsHint": MessageLookupByLibrary.simpleMessage(
+      "Certaines apps lancent plusieurs processus, comme Discord ou Steam : ajoutez chacun de leurs fichiers .exe.",
+    ),
+    "splitTunnelDesc": MessageLookupByLibrary.simpleMessage(
+      "Un programme est choisi par son nom de fichier et en entier : un navigateur passe par le VPN entièrement ou pas du tout. En mode proxy, seuls les programmes qui utilisent le proxy système sont concernés.",
+    ),
+    "splitTunnelEmptyHint": MessageLookupByLibrary.simpleMessage(
+      "Ajoutez des programmes. Tant que la liste est vide, tout le trafic passe comme d’habitude.",
+    ),
+    "splitTunnelEnable": MessageLookupByLibrary.simpleMessage(
+      "Utiliser le tunnel fractionné",
+    ),
+    "splitTunnelExceptSelected": MessageLookupByLibrary.simpleMessage(
+      "Toutes sauf les choisies",
+    ),
+    "splitTunnelFromConnections": MessageLookupByLibrary.simpleMessage(
+      "Depuis les connexions actives",
+    ),
+    "splitTunnelInvalidName": MessageLookupByLibrary.simpleMessage(
+      "Saisissez un nom de fichier comme chrome.exe",
+    ),
+    "splitTunnelMode": MessageLookupByLibrary.simpleMessage("Par le VPN"),
+    "splitTunnelNoApps": MessageLookupByLibrary.simpleMessage(
+      "Activé, aucun programme pour l’instant",
+    ),
+    "splitTunnelNoConnections": MessageLookupByLibrary.simpleMessage(
+      "Aucun programme n’a de connexion active. Connectez-vous, ouvrez le programme et réessayez.",
+    ),
+    "splitTunnelOff": MessageLookupByLibrary.simpleMessage("Désactivé"),
+    "splitTunnelOnlySelected": MessageLookupByLibrary.simpleMessage(
+      "Seulement les choisies",
+    ),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("Les SSID sont vides"),
     "stableImportRetry": MessageLookupByLibrary.simpleMessage("Réessayer"),
     "stableImportSkip": MessageLookupByLibrary.simpleMessage(

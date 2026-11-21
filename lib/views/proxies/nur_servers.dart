@@ -74,15 +74,12 @@ class _NurServersViewState extends ConsumerState<NurServersView> {
           (item) => item.name == profile?.currentGroupName,
         ) ??
         sorted.panelServerGroup(profile?.headers.serverGroup);
-    final proxies =
-        group?.all
-            .where((proxy) => !isBuiltinOutbound(proxy.name))
-            .whereMatches(
-              SearchQuery(_search.text),
-              (proxy) => proxy.searchFields,
-            )
-            .toList() ??
-        const <Proxy>[];
+    final choices = group == null
+        ? const <Proxy>[]
+        : nurConnectServerChoices(group, ref.watch(groupsProvider));
+    final proxies = choices
+        .whereMatches(SearchQuery(_search.text), (proxy) => proxy.searchFields)
+        .toList();
     final alive = ref.watch(coreStatusProvider) == CoreStatus.connected;
     // After the plan's end a panel lists its notices in place of servers.
     final expired = profile?.isExpiredAt(DateTime.now()) ?? false;

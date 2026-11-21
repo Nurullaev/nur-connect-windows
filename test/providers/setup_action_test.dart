@@ -1273,6 +1273,51 @@ void main() {
           as UpdateParams;
     }
 
+    Future<UpdateParams> updateWithSplit(Mode mode, {bool safe = false}) async {
+      final core = _MockCoreHandlerInterface();
+      when(() => core.updateConfig(any())).thenAnswer((_) async => '');
+      final scopedAction = TestSetupAction();
+      final scoped = ProviderContainer(
+        overrides: [
+          profilesProvider.overrideWith(TestProfiles.new),
+          setupActionProvider.overrideWith(() => scopedAction),
+          coreHandlerProvider.overrideWithValue(CoreController.scoped(core)),
+          patchClashConfigProvider.overrideWithBuild(
+            (_, _) => _tunOff.copyWith(mode: mode),
+          ),
+          networkSettingProvider.overrideWithBuild(
+            (_, _) => const NetworkProps(
+              splitTunnel: SplitTunnelProps(
+                enabled: true,
+                apps: ['chrome.exe'],
+              ),
+            ),
+          ),
+          safeModeProvider.overrideWithValue(safe),
+        ],
+      );
+      addTearDown(scoped.dispose);
+      scoped.read(setupActionProvider.notifier);
+
+      await scopedAction.updateConfig();
+
+      return verify(() => core.updateConfig(captureAny())).captured.single
+          as UpdateParams;
+    }
+
+    test('a split tunnel runs global routing as rules on the Core', () async {
+      expect((await updateWithSplit(Mode.global)).mode, Mode.rule);
+      expect((await updateWithSplit(Mode.rule)).mode, Mode.rule);
+      expect((await updateWithSplit(Mode.direct)).mode, Mode.direct);
+    });
+
+    test('safe mode leaves the split tunnel out', () async {
+      expect(
+        (await updateWithSplit(Mode.global, safe: true)).mode,
+        Mode.global,
+      );
+    });
+
     test('hands the Core the controller secret with the address', () async {
       final params = await updateWith(
         const PatchClashConfig(

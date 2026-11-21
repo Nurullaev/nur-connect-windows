@@ -390,6 +390,11 @@ Future<RealProfile> _makeRealProfileTask(MakeRealProfileState data) async {
         .toList();
   }
   applyProxyChains(rawConfig, data.proxyChains);
+  if (data.splitTunnelRules.isNotEmpty) {
+    rules = data.splitTunnelReplace
+        ? data.splitTunnelRules
+        : [...data.splitTunnelRules, ...rules];
+  }
   rawConfig['rules'] = rules;
   final yaml = await _encodeYaml(Map<String, dynamic>.from(rawConfig));
   return (yaml: yaml, md5: yaml.toMd5(), counts: configCountsOf(rawConfig));

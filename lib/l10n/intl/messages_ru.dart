@@ -1997,6 +1997,47 @@ class MessageLookup extends MessageLookupByLibrary {
     "splitStrategyNotEmpty": MessageLookupByLibrary.simpleMessage(
       "Стратегия распределения не может быть пустой",
     ),
+    "splitTunnel": MessageLookupByLibrary.simpleMessage(
+      "Раздельное туннелирование",
+    ),
+    "splitTunnelAddByName": MessageLookupByLibrary.simpleMessage(
+      "Ввести имя файла",
+    ),
+    "splitTunnelAddFile": MessageLookupByLibrary.simpleMessage(
+      "Выбрать программу…",
+    ),
+    "splitTunnelAppLabel": MessageLookupByLibrary.simpleMessage("Имя файла"),
+    "splitTunnelApps": MessageLookupByLibrary.simpleMessage("Программы"),
+    "splitTunnelAppsHint": MessageLookupByLibrary.simpleMessage(
+      "Некоторые программы запускают несколько процессов, например Discord или Steam: добавьте каждый их .exe.",
+    ),
+    "splitTunnelDesc": MessageLookupByLibrary.simpleMessage(
+      "Программа выбирается по имени файла и целиком: браузер идёт через VPN полностью или не идёт вовсе. В режиме прокси действует только на программы, которые используют системный прокси.",
+    ),
+    "splitTunnelEmptyHint": MessageLookupByLibrary.simpleMessage(
+      "Добавьте программы. Пока список пуст, весь трафик идёт как обычно.",
+    ),
+    "splitTunnelEnable": MessageLookupByLibrary.simpleMessage("Включить"),
+    "splitTunnelExceptSelected": MessageLookupByLibrary.simpleMessage(
+      "Все, кроме выбранных",
+    ),
+    "splitTunnelFromConnections": MessageLookupByLibrary.simpleMessage(
+      "Из активных подключений",
+    ),
+    "splitTunnelInvalidName": MessageLookupByLibrary.simpleMessage(
+      "Введите имя файла, например chrome.exe",
+    ),
+    "splitTunnelMode": MessageLookupByLibrary.simpleMessage("Через VPN"),
+    "splitTunnelNoApps": MessageLookupByLibrary.simpleMessage(
+      "Включено, программ пока нет",
+    ),
+    "splitTunnelNoConnections": MessageLookupByLibrary.simpleMessage(
+      "Нет программ с активными подключениями. Подключитесь, откройте программу и попробуйте снова.",
+    ),
+    "splitTunnelOff": MessageLookupByLibrary.simpleMessage("Выключено"),
+    "splitTunnelOnlySelected": MessageLookupByLibrary.simpleMessage(
+      "Только выбранные",
+    ),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("Список SSID пуст"),
     "stableImportRetry": MessageLookupByLibrary.simpleMessage("Повторить"),
     "stableImportSkip": MessageLookupByLibrary.simpleMessage(

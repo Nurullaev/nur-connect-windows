@@ -78,4 +78,52 @@ void main() {
       expect(defaultGlobalTarget(const []), isNull);
     });
   });
+
+  group('nurConnectServerChoices', () {
+    const servers = Group(
+      name: 'Servers',
+      type: GroupType.Selector,
+      now: 'Netherlands',
+      all: [_nl, _fr],
+    );
+    const auto = Group(
+      name: 'Auto',
+      type: GroupType.URLTest,
+      now: 'Netherlands',
+      all: [_nl],
+    );
+
+    test('GLOBAL lists servers without its selector groups', () {
+      final global = _global([_direct, _reject, _servers, _auto, _nl, _fr]);
+      final names = nurConnectServerChoices(global, [
+        global,
+        servers,
+        auto,
+      ]).map((proxy) => proxy.name);
+      expect(names, ['Auto', 'Netherlands', 'France']);
+    });
+
+    test('a hidden selector is left out as well', () {
+      final global = _global([_servers, _nl]);
+      final names = nurConnectServerChoices(global, [
+        global,
+        servers.copyWith(hidden: true),
+      ]).map((proxy) => proxy.name);
+      expect(names, ['Netherlands']);
+    });
+
+    test('a subscription group keeps every member but built-ins', () {
+      const panel = Group(
+        name: 'Panel',
+        type: GroupType.Selector,
+        now: 'Servers',
+        all: [_direct, _servers, _nl],
+      );
+      final names = nurConnectServerChoices(panel, [
+        panel,
+        servers,
+      ]).map((proxy) => proxy.name);
+      expect(names, ['Servers', 'Netherlands']);
+    });
+  });
 }

@@ -2057,6 +2057,49 @@ class MessageLookup extends MessageLookupByLibrary {
     "splitStrategyNotEmpty": MessageLookupByLibrary.simpleMessage(
       "La estrategia de división no puede estar vacía",
     ),
+    "splitTunnel": MessageLookupByLibrary.simpleMessage("Túnel dividido"),
+    "splitTunnelAddByName": MessageLookupByLibrary.simpleMessage(
+      "Escribir un nombre de archivo",
+    ),
+    "splitTunnelAddFile": MessageLookupByLibrary.simpleMessage(
+      "Elegir un programa…",
+    ),
+    "splitTunnelAppLabel": MessageLookupByLibrary.simpleMessage(
+      "Nombre de archivo",
+    ),
+    "splitTunnelApps": MessageLookupByLibrary.simpleMessage("Programas"),
+    "splitTunnelAppsHint": MessageLookupByLibrary.simpleMessage(
+      "Algunas apps ejecutan varios procesos, como Discord o Steam: añade cada uno de sus archivos .exe.",
+    ),
+    "splitTunnelDesc": MessageLookupByLibrary.simpleMessage(
+      "Un programa se elige por el nombre de su archivo y en conjunto: un navegador pasa por la VPN entero o no pasa. En modo proxy solo afecta a los programas que usan el proxy del sistema.",
+    ),
+    "splitTunnelEmptyHint": MessageLookupByLibrary.simpleMessage(
+      "Añade programas. Mientras la lista esté vacía, todo el tráfico va como siempre.",
+    ),
+    "splitTunnelEnable": MessageLookupByLibrary.simpleMessage(
+      "Usar túnel dividido",
+    ),
+    "splitTunnelExceptSelected": MessageLookupByLibrary.simpleMessage(
+      "Todas menos las elegidas",
+    ),
+    "splitTunnelFromConnections": MessageLookupByLibrary.simpleMessage(
+      "De las conexiones activas",
+    ),
+    "splitTunnelInvalidName": MessageLookupByLibrary.simpleMessage(
+      "Escribe un nombre de archivo como chrome.exe",
+    ),
+    "splitTunnelMode": MessageLookupByLibrary.simpleMessage("Por la VPN"),
+    "splitTunnelNoApps": MessageLookupByLibrary.simpleMessage(
+      "Activado, aún sin programas",
+    ),
+    "splitTunnelNoConnections": MessageLookupByLibrary.simpleMessage(
+      "Ningún programa tiene conexiones activas. Conéctate, abre el programa y vuelve a intentarlo.",
+    ),
+    "splitTunnelOff": MessageLookupByLibrary.simpleMessage("Desactivado"),
+    "splitTunnelOnlySelected": MessageLookupByLibrary.simpleMessage(
+      "Solo las elegidas",
+    ),
     "ssidsEmpty": MessageLookupByLibrary.simpleMessage("No hay SSID"),
     "stableImportRetry": MessageLookupByLibrary.simpleMessage("Reintentar"),
     "stableImportSkip": MessageLookupByLibrary.simpleMessage(

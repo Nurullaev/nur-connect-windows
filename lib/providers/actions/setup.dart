@@ -676,6 +676,12 @@ class SetupAction extends _$SetupAction {
       ),
     );
     final appendSystemDns = networkSetting.appendSystemDns;
+    final split = ref.read(safeModeProvider)
+        ? (rules: const <String>[], replace: false)
+        : splitTunnelRules(
+            ref.read(networkSettingProvider).splitTunnel,
+            ref.read(patchClashConfigProvider).mode,
+          );
     final isCustom = setupState.profileType == ProfileType.custom;
     final scriptContent =
         !isCustom && setupState.extendType == ExtendType.script
@@ -719,7 +725,9 @@ class SetupAction extends _$SetupAction {
         profilesPath: directory,
         profileId: profileId,
         rawConfig: rawConfig,
-        realPatchConfig: patchConfig,
+        realPatchConfig: split.replace
+            ? patchConfig.copyWith(mode: Mode.rule)
+            : patchConfig,
         overrides: setupState.overrides,
         bypassPrivateRoute: networkSetting.bypassPrivateRoute,
         keepEmptyDnsOverrides: setupState.profileType != ProfileType.custom,
@@ -734,6 +742,8 @@ class SetupAction extends _$SetupAction {
                 : lastMatchTarget(profileBase.base.matchRules)),
         safeMode: ref.read(safeModeProvider),
         proxyChains: setupState.proxyChains,
+        splitTunnelRules: split.rules,
+        splitTunnelReplace: split.replace,
       ),
     );
     if (profileBase == null) {
@@ -836,6 +846,11 @@ class SetupAction extends _$SetupAction {
         TunAuthorizationState.authorized;
     final secure = ref.read(androidSecureProvider);
     return patchConfig.copyWith(
+      // Also reaches the Core through updateConfig, so a mode change keeps it.
+      mode: splitTunnelCoreMode(
+        ref.read(networkSettingProvider).splitTunnel,
+        patchConfig.mode,
+      ),
       tun: patchConfig.tun.copyWith(
         enable: patchConfig.tun.enable && authorized,
       ),

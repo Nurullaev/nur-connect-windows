@@ -117,6 +117,9 @@ enum DelayTestPhase { queued, running }
 
 enum Mode { rule, global, direct }
 
+/// Which programs a split tunnel sends through the VPN.
+enum SplitTunnelMode { onlySelected, exceptSelected }
+
 enum ViewMode { mobile, laptop, desktop }
 
 enum LogLevel { debug, info, warning, error, silent }

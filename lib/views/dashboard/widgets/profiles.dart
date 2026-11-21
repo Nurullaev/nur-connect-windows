@@ -71,7 +71,11 @@ const _actionGlyphSize = 22.0;
 const _soonDays = 7;
 
 class ProfilesCard extends ConsumerWidget {
-  const ProfilesCard({super.key});
+  const ProfilesCard({super.key, this.dense = false});
+
+  /// One header row carrying the profile's name, with the plan figures right
+  /// under it: the Nur Connect home keeps the card low.
+  final bool dense;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -133,6 +137,77 @@ class ProfilesCard extends ConsumerWidget {
             iconSize: _actionGlyphSize,
             onPressed: () => dialogs.openUrl(supportUrl),
           );
+    final swap = profile != null && switchable
+        ? SizedBox(
+            height: name.leading,
+            child: DashboardIconButton(
+              glyph: AppGlyphs.swap,
+              tooltip: appLocalizations.switchProfile,
+              onPressed: () => showProfilesSheet(context),
+            ),
+          )
+        : null;
+    final hasFigures =
+        profile != null &&
+        (expiry != null || usage != null || offers.isNotEmpty);
+    if (dense) {
+      return DashboardCard(
+        key: const ValueKey('profile-card-dense'),
+        semanticLabel: appLocalizations.profile,
+        onTap: () => _openProfile(context, ref, profile),
+        padding: const EdgeInsets.fromLTRB(18, 12, 12, 14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              spacing: 8,
+              children: [
+                GlyphIcon(
+                  AppGlyphs.profiles,
+                  size: DashboardCardHeader.glyphSize,
+                  color: context.colorScheme.onSurfaceVariant,
+                ),
+                Expanded(
+                  child: Row(
+                    children: [
+                      Flexible(
+                        child: EmojiText(
+                          profile?.realLabel ?? appLocalizations.addProfile,
+                          key: const ValueKey('profile-card-name'),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: AppTextStyle.headline.of(
+                            context,
+                            emphasized: true,
+                          ),
+                        ),
+                      ),
+                      ?swap,
+                    ],
+                  ),
+                ),
+                ?webPage,
+                ?account,
+                ?bot,
+                ?support,
+                ?sync,
+              ],
+            ),
+            if (hasFigures) ...[
+              const SizedBox(height: 10),
+              _PlanFigures(
+                expiry: expiry,
+                usage: usage,
+                offers: offers,
+                figure: AppTextStyle.headline,
+                gap: 6,
+              ),
+            ],
+          ],
+        ),
+      );
+    }
     final nameRow = Row(
       children: [
         Flexible(
@@ -143,15 +218,7 @@ class ProfilesCard extends ConsumerWidget {
             style: name.of(context, emphasized: true),
           ),
         ),
-        if (profile != null && switchable)
-          SizedBox(
-            height: name.leading,
-            child: DashboardIconButton(
-              glyph: AppGlyphs.swap,
-              tooltip: appLocalizations.switchProfile,
-              onPressed: () => showProfilesSheet(context),
-            ),
-          ),
+        ?swap,
       ],
     );
     return DashboardCard(
@@ -170,8 +237,7 @@ class ProfilesCard extends ConsumerWidget {
           ),
           SizedBox(height: mobile ? 12 : 10),
           nameRow,
-          if (profile != null &&
-              (expiry != null || usage != null || offers.isNotEmpty)) ...[
+          if (hasFigures) ...[
             if (mobile) const SizedBox(height: 14) else const Spacer(),
             _PlanFigures(
               expiry: expiry,

@@ -1064,5 +1064,22 @@
   "nurDisconnectToChangeMode": "Desconéctate para cambiar el modo de conexión.",
   "nurBot": "Bot",
   "nurSubscriptionEnded": "La suscripción ha terminado",
-  "nurRenewToConnect": "Renueva tu suscripción para conectarte."
+  "nurRenewToConnect": "Renueva tu suscripción para conectarte.",
+  "splitTunnel": "Túnel dividido",
+  "splitTunnelEnable": "Usar túnel dividido",
+  "splitTunnelMode": "Por la VPN",
+  "splitTunnelOnlySelected": "Solo las elegidas",
+  "splitTunnelExceptSelected": "Todas menos las elegidas",
+  "splitTunnelDesc": "Un programa se elige por el nombre de su archivo y en conjunto: un navegador pasa por la VPN entero o no pasa. En modo proxy solo afecta a los programas que usan el proxy del sistema.",
+  "splitTunnelApps": "Programas",
+  "splitTunnelAddFile": "Elegir un programa…",
+  "splitTunnelFromConnections": "De las conexiones activas",
+  "splitTunnelAddByName": "Escribir un nombre de archivo",
+  "splitTunnelAppLabel": "Nombre de archivo",
+  "splitTunnelInvalidName": "Escribe un nombre de archivo como chrome.exe",
+  "splitTunnelNoConnections": "Ningún programa tiene conexiones activas. Conéctate, abre el programa y vuelve a intentarlo.",
+  "splitTunnelEmptyHint": "Añade programas. Mientras la lista esté vacía, todo el tráfico va como siempre.",
+  "splitTunnelAppsHint": "Algunas apps ejecutan varios procesos, como Discord o Steam: añade cada uno de sus archivos .exe.",
+  "splitTunnelOff": "Desactivado",
+  "splitTunnelNoApps": "Activado, aún sin programas"
 }

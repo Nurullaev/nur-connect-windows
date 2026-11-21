@@ -236,6 +236,10 @@ abstract class MakeRealProfileState with _$MakeRealProfileState {
     String? matchTarget,
     @Default(false) bool safeMode,
     @Default([]) List<Map<String, Object?>> proxyChains,
+
+    /// Put before the rules, or in their place when [splitTunnelReplace].
+    @Default([]) List<String> splitTunnelRules,
+    @Default(false) bool splitTunnelReplace,
   }) = _MakeRealProfileState;
 }
 

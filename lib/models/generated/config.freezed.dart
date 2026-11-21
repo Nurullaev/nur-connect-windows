@@ -1982,9 +1982,304 @@ as String,
 
 
 /// @nodoc
+mixin _$SplitTunnelProps implements DiagnosticableTreeMixin {
+
+ bool get enabled;@JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected) SplitTunnelMode get mode; List<String> get apps;
+/// Create a copy of SplitTunnelProps
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SplitTunnelPropsCopyWith<SplitTunnelProps> get copyWith => _$SplitTunnelPropsCopyWithImpl<SplitTunnelProps>(this as SplitTunnelProps, _$identity);
+
+  /// Serializes this SplitTunnelProps to a JSON map.
+  Map<String, dynamic> toJson();
+
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as SplitTunnelProps;
+  properties
+    ..add(DiagnosticsProperty('type', 'SplitTunnelProps'))
+    ..add(DiagnosticsProperty('enabled', _this.enabled))..add(DiagnosticsProperty('mode', _this.mode))..add(DiagnosticsProperty('apps', _this.apps));
+}
+
+@override
+bool operator ==(Object other) {
+  final _this = this as SplitTunnelProps;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SplitTunnelProps&&(identical(other.enabled, _this.enabled) || other.enabled == _this.enabled)&&(identical(other.mode, _this.mode) || other.mode == _this.mode)&&const DeepCollectionEquality().equals(other.apps, _this.apps));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+  final _this = this as SplitTunnelProps;
+  return Object.hash(runtimeType,_this.enabled,_this.mode,const DeepCollectionEquality().hash(_this.apps));
+}
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+  final _this = this as SplitTunnelProps;
+  return 'SplitTunnelProps(enabled: ${_this.enabled}, mode: ${_this.mode}, apps: ${_this.apps})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SplitTunnelPropsCopyWith<$Res>  {
+  factory $SplitTunnelPropsCopyWith(SplitTunnelProps value, $Res Function(SplitTunnelProps) _then) = _$SplitTunnelPropsCopyWithImpl;
+@useResult
+$Res call({
+ bool enabled,@JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected) SplitTunnelMode mode, List<String> apps
+});
+
+
+
+
+}
+/// @nodoc
+class _$SplitTunnelPropsCopyWithImpl<$Res>
+    implements $SplitTunnelPropsCopyWith<$Res> {
+  _$SplitTunnelPropsCopyWithImpl(this._self, this._then);
+
+  final SplitTunnelProps _self;
+  final $Res Function(SplitTunnelProps) _then;
+
+/// Create a copy of SplitTunnelProps
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? enabled = null,Object? mode = null,Object? apps = null,}) {
+  return _then(SplitTunnelProps(
+enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
+as bool,mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
+as SplitTunnelMode,apps: null == apps ? _self.apps : apps // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SplitTunnelProps].
+extension SplitTunnelPropsPatterns on SplitTunnelProps {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SplitTunnelProps value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SplitTunnelProps() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SplitTunnelProps value)  $default,){
+final _that = this;
+switch (_that) {
+case _SplitTunnelProps():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SplitTunnelProps value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SplitTunnelProps() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enabled, @JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected)  SplitTunnelMode mode,  List<String> apps)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SplitTunnelProps() when $default != null:
+return $default(_that.enabled,_that.mode,_that.apps);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enabled, @JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected)  SplitTunnelMode mode,  List<String> apps)  $default,) {final _that = this;
+switch (_that) {
+case _SplitTunnelProps():
+return $default(_that.enabled,_that.mode,_that.apps);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enabled, @JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected)  SplitTunnelMode mode,  List<String> apps)?  $default,) {final _that = this;
+switch (_that) {
+case _SplitTunnelProps() when $default != null:
+return $default(_that.enabled,_that.mode,_that.apps);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _SplitTunnelProps with DiagnosticableTreeMixin implements SplitTunnelProps {
+  const _SplitTunnelProps({this.enabled = false, @JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected) this.mode = SplitTunnelMode.onlySelected,  List<String> apps = const []}): _apps = apps;
+  factory _SplitTunnelProps.fromJson(Map<String, dynamic> json) => _$SplitTunnelPropsFromJson(json);
+
+@override@JsonKey() final  bool enabled;
+@override@JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected) final  SplitTunnelMode mode;
+ final  List<String> _apps;
+@override@JsonKey() List<String> get apps {
+  if (_apps is EqualUnmodifiableListView) return _apps;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_apps);
+}
+
+
+/// Create a copy of SplitTunnelProps
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SplitTunnelPropsCopyWith<_SplitTunnelProps> get copyWith => __$SplitTunnelPropsCopyWithImpl<_SplitTunnelProps>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SplitTunnelPropsToJson(this, );
+}
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+    ..add(DiagnosticsProperty('type', 'SplitTunnelProps'))
+    ..add(DiagnosticsProperty('enabled', enabled))..add(DiagnosticsProperty('mode', mode))..add(DiagnosticsProperty('apps', apps));
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SplitTunnelProps&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.mode, mode) || other.mode == mode)&&const DeepCollectionEquality().equals(other.apps, _apps));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,enabled,mode,const DeepCollectionEquality().hash(_apps));
+}
+
+@override
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
+    return 'SplitTunnelProps(enabled: $enabled, mode: $mode, apps: $apps)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SplitTunnelPropsCopyWith<$Res> implements $SplitTunnelPropsCopyWith<$Res> {
+  factory _$SplitTunnelPropsCopyWith(_SplitTunnelProps value, $Res Function(_SplitTunnelProps) _then) = __$SplitTunnelPropsCopyWithImpl;
+@override @useResult
+$Res call({
+ bool enabled,@JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected) SplitTunnelMode mode, List<String> apps
+});
+
+
+
+
+}
+/// @nodoc
+class __$SplitTunnelPropsCopyWithImpl<$Res>
+    implements _$SplitTunnelPropsCopyWith<$Res> {
+  __$SplitTunnelPropsCopyWithImpl(this._self, this._then);
+
+  final _SplitTunnelProps _self;
+  final $Res Function(_SplitTunnelProps) _then;
+
+/// Create a copy of SplitTunnelProps
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? enabled = null,Object? mode = null,Object? apps = null,}) {
+  return _then(_SplitTunnelProps(
+enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
+as bool,mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
+as SplitTunnelMode,apps: null == apps ? _self._apps : apps // ignore: cast_nullable_to_non_nullable
+as List<String>,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
 mixin _$NetworkProps implements DiagnosticableTreeMixin {
 
- bool get systemProxy;@JsonKey(fromJson: bypassDomainFromJson) List<String> get bypassDomain; bool get bypassPrivateRoute; bool get autoSetSystemDns; bool get appendSystemDns; AuthenticationProps get authentication;
+ bool get systemProxy;@JsonKey(fromJson: bypassDomainFromJson) List<String> get bypassDomain; bool get bypassPrivateRoute; bool get autoSetSystemDns; bool get appendSystemDns; AuthenticationProps get authentication; SplitTunnelProps get splitTunnel;
 /// Create a copy of NetworkProps
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1999,26 +2294,26 @@ void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   final _this = this as NetworkProps;
   properties
     ..add(DiagnosticsProperty('type', 'NetworkProps'))
-    ..add(DiagnosticsProperty('systemProxy', _this.systemProxy))..add(DiagnosticsProperty('bypassDomain', _this.bypassDomain))..add(DiagnosticsProperty('bypassPrivateRoute', _this.bypassPrivateRoute))..add(DiagnosticsProperty('autoSetSystemDns', _this.autoSetSystemDns))..add(DiagnosticsProperty('appendSystemDns', _this.appendSystemDns))..add(DiagnosticsProperty('authentication', _this.authentication));
+    ..add(DiagnosticsProperty('systemProxy', _this.systemProxy))..add(DiagnosticsProperty('bypassDomain', _this.bypassDomain))..add(DiagnosticsProperty('bypassPrivateRoute', _this.bypassPrivateRoute))..add(DiagnosticsProperty('autoSetSystemDns', _this.autoSetSystemDns))..add(DiagnosticsProperty('appendSystemDns', _this.appendSystemDns))..add(DiagnosticsProperty('authentication', _this.authentication))..add(DiagnosticsProperty('splitTunnel', _this.splitTunnel));
 }
 
 @override
 bool operator ==(Object other) {
   final _this = this as NetworkProps;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NetworkProps&&(identical(other.systemProxy, _this.systemProxy) || other.systemProxy == _this.systemProxy)&&const DeepCollectionEquality().equals(other.bypassDomain, _this.bypassDomain)&&(identical(other.bypassPrivateRoute, _this.bypassPrivateRoute) || other.bypassPrivateRoute == _this.bypassPrivateRoute)&&(identical(other.autoSetSystemDns, _this.autoSetSystemDns) || other.autoSetSystemDns == _this.autoSetSystemDns)&&(identical(other.appendSystemDns, _this.appendSystemDns) || other.appendSystemDns == _this.appendSystemDns)&&(identical(other.authentication, _this.authentication) || other.authentication == _this.authentication));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NetworkProps&&(identical(other.systemProxy, _this.systemProxy) || other.systemProxy == _this.systemProxy)&&const DeepCollectionEquality().equals(other.bypassDomain, _this.bypassDomain)&&(identical(other.bypassPrivateRoute, _this.bypassPrivateRoute) || other.bypassPrivateRoute == _this.bypassPrivateRoute)&&(identical(other.autoSetSystemDns, _this.autoSetSystemDns) || other.autoSetSystemDns == _this.autoSetSystemDns)&&(identical(other.appendSystemDns, _this.appendSystemDns) || other.appendSystemDns == _this.appendSystemDns)&&(identical(other.authentication, _this.authentication) || other.authentication == _this.authentication)&&(identical(other.splitTunnel, _this.splitTunnel) || other.splitTunnel == _this.splitTunnel));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as NetworkProps;
-  return Object.hash(runtimeType,_this.systemProxy,const DeepCollectionEquality().hash(_this.bypassDomain),_this.bypassPrivateRoute,_this.autoSetSystemDns,_this.appendSystemDns,_this.authentication);
+  return Object.hash(runtimeType,_this.systemProxy,const DeepCollectionEquality().hash(_this.bypassDomain),_this.bypassPrivateRoute,_this.autoSetSystemDns,_this.appendSystemDns,_this.authentication,_this.splitTunnel);
 }
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   final _this = this as NetworkProps;
-  return 'NetworkProps(systemProxy: ${_this.systemProxy}, bypassDomain: ${_this.bypassDomain}, bypassPrivateRoute: ${_this.bypassPrivateRoute}, autoSetSystemDns: ${_this.autoSetSystemDns}, appendSystemDns: ${_this.appendSystemDns}, authentication: ${_this.authentication})';
+  return 'NetworkProps(systemProxy: ${_this.systemProxy}, bypassDomain: ${_this.bypassDomain}, bypassPrivateRoute: ${_this.bypassPrivateRoute}, autoSetSystemDns: ${_this.autoSetSystemDns}, appendSystemDns: ${_this.appendSystemDns}, authentication: ${_this.authentication}, splitTunnel: ${_this.splitTunnel})';
 }
 
 
@@ -2029,11 +2324,11 @@ abstract mixin class $NetworkPropsCopyWith<$Res>  {
   factory $NetworkPropsCopyWith(NetworkProps value, $Res Function(NetworkProps) _then) = _$NetworkPropsCopyWithImpl;
 @useResult
 $Res call({
- bool systemProxy,@JsonKey(fromJson: bypassDomainFromJson) List<String> bypassDomain, bool bypassPrivateRoute, bool autoSetSystemDns, bool appendSystemDns, AuthenticationProps authentication
+ bool systemProxy,@JsonKey(fromJson: bypassDomainFromJson) List<String> bypassDomain, bool bypassPrivateRoute, bool autoSetSystemDns, bool appendSystemDns, AuthenticationProps authentication, SplitTunnelProps splitTunnel
 });
 
 
-$AuthenticationPropsCopyWith<$Res> get authentication;
+$AuthenticationPropsCopyWith<$Res> get authentication;$SplitTunnelPropsCopyWith<$Res> get splitTunnel;
 
 }
 /// @nodoc
@@ -2046,7 +2341,7 @@ class _$NetworkPropsCopyWithImpl<$Res>
 
 /// Create a copy of NetworkProps
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? systemProxy = null,Object? bypassDomain = null,Object? bypassPrivateRoute = null,Object? autoSetSystemDns = null,Object? appendSystemDns = null,Object? authentication = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? systemProxy = null,Object? bypassDomain = null,Object? bypassPrivateRoute = null,Object? autoSetSystemDns = null,Object? appendSystemDns = null,Object? authentication = null,Object? splitTunnel = null,}) {
   return _then(NetworkProps(
 systemProxy: null == systemProxy ? _self.systemProxy : systemProxy // ignore: cast_nullable_to_non_nullable
 as bool,bypassDomain: null == bypassDomain ? _self.bypassDomain : bypassDomain // ignore: cast_nullable_to_non_nullable
@@ -2054,7 +2349,8 @@ as List<String>,bypassPrivateRoute: null == bypassPrivateRoute ? _self.bypassPri
 as bool,autoSetSystemDns: null == autoSetSystemDns ? _self.autoSetSystemDns : autoSetSystemDns // ignore: cast_nullable_to_non_nullable
 as bool,appendSystemDns: null == appendSystemDns ? _self.appendSystemDns : appendSystemDns // ignore: cast_nullable_to_non_nullable
 as bool,authentication: null == authentication ? _self.authentication : authentication // ignore: cast_nullable_to_non_nullable
-as AuthenticationProps,
+as AuthenticationProps,splitTunnel: null == splitTunnel ? _self.splitTunnel : splitTunnel // ignore: cast_nullable_to_non_nullable
+as SplitTunnelProps,
   ));
 }
 /// Create a copy of NetworkProps
@@ -2065,6 +2361,15 @@ $AuthenticationPropsCopyWith<$Res> get authentication {
   
   return $AuthenticationPropsCopyWith<$Res>(_self.authentication, (value) {
     return _then(_self.copyWith(authentication: value));
+  });
+}/// Create a copy of NetworkProps
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SplitTunnelPropsCopyWith<$Res> get splitTunnel {
+  
+  return $SplitTunnelPropsCopyWith<$Res>(_self.splitTunnel, (value) {
+    return _then(_self.copyWith(splitTunnel: value));
   });
 }
 }
@@ -2148,10 +2453,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool systemProxy, @JsonKey(fromJson: bypassDomainFromJson)  List<String> bypassDomain,  bool bypassPrivateRoute,  bool autoSetSystemDns,  bool appendSystemDns,  AuthenticationProps authentication)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool systemProxy, @JsonKey(fromJson: bypassDomainFromJson)  List<String> bypassDomain,  bool bypassPrivateRoute,  bool autoSetSystemDns,  bool appendSystemDns,  AuthenticationProps authentication,  SplitTunnelProps splitTunnel)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NetworkProps() when $default != null:
-return $default(_that.systemProxy,_that.bypassDomain,_that.bypassPrivateRoute,_that.autoSetSystemDns,_that.appendSystemDns,_that.authentication);case _:
+return $default(_that.systemProxy,_that.bypassDomain,_that.bypassPrivateRoute,_that.autoSetSystemDns,_that.appendSystemDns,_that.authentication,_that.splitTunnel);case _:
   return orElse();
 
 }
@@ -2169,10 +2474,10 @@ return $default(_that.systemProxy,_that.bypassDomain,_that.bypassPrivateRoute,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool systemProxy, @JsonKey(fromJson: bypassDomainFromJson)  List<String> bypassDomain,  bool bypassPrivateRoute,  bool autoSetSystemDns,  bool appendSystemDns,  AuthenticationProps authentication)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool systemProxy, @JsonKey(fromJson: bypassDomainFromJson)  List<String> bypassDomain,  bool bypassPrivateRoute,  bool autoSetSystemDns,  bool appendSystemDns,  AuthenticationProps authentication,  SplitTunnelProps splitTunnel)  $default,) {final _that = this;
 switch (_that) {
 case _NetworkProps():
-return $default(_that.systemProxy,_that.bypassDomain,_that.bypassPrivateRoute,_that.autoSetSystemDns,_that.appendSystemDns,_that.authentication);case _:
+return $default(_that.systemProxy,_that.bypassDomain,_that.bypassPrivateRoute,_that.autoSetSystemDns,_that.appendSystemDns,_that.authentication,_that.splitTunnel);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2189,10 +2494,10 @@ return $default(_that.systemProxy,_that.bypassDomain,_that.bypassPrivateRoute,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool systemProxy, @JsonKey(fromJson: bypassDomainFromJson)  List<String> bypassDomain,  bool bypassPrivateRoute,  bool autoSetSystemDns,  bool appendSystemDns,  AuthenticationProps authentication)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool systemProxy, @JsonKey(fromJson: bypassDomainFromJson)  List<String> bypassDomain,  bool bypassPrivateRoute,  bool autoSetSystemDns,  bool appendSystemDns,  AuthenticationProps authentication,  SplitTunnelProps splitTunnel)?  $default,) {final _that = this;
 switch (_that) {
 case _NetworkProps() when $default != null:
-return $default(_that.systemProxy,_that.bypassDomain,_that.bypassPrivateRoute,_that.autoSetSystemDns,_that.appendSystemDns,_that.authentication);case _:
+return $default(_that.systemProxy,_that.bypassDomain,_that.bypassPrivateRoute,_that.autoSetSystemDns,_that.appendSystemDns,_that.authentication,_that.splitTunnel);case _:
   return null;
 
 }
@@ -2204,7 +2509,7 @@ return $default(_that.systemProxy,_that.bypassDomain,_that.bypassPrivateRoute,_t
 @JsonSerializable()
 
 class _NetworkProps with DiagnosticableTreeMixin implements NetworkProps {
-  const _NetworkProps({this.systemProxy = false, @JsonKey(fromJson: bypassDomainFromJson)  List<String> bypassDomain = defaultBypassDomain, this.bypassPrivateRoute = true, this.autoSetSystemDns = true, this.appendSystemDns = false, this.authentication = defaultAuthenticationProps}): _bypassDomain = bypassDomain;
+  const _NetworkProps({this.systemProxy = false, @JsonKey(fromJson: bypassDomainFromJson)  List<String> bypassDomain = defaultBypassDomain, this.bypassPrivateRoute = true, this.autoSetSystemDns = true, this.appendSystemDns = false, this.authentication = defaultAuthenticationProps, this.splitTunnel = const SplitTunnelProps()}): _bypassDomain = bypassDomain;
   factory _NetworkProps.fromJson(Map<String, dynamic> json) => _$NetworkPropsFromJson(json);
 
 @override@JsonKey() final  bool systemProxy;
@@ -2219,6 +2524,7 @@ class _NetworkProps with DiagnosticableTreeMixin implements NetworkProps {
 @override@JsonKey() final  bool autoSetSystemDns;
 @override@JsonKey() final  bool appendSystemDns;
 @override@JsonKey() final  AuthenticationProps authentication;
+@override@JsonKey() final  SplitTunnelProps splitTunnel;
 
 /// Create a copy of NetworkProps
 /// with the given fields replaced by the non-null parameter values.
@@ -2234,23 +2540,23 @@ Map<String, dynamic> toJson() {
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties
     ..add(DiagnosticsProperty('type', 'NetworkProps'))
-    ..add(DiagnosticsProperty('systemProxy', systemProxy))..add(DiagnosticsProperty('bypassDomain', bypassDomain))..add(DiagnosticsProperty('bypassPrivateRoute', bypassPrivateRoute))..add(DiagnosticsProperty('autoSetSystemDns', autoSetSystemDns))..add(DiagnosticsProperty('appendSystemDns', appendSystemDns))..add(DiagnosticsProperty('authentication', authentication));
+    ..add(DiagnosticsProperty('systemProxy', systemProxy))..add(DiagnosticsProperty('bypassDomain', bypassDomain))..add(DiagnosticsProperty('bypassPrivateRoute', bypassPrivateRoute))..add(DiagnosticsProperty('autoSetSystemDns', autoSetSystemDns))..add(DiagnosticsProperty('appendSystemDns', appendSystemDns))..add(DiagnosticsProperty('authentication', authentication))..add(DiagnosticsProperty('splitTunnel', splitTunnel));
 }
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetworkProps&&(identical(other.systemProxy, systemProxy) || other.systemProxy == systemProxy)&&const DeepCollectionEquality().equals(other.bypassDomain, _bypassDomain)&&(identical(other.bypassPrivateRoute, bypassPrivateRoute) || other.bypassPrivateRoute == bypassPrivateRoute)&&(identical(other.autoSetSystemDns, autoSetSystemDns) || other.autoSetSystemDns == autoSetSystemDns)&&(identical(other.appendSystemDns, appendSystemDns) || other.appendSystemDns == appendSystemDns)&&(identical(other.authentication, authentication) || other.authentication == authentication));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _NetworkProps&&(identical(other.systemProxy, systemProxy) || other.systemProxy == systemProxy)&&const DeepCollectionEquality().equals(other.bypassDomain, _bypassDomain)&&(identical(other.bypassPrivateRoute, bypassPrivateRoute) || other.bypassPrivateRoute == bypassPrivateRoute)&&(identical(other.autoSetSystemDns, autoSetSystemDns) || other.autoSetSystemDns == autoSetSystemDns)&&(identical(other.appendSystemDns, appendSystemDns) || other.appendSystemDns == appendSystemDns)&&(identical(other.authentication, authentication) || other.authentication == authentication)&&(identical(other.splitTunnel, splitTunnel) || other.splitTunnel == splitTunnel));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,systemProxy,const DeepCollectionEquality().hash(_bypassDomain),bypassPrivateRoute,autoSetSystemDns,appendSystemDns,authentication);
+    return Object.hash(runtimeType,systemProxy,const DeepCollectionEquality().hash(_bypassDomain),bypassPrivateRoute,autoSetSystemDns,appendSystemDns,authentication,splitTunnel);
 }
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-    return 'NetworkProps(systemProxy: $systemProxy, bypassDomain: $bypassDomain, bypassPrivateRoute: $bypassPrivateRoute, autoSetSystemDns: $autoSetSystemDns, appendSystemDns: $appendSystemDns, authentication: $authentication)';
+    return 'NetworkProps(systemProxy: $systemProxy, bypassDomain: $bypassDomain, bypassPrivateRoute: $bypassPrivateRoute, autoSetSystemDns: $autoSetSystemDns, appendSystemDns: $appendSystemDns, authentication: $authentication, splitTunnel: $splitTunnel)';
 }
 
 
@@ -2261,11 +2567,11 @@ abstract mixin class _$NetworkPropsCopyWith<$Res> implements $NetworkPropsCopyWi
   factory _$NetworkPropsCopyWith(_NetworkProps value, $Res Function(_NetworkProps) _then) = __$NetworkPropsCopyWithImpl;
 @override @useResult
 $Res call({
- bool systemProxy,@JsonKey(fromJson: bypassDomainFromJson) List<String> bypassDomain, bool bypassPrivateRoute, bool autoSetSystemDns, bool appendSystemDns, AuthenticationProps authentication
+ bool systemProxy,@JsonKey(fromJson: bypassDomainFromJson) List<String> bypassDomain, bool bypassPrivateRoute, bool autoSetSystemDns, bool appendSystemDns, AuthenticationProps authentication, SplitTunnelProps splitTunnel
 });
 
 
-@override $AuthenticationPropsCopyWith<$Res> get authentication;
+@override $AuthenticationPropsCopyWith<$Res> get authentication;@override $SplitTunnelPropsCopyWith<$Res> get splitTunnel;
 
 }
 /// @nodoc
@@ -2278,7 +2584,7 @@ class __$NetworkPropsCopyWithImpl<$Res>
 
 /// Create a copy of NetworkProps
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? systemProxy = null,Object? bypassDomain = null,Object? bypassPrivateRoute = null,Object? autoSetSystemDns = null,Object? appendSystemDns = null,Object? authentication = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? systemProxy = null,Object? bypassDomain = null,Object? bypassPrivateRoute = null,Object? autoSetSystemDns = null,Object? appendSystemDns = null,Object? authentication = null,Object? splitTunnel = null,}) {
   return _then(_NetworkProps(
 systemProxy: null == systemProxy ? _self.systemProxy : systemProxy // ignore: cast_nullable_to_non_nullable
 as bool,bypassDomain: null == bypassDomain ? _self._bypassDomain : bypassDomain // ignore: cast_nullable_to_non_nullable
@@ -2286,7 +2592,8 @@ as List<String>,bypassPrivateRoute: null == bypassPrivateRoute ? _self.bypassPri
 as bool,autoSetSystemDns: null == autoSetSystemDns ? _self.autoSetSystemDns : autoSetSystemDns // ignore: cast_nullable_to_non_nullable
 as bool,appendSystemDns: null == appendSystemDns ? _self.appendSystemDns : appendSystemDns // ignore: cast_nullable_to_non_nullable
 as bool,authentication: null == authentication ? _self.authentication : authentication // ignore: cast_nullable_to_non_nullable
-as AuthenticationProps,
+as AuthenticationProps,splitTunnel: null == splitTunnel ? _self.splitTunnel : splitTunnel // ignore: cast_nullable_to_non_nullable
+as SplitTunnelProps,
   ));
 }
 
@@ -2298,6 +2605,15 @@ $AuthenticationPropsCopyWith<$Res> get authentication {
   
   return $AuthenticationPropsCopyWith<$Res>(_self.authentication, (value) {
     return _then(_self.copyWith(authentication: value));
+  });
+}/// Create a copy of NetworkProps
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$SplitTunnelPropsCopyWith<$Res> get splitTunnel {
+  
+  return $SplitTunnelPropsCopyWith<$Res>(_self.splitTunnel, (value) {
+    return _then(_self.copyWith(splitTunnel: value));
   });
 }
 }

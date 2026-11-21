@@ -1064,5 +1064,22 @@
   "nurDisconnectToChangeMode": "接続モードを変更するには切断してください。",
   "nurBot": "ボット",
   "nurSubscriptionEnded": "サブスクリプションが終了しました",
-  "nurRenewToConnect": "接続するにはサブスクリプションを更新してください。"
+  "nurRenewToConnect": "接続するにはサブスクリプションを更新してください。",
+  "splitTunnel": "スプリットトンネル",
+  "splitTunnelEnable": "スプリットトンネルを使う",
+  "splitTunnelMode": "VPN を通す",
+  "splitTunnelOnlySelected": "選んだアプリだけ",
+  "splitTunnelExceptSelected": "選んだアプリ以外",
+  "splitTunnelDesc": "プログラムはファイル名で丸ごと選ばれます。ブラウザーは全体が VPN を通るか、まったく通らないかのどちらかです。プロキシモードではシステムプロキシを使うプログラムにだけ効きます。",
+  "splitTunnelApps": "プログラム",
+  "splitTunnelAddFile": "プログラムを選ぶ…",
+  "splitTunnelFromConnections": "現在の接続から",
+  "splitTunnelAddByName": "ファイル名を入力",
+  "splitTunnelAppLabel": "ファイル名",
+  "splitTunnelInvalidName": "chrome.exe のようなファイル名を入力してください",
+  "splitTunnelNoConnections": "接続中のプログラムがありません。接続してプログラムを開き、もう一度お試しください。",
+  "splitTunnelEmptyHint": "プログラムを追加してください。リストが空のあいだは、すべての通信がいつも通りに流れます。",
+  "splitTunnelAppsHint": "Discord や Steam のように複数のプロセスを動かすアプリがあります。それぞれの .exe を追加してください。",
+  "splitTunnelOff": "オフ",
+  "splitTunnelNoApps": "オン、プログラムはまだありません"
 }

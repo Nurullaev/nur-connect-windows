@@ -1064,5 +1064,22 @@
   "nurDisconnectToChangeMode": "연결 모드를 변경하려면 연결을 해제하세요.",
   "nurBot": "봇",
   "nurSubscriptionEnded": "구독이 종료되었습니다",
-  "nurRenewToConnect": "연결하려면 구독을 갱신하세요."
+  "nurRenewToConnect": "연결하려면 구독을 갱신하세요.",
+  "splitTunnel": "분할 터널링",
+  "splitTunnelEnable": "분할 터널링 사용",
+  "splitTunnelMode": "VPN 사용",
+  "splitTunnelOnlySelected": "선택한 앱만",
+  "splitTunnelExceptSelected": "선택한 앱 제외",
+  "splitTunnelDesc": "프로그램은 파일 이름으로 통째로 선택됩니다. 브라우저는 전체가 VPN을 거치거나 전혀 거치지 않습니다. 프록시 모드에서는 시스템 프록시를 쓰는 프로그램에만 적용됩니다.",
+  "splitTunnelApps": "프로그램",
+  "splitTunnelAddFile": "프로그램 선택…",
+  "splitTunnelFromConnections": "활성 연결에서",
+  "splitTunnelAddByName": "파일 이름 입력",
+  "splitTunnelAppLabel": "파일 이름",
+  "splitTunnelInvalidName": "chrome.exe 같은 파일 이름을 입력하세요",
+  "splitTunnelNoConnections": "활성 연결이 있는 프로그램이 없습니다. 연결하고 프로그램을 연 뒤 다시 시도하세요.",
+  "splitTunnelEmptyHint": "프로그램을 추가하세요. 목록이 비어 있는 동안에는 모든 트래픽이 평소대로 흐릅니다.",
+  "splitTunnelAppsHint": "Discord나 Steam처럼 여러 프로세스를 실행하는 앱이 있습니다. 각 .exe 파일을 추가하세요.",
+  "splitTunnelOff": "꺼짐",
+  "splitTunnelNoApps": "켜짐, 아직 프로그램 없음"
 }

@@ -516,6 +516,23 @@ extension AuthenticationPropsExt on AuthenticationProps {
       enable && username.isNotEmpty ? ['$username:$password'] : [];
 }
 
+/// Programs that bypass the VPN, or the only ones that use it, matched by
+/// their file name.
+@freezed
+abstract class SplitTunnelProps with _$SplitTunnelProps {
+  const factory SplitTunnelProps({
+    @Default(false) bool enabled,
+    @Default(SplitTunnelMode.onlySelected)
+    @JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected)
+    SplitTunnelMode mode,
+    @Default([]) List<String> apps,
+  }) = _SplitTunnelProps;
+
+  factory SplitTunnelProps.fromJson(Map<String, Object?>? json) => json == null
+      ? const SplitTunnelProps()
+      : _$SplitTunnelPropsFromJson(json);
+}
+
 @freezed
 abstract class NetworkProps with _$NetworkProps {
   const factory NetworkProps({
@@ -527,6 +544,7 @@ abstract class NetworkProps with _$NetworkProps {
     @Default(true) bool autoSetSystemDns,
     @Default(false) bool appendSystemDns,
     @Default(defaultAuthenticationProps) AuthenticationProps authentication,
+    @Default(SplitTunnelProps()) SplitTunnelProps splitTunnel,
   }) = _NetworkProps;
 
   factory NetworkProps.fromJson(Map<String, Object?>? json) =>

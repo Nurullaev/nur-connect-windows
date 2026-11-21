@@ -56,6 +56,7 @@ export 'request.dart';
 export 'russian_packages.dart';
 export 'search.dart';
 export 'snowflake.dart';
+export 'split_tunnel.dart';
 export 'string.dart';
 export 'system.dart';
 export 'system_fonts.dart';

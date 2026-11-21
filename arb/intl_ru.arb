@@ -1064,5 +1064,22 @@
   "nurDisconnectToChangeMode": "Отключитесь, чтобы сменить режим подключения.",
   "nurBot": "Бот",
   "nurSubscriptionEnded": "Подписка закончилась",
-  "nurRenewToConnect": "Продлите подписку, чтобы подключиться."
+  "nurRenewToConnect": "Продлите подписку, чтобы подключиться.",
+  "splitTunnel": "Раздельное туннелирование",
+  "splitTunnelEnable": "Включить",
+  "splitTunnelMode": "Через VPN",
+  "splitTunnelOnlySelected": "Только выбранные",
+  "splitTunnelExceptSelected": "Все, кроме выбранных",
+  "splitTunnelDesc": "Программа выбирается по имени файла и целиком: браузер идёт через VPN полностью или не идёт вовсе. В режиме прокси действует только на программы, которые используют системный прокси.",
+  "splitTunnelApps": "Программы",
+  "splitTunnelAddFile": "Выбрать программу…",
+  "splitTunnelFromConnections": "Из активных подключений",
+  "splitTunnelAddByName": "Ввести имя файла",
+  "splitTunnelAppLabel": "Имя файла",
+  "splitTunnelInvalidName": "Введите имя файла, например chrome.exe",
+  "splitTunnelNoConnections": "Нет программ с активными подключениями. Подключитесь, откройте программу и попробуйте снова.",
+  "splitTunnelEmptyHint": "Добавьте программы. Пока список пуст, весь трафик идёт как обычно.",
+  "splitTunnelAppsHint": "Некоторые программы запускают несколько процессов, например Discord или Steam: добавьте каждый их .exe.",
+  "splitTunnelOff": "Выключено",
+  "splitTunnelNoApps": "Включено, программ пока нет"
 }
