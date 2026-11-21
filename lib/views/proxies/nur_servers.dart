@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/common/nur_connect_servers.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
-import 'package:fl_clash/views/dashboard/widgets/outbound_mode.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -53,7 +53,10 @@ class _NurServersViewState extends ConsumerState<NurServersView> {
     final l10n = context.appLocalizations;
     final profile = ref.watch(currentProfileProvider);
     final style = ref.watch(proxiesStyleSettingProvider);
-    var groups = ref.watch(visibleGroupsStateProvider).value;
+    var groups = nurConnectServerGroups(
+      ref.watch(visibleGroupsStateProvider).value,
+      ref.watch(patchClashConfigProvider.select((s) => s.mode)),
+    );
     if (ref.watch(oneGroupProvider)) {
       final server = groups.panelServerGroup(profile?.headers.serverGroup);
       groups = server == null ? [] : [server];
@@ -72,6 +75,7 @@ class _NurServersViewState extends ConsumerState<NurServersView> {
         sorted.panelServerGroup(profile?.headers.serverGroup);
     final proxies =
         group?.all
+            .where((proxy) => !isBuiltinOutbound(proxy.name))
             .whereMatches(
               SearchQuery(_search.text),
               (proxy) => proxy.searchFields,
@@ -80,7 +84,7 @@ class _NurServersViewState extends ConsumerState<NurServersView> {
         const <Proxy>[];
     final alive = ref.watch(coreStatusProvider) == CoreStatus.connected;
     return CommonScaffold(
-      title: l10n.proxies,
+      title: l10n.nurServers,
       iconActions: [
         IconButtonData(
           glyph: AppGlyphs.bolt,
@@ -102,109 +106,109 @@ class _NurServersViewState extends ConsumerState<NurServersView> {
           ),
         ),
       ],
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-              16,
-              12 + context.contentTopPadding,
-              16,
-              12,
-            ),
-            child: Column(
-              spacing: 12,
-              children: [
-                if (!widget.picker && !ref.watch(simpleModeProvider))
-                  const OutboundModeBar(),
-                if (sorted.length > 1)
-                  DropdownButtonFormField<String>(
-                    key: ValueKey((profile?.id, group?.name)),
-                    initialValue: group?.name,
-                    isExpanded: true,
-                    decoration: InputDecoration(labelText: l10n.proxyGroup),
-                    items: [
-                      for (final item in sorted)
-                        DropdownMenuItem(
-                          value: item.name,
-                          child: Text(
-                            item.name,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
+      body: Builder(
+        builder: (context) => Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(
+                16,
+                12 + context.contentTopPadding,
+                16,
+                12,
+              ),
+              child: Column(
+                spacing: 12,
+                children: [
+                  if (sorted.length > 1)
+                    DropdownButtonFormField<String>(
+                      key: ValueKey((profile?.id, group?.name)),
+                      initialValue: group?.name,
+                      isExpanded: true,
+                      decoration: InputDecoration(labelText: l10n.proxyGroup),
+                      items: [
+                        for (final item in sorted)
+                          DropdownMenuItem(
+                            value: item.name,
+                            child: Text(
+                              item.name,
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
                           ),
+                      ],
+                      onChanged: (value) {
+                        if (value != null) {
+                          ref
+                              .read(proxiesActionProvider.notifier)
+                              .updateCurrentGroupName(value);
+                        }
+                      },
+                    ),
+                  TextField(
+                    key: const ValueKey('nur-server-search'),
+                    controller: _search,
+                    inputFormatters: TextInputLimits.limit(
+                      TextInputLimits.search,
+                    ),
+                    decoration: InputDecoration(
+                      hintText: l10n.search,
+                      prefixIcon: const GlyphIcon(AppGlyphs.search),
+                      suffixIcon: _search.text.isEmpty
+                          ? null
+                          : IconButton(
+                              tooltip: l10n.clearSearch,
+                              icon: const GlyphIcon(AppGlyphs.close),
+                              onPressed: () => setState(_search.clear),
+                            ),
+                    ),
+                    onChanged: (_) => setState(() {}),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: proxies.isEmpty || group == null
+                  ? Center(
+                      child: Padding(
+                        padding: const EdgeInsets.all(24),
+                        child: Text(
+                          _search.text.isNotEmpty
+                              ? l10n.noSearchResults
+                              : profile == null
+                              ? l10n.nurWelcomeHint
+                              : !ref.watch(isStartProvider)
+                              ? l10n.proxyGroupsAfterStart
+                              : l10n.proxyGroupEmpty,
+                          textAlign: TextAlign.center,
                         ),
-                    ],
-                    onChanged: (value) {
-                      if (value != null) {
-                        ref
-                            .read(proxiesActionProvider.notifier)
-                            .updateCurrentGroupName(value);
-                      }
-                    },
-                  ),
-                TextField(
-                  key: const ValueKey('nur-server-search'),
-                  controller: _search,
-                  inputFormatters: TextInputLimits.limit(
-                    TextInputLimits.search,
-                  ),
-                  decoration: InputDecoration(
-                    hintText: l10n.search,
-                    prefixIcon: const GlyphIcon(AppGlyphs.search),
-                    suffixIcon: _search.text.isEmpty
-                        ? null
-                        : IconButton(
-                            tooltip: l10n.clearSearch,
-                            icon: const GlyphIcon(AppGlyphs.close),
-                            onPressed: () => setState(_search.clear),
-                          ),
-                  ),
-                  onChanged: (_) => setState(() {}),
-                ),
-              ],
+                      ),
+                    )
+                  : ListView.separated(
+                      key: ValueKey((profile?.id, group.name)),
+                      padding: EdgeInsets.fromLTRB(
+                        16,
+                        0,
+                        16,
+                        16 + context.bottomInset,
+                      ),
+                      itemCount: proxies.length,
+                      separatorBuilder: (_, _) => const SizedBox(height: 8),
+                      itemBuilder: (_, index) => SizedBox(
+                        key: ValueKey(proxies[index].name),
+                        height: getItemHeight(ProxyCardType.standard),
+                        child: ProxyCard(
+                          groupName: group.name,
+                          groupType: group.type,
+                          proxy: proxies[index],
+                          type: ProxyCardType.standard,
+                          testUrl: group.testUrl,
+                        ),
+                      ),
+                    ),
             ),
-          ),
-          Expanded(
-            child: proxies.isEmpty || group == null
-                ? Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(24),
-                      child: Text(
-                        _search.text.isNotEmpty
-                            ? l10n.noSearchResults
-                            : profile == null
-                            ? l10n.nurWelcomeHint
-                            : !ref.watch(isStartProvider)
-                            ? l10n.proxyGroupsAfterStart
-                            : l10n.proxyGroupEmpty,
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  )
-                : ListView.separated(
-                    key: ValueKey((profile?.id, group.name)),
-                    padding: EdgeInsets.fromLTRB(
-                      16,
-                      0,
-                      16,
-                      16 + context.bottomInset,
-                    ),
-                    itemCount: proxies.length,
-                    separatorBuilder: (_, _) => const SizedBox(height: 8),
-                    itemBuilder: (_, index) => SizedBox(
-                      key: ValueKey(proxies[index].name),
-                      height: getItemHeight(ProxyCardType.standard),
-                      child: ProxyCard(
-                        groupName: group.name,
-                        groupType: group.type,
-                        proxy: proxies[index],
-                        type: ProxyCardType.standard,
-                        testUrl: group.testUrl,
-                      ),
-                    ),
-                  ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

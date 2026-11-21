@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/common/nur_connect_servers.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -77,7 +78,6 @@ class NurConnectDashboard extends ConsumerWidget {
                 const ProfilesCard(),
                 const NetworkSpeedCard(),
               ],
-              if (announcement) const AnnouncementCard(),
             ],
           );
           return DashboardDensityScope(
@@ -99,6 +99,7 @@ class NurConnectDashboard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     spacing: 24,
                     children: [
+                      if (announcement) const AnnouncementCard(),
                       Text(
                         l10n.nurHomeSubtitle,
                         style: AppTextStyle.callout.of(context),
@@ -274,6 +275,7 @@ class _ConnectionCardState extends ConsumerState<_ConnectionCard> {
               ),
             ],
           ),
+          const _ConnectionModeSelector(),
           if (!routing) Text(l10n.nurTakeoverHint),
           SizedBox(
             height: 56,
@@ -293,18 +295,103 @@ class _ConnectionCardState extends ConsumerState<_ConnectionCard> {
   }
 }
 
+enum _ConnectionCaptureMode { vpn, proxy }
+
+class _ConnectionModeSelector extends ConsumerWidget {
+  const _ConnectionModeSelector();
+
+  void _select(WidgetRef ref, _ConnectionCaptureMode mode) {
+    if (ref.read(isStartProvider) ||
+        ref.read(settingLockedProvider('clash.tun.enable')) ||
+        mode == _ConnectionCaptureMode.proxy &&
+            !ref.read(systemProxyAllowedProvider)) {
+      return;
+    }
+    final vpn = mode == _ConnectionCaptureMode.vpn;
+    ref
+        .read(patchClashConfigProvider.notifier)
+        .update((state) => state.copyWith.tun(enable: vpn));
+    ref
+        .read(networkSettingProvider.notifier)
+        .update((state) => state.copyWith(systemProxy: !vpn));
+  }
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final l10n = context.appLocalizations;
+    final vpn = ref.watch(patchClashConfigProvider.select((s) => s.tun.enable));
+    final proxy = ref.watch(
+      networkSettingProvider.select((s) => s.systemProxy),
+    );
+    final running = ref.watch(isStartProvider);
+    final locked = ref.watch(settingLockedProvider('clash.tun.enable'));
+    final unavailable =
+        running ||
+        locked ||
+        ref.watch(coreStatusProvider) == CoreStatus.connecting;
+    final selected = <_ConnectionCaptureMode>{
+      if (vpn)
+        _ConnectionCaptureMode.vpn
+      else if (proxy)
+        _ConnectionCaptureMode.proxy,
+    };
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      spacing: 8,
+      children: [
+        Text(l10n.nurConnectionMode, style: AppTextStyle.callout.of(context)),
+        SegmentedButton<_ConnectionCaptureMode>(
+          key: const ValueKey('nur-connection-mode'),
+          expandedInsets: EdgeInsets.zero,
+          showSelectedIcon: false,
+          emptySelectionAllowed: true,
+          segments: [
+            const ButtonSegment(
+              value: _ConnectionCaptureMode.vpn,
+              icon: GlyphIcon(AppGlyphs.vpn),
+              label: Text('VPN (TUN)'),
+            ),
+            ButtonSegment(
+              value: _ConnectionCaptureMode.proxy,
+              enabled: ref.watch(systemProxyAllowedProvider),
+              icon: const GlyphIcon(AppGlyphs.shuffle),
+              label: Text(l10n.nurProxyMode),
+            ),
+          ],
+          selected: selected,
+          onSelectionChanged: unavailable
+              ? null
+              : (values) {
+                  if (values.isNotEmpty) _select(ref, values.single);
+                },
+        ),
+        Text(
+          locked
+              ? l10n.managedByProvider
+              : running
+              ? l10n.nurDisconnectToChangeMode
+              : proxy && !vpn
+              ? l10n.nurProxyDescription
+              : l10n.nurVpnDescription,
+          style: AppTextStyle.caption1
+              .of(context)
+              .copyWith(color: context.colorScheme.onSurfaceVariant),
+        ),
+      ],
+    );
+  }
+}
+
 class _ServerCard extends ConsumerWidget {
   const _ServerCard();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.appLocalizations;
-    final group = ref
-        .watch(currentGroupsStateProvider)
-        .value
-        .panelServerGroup(
-          ref.watch(currentProfileProvider)?.headers.serverGroup,
-        );
+    final group = nurConnectServerGroups(
+      ref.watch(currentGroupsStateProvider).value,
+      ref.watch(patchClashConfigProvider.select((s) => s.mode)),
+    ).panelServerGroup(ref.watch(currentProfileProvider)?.headers.serverGroup);
     final selected = group == null
         ? null
         : ref.watch(selectedProxyNameProvider(group.name));
@@ -323,7 +410,11 @@ class _ServerCard extends ConsumerWidget {
             chevron: group != null,
           ),
           EmojiText(
-            selected?.isNotEmpty == true ? selected! : '—',
+            selected != null &&
+                    selected.isNotEmpty &&
+                    !isBuiltinOutbound(selected)
+                ? selected
+                : l10n.nurChooseServer,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: AppTextStyle.headline.of(context, emphasized: true),

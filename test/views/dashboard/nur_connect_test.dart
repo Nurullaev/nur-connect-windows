@@ -153,6 +153,26 @@ void main() {
     },
   );
 
+  testWidgets('connection modes are exclusive and stay fixed while connected', (
+    tester,
+  ) async {
+    final container = await pump(tester);
+    await tester.tap(find.text('VPN (TUN)'));
+    await tester.pump();
+    expect(container.read(patchClashConfigProvider).tun.enable, isTrue);
+    expect(container.read(networkSettingProvider).systemProxy, isFalse);
+    await tester.tap(find.text(currentAppLocalizations.nurProxyMode));
+    await tester.pump();
+    expect(container.read(patchClashConfigProvider).tun.enable, isFalse);
+    expect(container.read(networkSettingProvider).systemProxy, isTrue);
+    container.read(runTimeProvider.notifier).value = 1;
+    await tester.pump();
+    await tester.tap(find.text('VPN (TUN)'), warnIfMissed: false);
+    await tester.pump();
+    expect(container.read(patchClashConfigProvider).tun.enable, isFalse);
+    expect(container.read(networkSettingProvider).systemProxy, isTrue);
+  });
+
   testWidgets('safe mode disables connection', (tester) async {
     await pump(tester, safe: true);
     expect(

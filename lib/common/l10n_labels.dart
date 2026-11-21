@@ -10,7 +10,10 @@ extension PageLabelL10n on PageLabel {
     final appLocalizations = currentAppLocalizations;
     return switch (this) {
       PageLabel.dashboard => appLocalizations.dashboard,
-      PageLabel.proxies => appLocalizations.proxies,
+      PageLabel.proxies =>
+        system.isWindows
+            ? appLocalizations.nurServers
+            : appLocalizations.proxies,
       PageLabel.profiles => appLocalizations.profiles,
       PageLabel.tools =>
         system.isWindows ? appLocalizations.settings : appLocalizations.tools,

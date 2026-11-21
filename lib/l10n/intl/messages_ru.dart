@@ -996,9 +996,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Введите содержимое правила",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),
@@ -1322,8 +1323,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "nurAddSubscription": MessageLookupByLibrary.simpleMessage(
       "Добавить подписку",
     ),
+    "nurChooseServer": MessageLookupByLibrary.simpleMessage("Выберите сервер"),
     "nurConnect": MessageLookupByLibrary.simpleMessage("Подключиться"),
+    "nurConnectionMode": MessageLookupByLibrary.simpleMessage(
+      "Режим подключения",
+    ),
     "nurDisconnect": MessageLookupByLibrary.simpleMessage("Отключиться"),
+    "nurDisconnectToChangeMode": MessageLookupByLibrary.simpleMessage(
+      "Отключитесь, чтобы сменить режим подключения.",
+    ),
     "nurHomeSubtitle": MessageLookupByLibrary.simpleMessage(
       "Подписка, сервер и подключение",
     ),
@@ -1342,6 +1350,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "nurImporting": MessageLookupByLibrary.simpleMessage(
       "Импортируем подписку…",
     ),
+    "nurProxyDescription": MessageLookupByLibrary.simpleMessage(
+      "Прокси работает с программами, использующими системные настройки прокси.",
+    ),
+    "nurProxyMode": MessageLookupByLibrary.simpleMessage("Прокси"),
+    "nurServers": MessageLookupByLibrary.simpleMessage("Серверы"),
     "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
       "Вставьте ссылку на подписку от вашего провайдера.",
     ),
@@ -1351,6 +1364,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "nurUpdateLater": MessageLookupByLibrary.simpleMessage("Позже"),
     "nurUpdatesHint": MessageLookupByLibrary.simpleMessage(
       "Когда появится новая версия, Nur Connect предложит обновиться. Установка — с вашего подтверждения.",
+    ),
+    "nurVpnDescription": MessageLookupByLibrary.simpleMessage(
+      "VPN направляет трафик приложений этого компьютера.",
     ),
     "nurWelcomeHint": MessageLookupByLibrary.simpleMessage(
       "Добавьте подписку, чтобы выбрать сервер и подключиться.",

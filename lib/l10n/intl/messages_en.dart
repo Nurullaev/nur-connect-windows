@@ -961,9 +961,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Enter the rule content",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "The app list permission was denied, so installed apps cannot be listed. Please grant it manually in system settings.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "This system hides the installed app list until the permission is granted. Authorize it to configure the per-app proxy.",
     ),
@@ -1265,8 +1266,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "nurAddSubscription": MessageLookupByLibrary.simpleMessage(
       "Add subscription",
     ),
+    "nurChooseServer": MessageLookupByLibrary.simpleMessage("Choose a server"),
     "nurConnect": MessageLookupByLibrary.simpleMessage("Connect"),
+    "nurConnectionMode": MessageLookupByLibrary.simpleMessage(
+      "Connection mode",
+    ),
     "nurDisconnect": MessageLookupByLibrary.simpleMessage("Disconnect"),
+    "nurDisconnectToChangeMode": MessageLookupByLibrary.simpleMessage(
+      "Disconnect to change connection mode.",
+    ),
     "nurHomeSubtitle": MessageLookupByLibrary.simpleMessage(
       "Subscription, server and connection",
     ),
@@ -1285,6 +1293,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "nurImporting": MessageLookupByLibrary.simpleMessage(
       "Importing subscription…",
     ),
+    "nurProxyDescription": MessageLookupByLibrary.simpleMessage(
+      "Proxy works with apps that follow the system proxy settings.",
+    ),
+    "nurProxyMode": MessageLookupByLibrary.simpleMessage("Proxy"),
+    "nurServers": MessageLookupByLibrary.simpleMessage("Servers"),
     "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
       "Paste the subscription link from your provider.",
     ),
@@ -1294,6 +1307,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "nurUpdateLater": MessageLookupByLibrary.simpleMessage("Later"),
     "nurUpdatesHint": MessageLookupByLibrary.simpleMessage(
       "Nur Connect will offer a new version when it is available. Updates are installed with your confirmation.",
+    ),
+    "nurVpnDescription": MessageLookupByLibrary.simpleMessage(
+      "VPN routes traffic for apps on this computer.",
     ),
     "nurWelcomeHint": MessageLookupByLibrary.simpleMessage(
       "Add a subscription to choose a server and connect.",

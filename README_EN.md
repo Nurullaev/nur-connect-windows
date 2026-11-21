@@ -29,5 +29,5 @@ Outputs go to `dist/`. Add `--targets zip` for a portable archive only. Provider
 [GPL v3](LICENSE). Original author credits and third-party licenses are retained; see [NOTICE](NOTICE.md). Source base: FlClashX `a9bbb66f6aec3e47359819c93976148a1d270e23`, Mihomo `v1.19.34`. This is a separate project from the similarly named mobile apps and is not an official upstream release.
 
 The owner chose the simplified Nur Connect interface after comparing it with
-FlClashX. New installations use TUN VPN routing by default; network switches
-are available in advanced settings. The first public release is being prepared.
+FlClashX. The home has a compact VPN (TUN) / Proxy selector, with VPN selected for new
+installs. Technical network options remain in advanced settings. The first public release is being prepared.

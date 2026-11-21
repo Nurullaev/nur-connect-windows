@@ -8022,8 +8022,7 @@ class AppLocalizations {
   String customImportDroppedSubRules(num count, Object label) {
     return Intl.plural(
       count,
-      one:
-          '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
+      one: '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
       other:
           '$label SUB-RULE rules were dropped, since custom profiles do not support sub-rules',
       name: 'customImportDroppedSubRules',
@@ -8912,6 +8911,66 @@ class AppLocalizations {
     return Intl.message(
       'Nur Connect will offer a new version when it is available. Updates are installed with your confirmation.',
       name: 'nurUpdatesHint',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Servers`
+  String get nurServers {
+    return Intl.message('Servers', name: 'nurServers', desc: '', args: []);
+  }
+
+  /// `Choose a server`
+  String get nurChooseServer {
+    return Intl.message(
+      'Choose a server',
+      name: 'nurChooseServer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Connection mode`
+  String get nurConnectionMode {
+    return Intl.message(
+      'Connection mode',
+      name: 'nurConnectionMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Proxy`
+  String get nurProxyMode {
+    return Intl.message('Proxy', name: 'nurProxyMode', desc: '', args: []);
+  }
+
+  /// `VPN routes traffic for apps on this computer.`
+  String get nurVpnDescription {
+    return Intl.message(
+      'VPN routes traffic for apps on this computer.',
+      name: 'nurVpnDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Proxy works with apps that follow the system proxy settings.`
+  String get nurProxyDescription {
+    return Intl.message(
+      'Proxy works with apps that follow the system proxy settings.',
+      name: 'nurProxyDescription',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Disconnect to change connection mode.`
+  String get nurDisconnectToChangeMode {
+    return Intl.message(
+      'Disconnect to change connection mode.',
+      name: 'nurDisconnectToChangeMode',
       desc: '',
       args: [],
     );

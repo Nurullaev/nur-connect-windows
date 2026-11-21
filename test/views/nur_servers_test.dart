@@ -30,79 +30,122 @@ class _Proxies extends ProxiesAction {
 }
 
 void main() {
-  testWidgets('local search preserves the page query and the chosen server', (
-    tester,
-  ) async {
-    const profile = Profile(
-      id: 1,
-      label: 'Plan',
-      autoUpdateDuration: Duration.zero,
+  for (final (picker, mode) in [
+    (true, Mode.rule),
+    (false, Mode.rule),
+    (false, Mode.global),
+  ]) {
+    testWidgets(
+      'server page picker=$picker mode=$mode lays out and preserves picks',
+      (tester) async {
+        const profile = Profile(
+          id: 1,
+          label: 'Plan',
+          autoUpdateDuration: Duration.zero,
+        );
+        final action = _Proxies();
+        final container = ProviderContainer(
+          overrides: [
+            profilesProvider.overrideWith(() => TestProfiles([profile])),
+            proxiesActionProvider.overrideWith(() => action),
+            coreStatusProvider.overrideWithBuild(
+              (_, _) => CoreStatus.connected,
+            ),
+            patchClashConfigProvider.overrideWithBuild(
+              (_, _) => PatchClashConfig(mode: mode),
+            ),
+          ],
+        );
+        addTearDown(container.dispose);
+        globalState.container = container;
+        tester.view.physicalSize = Size(picker ? 1100 : 430, 900);
+        tester.view.devicePixelRatio = 1;
+        addTearDown(tester.view.resetPhysicalSize);
+        addTearDown(tester.view.resetDevicePixelRatio);
+        container.read(viewSizeProvider.notifier).value = Size(
+          picker ? 1100 : 430,
+          900,
+        );
+        container.listen(currentProfileIdProvider, (_, _) {});
+        container.read(currentProfileIdProvider.notifier).value = 1;
+        container.listen(groupsProvider, (_, _) {});
+        container.read(groupsProvider.notifier).value = [
+          const Group(
+            name: 'GLOBAL',
+            type: GroupType.Selector,
+            hidden: false,
+            now: 'Finland',
+            all: [
+              Proxy(name: 'DIRECT', type: 'Direct'),
+              Proxy(name: 'REJECT', type: 'Reject'),
+              Proxy(name: 'Finland', type: 'ss'),
+              Proxy(name: 'US fixed', type: 'ss'),
+            ],
+          ),
+          const Group(
+            name: 'Servers',
+            type: GroupType.Selector,
+            hidden: false,
+            now: 'Finland',
+            all: [
+              Proxy(name: 'Finland', type: 'ss'),
+              Proxy(name: 'US fixed', type: 'ss'),
+            ],
+          ),
+        ];
+        container.listen(queryProvider(QueryTag.proxies), (_, _) {});
+        container.read(queryProvider(QueryTag.proxies).notifier).value =
+            'other-page';
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: container,
+            child: TestApp(
+              locale: const Locale('en'),
+              child: NurServersView(picker: picker),
+            ),
+          ),
+        );
+        await tester.pumpAndSettle();
+        expect(tester.takeException(), isNull);
+        expect(find.text('GLOBAL'), findsNothing);
+        expect(find.text('DIRECT'), findsNothing);
+        expect(find.text('REJECT'), findsNothing);
+        expect(find.text('Finland'), findsOneWidget);
+        expect(
+          tester.getTopLeft(find.byKey(const ValueKey('nur-server-search'))).dy,
+          greaterThan(
+            tester
+                .getBottomLeft(find.text(currentAppLocalizations.nurServers))
+                .dy,
+          ),
+        );
+        final groupName = mode == Mode.global ? 'GLOBAL' : 'Servers';
+        await tester.enterText(
+          find.byKey(const ValueKey('nur-server-search')),
+          'US',
+        );
+        await tester.pumpAndSettle();
+        expect(find.text('US fixed'), findsOne);
+        expect(find.text('Finland'), findsNothing);
+        expect(container.read(queryProvider(QueryTag.proxies)), 'other-page');
+        await tester.tap(find.text('US fixed'));
+        await tester.pumpAndSettle();
+        expect(action.chosen, ['US fixed']);
+        expect(
+          container.read(profilesProvider).single.selectedMap[groupName],
+          'US fixed',
+        );
+        await tester.tap(
+          find.byTooltip(currentAppLocalizations.delayTest).last,
+        );
+        await tester.pumpAndSettle();
+        expect(action.tested, ['US fixed']);
+        expect(
+          container.read(profilesProvider).single.selectedMap[groupName],
+          'US fixed',
+        );
+        expect(tester.takeException(), isNull);
+      },
     );
-    final action = _Proxies();
-    final container = ProviderContainer(
-      overrides: [
-        profilesProvider.overrideWith(() => TestProfiles([profile])),
-        proxiesActionProvider.overrideWith(() => action),
-        coreStatusProvider.overrideWithBuild((_, _) => CoreStatus.connected),
-      ],
-    );
-    addTearDown(container.dispose);
-    globalState.container = container;
-    tester.view.physicalSize = const Size(1100, 900);
-    tester.view.devicePixelRatio = 1;
-    addTearDown(tester.view.resetPhysicalSize);
-    addTearDown(tester.view.resetDevicePixelRatio);
-    container.read(viewSizeProvider.notifier).value = const Size(1100, 900);
-    container.listen(currentProfileIdProvider, (_, _) {});
-    container.read(currentProfileIdProvider.notifier).value = 1;
-    container.listen(groupsProvider, (_, _) {});
-    container.read(groupsProvider.notifier).value = [
-      const Group(
-        name: 'Servers',
-        type: GroupType.Selector,
-        hidden: false,
-        now: 'Finland',
-        all: [
-          Proxy(name: 'Finland', type: 'ss'),
-          Proxy(name: 'US fixed', type: 'ss'),
-        ],
-      ),
-    ];
-    container.listen(queryProvider(QueryTag.proxies), (_, _) {});
-    container.read(queryProvider(QueryTag.proxies).notifier).value =
-        'other-page';
-    await tester.pumpWidget(
-      UncontrolledProviderScope(
-        container: container,
-        child: const TestApp(
-          locale: Locale('en'),
-          child: NurServersView(picker: true),
-        ),
-      ),
-    );
-    await tester.pumpAndSettle();
-    await tester.enterText(
-      find.byKey(const ValueKey('nur-server-search')),
-      'US',
-    );
-    await tester.pumpAndSettle();
-    expect(find.text('US fixed'), findsOne);
-    expect(find.text('Finland'), findsNothing);
-    expect(container.read(queryProvider(QueryTag.proxies)), 'other-page');
-    await tester.tap(find.text('US fixed'));
-    await tester.pumpAndSettle();
-    expect(action.chosen, ['US fixed']);
-    expect(
-      container.read(profilesProvider).single.selectedMap['Servers'],
-      'US fixed',
-    );
-    await tester.tap(find.byTooltip(currentAppLocalizations.delayTest).last);
-    await tester.pumpAndSettle();
-    expect(action.tested, ['US fixed']);
-    expect(
-      container.read(profilesProvider).single.selectedMap['Servers'],
-      'US fixed',
-    );
-    expect(tester.takeException(), isNull);
-  });
+  }
 }

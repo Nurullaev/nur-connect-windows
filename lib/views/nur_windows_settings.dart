@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -156,6 +157,15 @@ class NurWindowsSettings extends ConsumerWidget {
             title: simple ? l10n.more : l10n.advancedConfig,
             items: [
               if (!simple) ...[
+                ConfigOptionsItem<Mode>(
+                  title: (l) => l.outboundMode,
+                  managedKey: 'clash.mode',
+                  options: ref.watch(availableModesProvider),
+                  selector: patchClashConfigProvider.select((s) => s.mode),
+                  textBuilder: (mode) => mode.label,
+                  onChanged: (ref, mode) =>
+                      ref.read(setupActionProvider.notifier).pickMode(mode),
+                ),
                 ListItem.open(
                   title: Text(l10n.network),
                   widget: CommonScaffold(

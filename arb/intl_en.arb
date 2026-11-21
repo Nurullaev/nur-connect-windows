@@ -1054,5 +1054,12 @@
   "nurDisconnect": "Disconnect",
   "nurTakeoverHint": "Enable TUN or system proxy to route traffic through Nur Connect.",
   "nurUpdateLater": "Later",
-  "nurUpdatesHint": "Nur Connect will offer a new version when it is available. Updates are installed with your confirmation."
+  "nurUpdatesHint": "Nur Connect will offer a new version when it is available. Updates are installed with your confirmation.",
+  "nurServers": "Servers",
+  "nurChooseServer": "Choose a server",
+  "nurConnectionMode": "Connection mode",
+  "nurProxyMode": "Proxy",
+  "nurVpnDescription": "VPN routes traffic for apps on this computer.",
+  "nurProxyDescription": "Proxy works with apps that follow the system proxy settings.",
+  "nurDisconnectToChangeMode": "Disconnect to change connection mode."
 }

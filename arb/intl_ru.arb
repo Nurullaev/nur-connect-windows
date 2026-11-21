@@ -1054,5 +1054,12 @@
   "nurDisconnect": "Отключиться",
   "nurTakeoverHint": "Включите TUN или системный прокси, чтобы направить трафик через Nur Connect.",
   "nurUpdateLater": "Позже",
-  "nurUpdatesHint": "Когда появится новая версия, Nur Connect предложит обновиться. Установка — с вашего подтверждения."
+  "nurUpdatesHint": "Когда появится новая версия, Nur Connect предложит обновиться. Установка — с вашего подтверждения.",
+  "nurServers": "Серверы",
+  "nurChooseServer": "Выберите сервер",
+  "nurConnectionMode": "Режим подключения",
+  "nurProxyMode": "Прокси",
+  "nurVpnDescription": "VPN направляет трафик приложений этого компьютера.",
+  "nurProxyDescription": "Прокси работает с программами, использующими системные настройки прокси.",
+  "nurDisconnectToChangeMode": "Отключитесь, чтобы сменить режим подключения."
 }
