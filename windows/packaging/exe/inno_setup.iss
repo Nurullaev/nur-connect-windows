@@ -19,6 +19,8 @@ PrivilegesRequired={{PRIVILEGES_REQUIRED}}
 ArchitecturesAllowed={{ARCH}}
 ArchitecturesInstallIn64BitMode={{ARCH}}
 UninstallDisplayIcon={uninstallexe}
+; Apps & features shows the version on its own line.
+UninstallDisplayName={{DISPLAY_NAME}}
 ChangesAssociations=yes
 UsePreviousAppDir=yes
 UsePreviousGroup=yes
@@ -206,6 +208,11 @@ begin
   end;
 end;
 
+function RelaunchAfterUpdate: Boolean;
+begin
+  Result := WizardSilent and (ExpandConstant('{param:RELAUNCH|0}') = '1');
+end;
+
 procedure CurUninstallStepChanged(CurUninstallStep: TUninstallStep);
 begin
   case CurUninstallStep of
@@ -271,3 +278,5 @@ Name: "{autodesktop}\{{DISPLAY_NAME}}"; Filename: "{app}\{{EXECUTABLE_NAME}}"; T
 
 [Run]
 Filename: "{app}\{{EXECUTABLE_NAME}}"; Description: "{cm:LaunchProgram,{{DISPLAY_NAME}}}"; Flags: {{RUN_FLAGS}} nowait postinstall skipifsilent
+; The app's own update passes /RELAUNCH=1 and comes back once the files are in.
+Filename: "{app}\{{EXECUTABLE_NAME}}"; Flags: nowait runasoriginaluser; Check: RelaunchAfterUpdate

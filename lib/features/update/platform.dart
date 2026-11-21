@@ -285,7 +285,9 @@ class WindowsUpdatePlatform implements UpdatePlatform {
         '-NoProfile',
         '-NonInteractive',
         '-Command',
-        'Start-Process -FilePath \$env:$_setupVariable',
+        // A small progress window instead of the wizard, then the app again.
+        'Start-Process -FilePath \$env:$_setupVariable '
+            "-ArgumentList '/SILENT','/SUPPRESSMSGBOXES','/NORESTART','/RELAUNCH=1'",
       ],
       environment: {_setupVariable: file.path},
     );

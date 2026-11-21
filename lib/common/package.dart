@@ -78,10 +78,20 @@ List<String> parseReleaseBody(String? body) {
   final regex = RegExp(r'^[ \t]*-[ \t]+(.*)$', multiLine: true);
   return regex
       .allMatches(scopeReleaseNotes(body))
-      .map((match) => match.group(1)?.trim() ?? '')
+      .map((match) => plainReleaseText(match.group(1)?.trim() ?? ''))
       .where((item) => item.isNotEmpty)
       .toList();
 }
+
+final _markdownLink = RegExp(r'\[([^\]]+)\]\([^)]*\)');
+final _markdownEmphasis = RegExp(r'(\*\*|__|`)');
+
+/// A release note line as it reads: links keep their text, bold and code
+/// marks go.
+String plainReleaseText(String line) => line
+    .replaceAllMapped(_markdownLink, (match) => match.group(1)!)
+    .replaceAll(_markdownEmphasis, '')
+    .trim();
 
 String scopeReleaseNotes(String body) {
   final begin = body.indexOf(releaseNotesBeginMarker);

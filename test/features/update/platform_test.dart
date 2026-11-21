@@ -109,6 +109,29 @@ void main() {
     });
   });
 
+  test('the Windows setup runs quietly and starts the app again', () async {
+    final calls = <List<String>>[];
+    var exited = false;
+    final platform = WindowsUpdatePlatform(
+      executable: r'C:\Program Files\Nur Connect\NurConnect.exe',
+      target: const UpdateTarget(UpdateInstallKind.windows, ['amd64']),
+      run: (executable, arguments, {environment}) async {
+        calls.add([executable, ...arguments, environment?.values.join() ?? '']);
+        return ProcessResult(0, 0, '', '');
+      },
+      exitApp: () async => exited = true,
+    );
+
+    final result = await platform.install(File(r'C:\cache\setup.exe'));
+
+    expect(result, UpdateInstallResult.exiting);
+    expect(exited, isTrue);
+    final command = calls.single.join(' ');
+    expect(command, contains('/SILENT'));
+    expect(command, contains('/RELAUNCH=1'));
+    expect(command, contains(r'C:\cache\setup.exe'));
+  });
+
   test('desktop arch names follow the release assets', () {
     expect(desktopArch(Abi.macosArm64), 'arm64');
     expect(desktopArch(Abi.windowsX64), 'amd64');

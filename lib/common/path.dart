@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'dart:io';
 
 import 'package:fl_clash/common/common.dart';
+import 'package:fl_clash/enum/enum.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -42,7 +43,13 @@ class AppPath {
   }
 
   void _bind() {
-    _dataDir = ResolveOnce(supportDirectory);
+    _dataDir = ResolveOnce(() async {
+      final directory = await supportDirectory();
+      if (Platform.isWindows) {
+        await moveLegacyWindowsData(directory);
+      }
+      return directory;
+    });
     _downloadDir = ResolveOnce(downloadDirectory);
     _tempDir = ResolveOnce(temporaryDirectory);
     cacheDirectory().then(cacheDir.complete);
@@ -198,4 +205,33 @@ String getBackupFileName() {
 
 String get logFileName {
   return '${productFileName}_${DateTime.now().show}.log';
+}
+
+/// Up to 1.0.1 the data lived under %APPDATA%\\Nurullaev; the publisher, and
+/// with it the folder Windows picks, is Nur Dev since. The old folder moves
+/// once, while the new one is still empty, so a subscription survives the
+/// update; a folder in use stays where it is and the app starts afresh.
+@visibleForTesting
+Future<void> moveLegacyWindowsData(Directory current) async {
+  final parent = current.parent;
+  if (basename(parent.path) != windowsCompanyName) return;
+  final legacy = Directory(
+    join(parent.parent.path, legacyWindowsCompanyName, basename(current.path)),
+  );
+  try {
+    if (!await legacy.exists()) return;
+    if (await current.exists()) {
+      if (!await current.list().isEmpty) return;
+      await current.delete();
+    }
+    await parent.create(recursive: true);
+    await legacy.rename(current.path);
+    commonPrint.log('moved the data folder from $legacyWindowsCompanyName');
+  } catch (error) {
+    commonPrint.log(
+      'the old data folder stays: $error',
+      logLevel: LogLevel.warning,
+    );
+    await current.create(recursive: true);
+  }
 }

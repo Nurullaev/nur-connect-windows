@@ -8,8 +8,14 @@ const windowsCoreName = 'NurConnectCore';
 const windowsHelperName = 'NurConnectWindowsHelper';
 const windowsPreHelperName = 'NurConnectWindowsPreHelper';
 const windowsAppId = 'org.nurconnect.windows';
-const windowsDataDirectory = r'Nurullaev\NurConnectWindows';
-const windowsPreDataDirectory = r'Nurullaev\NurConnectWindows.pre';
+
+/// The publisher, which Windows also takes for the data folder's parent.
+const windowsCompanyName = 'Nur Dev';
+
+/// The data folder's parent up to 1.0.1, moved once by [AppPath].
+const legacyWindowsCompanyName = 'Nurullaev';
+const windowsDataDirectory = '$windowsCompanyName\\NurConnectWindows';
+const windowsPreDataDirectory = '$windowsCompanyName\\NurConnectWindows.pre';
 const windowsProtocolScheme = 'nurconnect-win';
 const windowsPreProtocolScheme = 'nurconnect-win-pre';
 const windowsInstallerId = '6C4AE483-BA2C-4EE6-80A3-E4EFAC4D1D4D';

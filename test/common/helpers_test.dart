@@ -301,6 +301,16 @@ void main() {
       expect(parseReleaseBody(body), ['Item 1']);
     });
 
+    test('drops bold, code and link marks from the lines', () {
+      const body =
+          '- **One app** for `every` brand\n'
+          '- See [the site](https://nurconnect.app) for __more__\n';
+      expect(parseReleaseBody(body), [
+        'One app for every brand',
+        'See the site for more',
+      ]);
+    });
+
     test('ignores inline dashes in the download template', () {
       const body =
           '- Item 1\n'

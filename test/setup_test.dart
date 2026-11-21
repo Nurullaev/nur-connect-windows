@@ -443,7 +443,7 @@ hooks:
         expect(pre, contains("HelperService = 'NurConnectWindowsPreHelper';"));
         expect(pre, isNot(contains('AdoptLegacy')));
         expect(pre, contains("KillProcess('NurConnectPre.exe');"));
-        expect(pre, contains(r'{userappdata}\Nurullaev\NurConnectWindows.pre'));
+        expect(pre, contains(r'{userappdata}\Nur Dev\NurConnectWindows.pre'));
         expect(
           RegExp(r'\{\{([A-Z_]+)\}\}').allMatches(pre).map((m) => m[1]),
           everyElement('NAME'),
@@ -457,10 +457,7 @@ hooks:
         expect(stable, contains("HelperService = 'NurConnectWindowsHelper';"));
         expect(stable, isNot(contains('AdoptLegacy')));
         expect(stable, contains("KillProcess('NurConnect.exe');"));
-        expect(
-          stable,
-          contains(r"{userappdata}\Nurullaev\NurConnectWindows')"),
-        );
+        expect(stable, contains(r"{userappdata}\Nur Dev\NurConnectWindows')"));
       });
 
       test('stops only the Core started from its own install', () {

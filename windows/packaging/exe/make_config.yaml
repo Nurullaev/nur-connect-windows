@@ -1,7 +1,7 @@
 script_template: inno_setup.iss
 app_id: 6C4AE483-BA2C-4EE6-80A3-E4EFAC4D1D4D
 app_name: Nur Connect
-publisher: Nurullaev
+publisher: Nur Dev
 publisher_url: https://nurconnect.app
 display_name: Nur Connect
 executable_name: NurConnect.exe
