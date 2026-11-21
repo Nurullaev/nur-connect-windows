@@ -13,7 +13,7 @@ An independent Windows client built on [FlClashX](https://github.com/pluralplay/
 - Independent app, helper, data-directory and URI identities.
 - Automatic release checks with Update / Later prompts; see [updates](docs/windows/updates.md).
 
-The first preview is **0.1.0-pre.1**. See [build status and limitations](docs/windows/first-build.md) and the [roadmap](docs/windows/roadmap.md). The application and installer use the Nur Connect brand icon. New messages support Russian and English; other locales fall back to English. Fork Actions remain disabled until our release workflows are prepared.
+The first [preview release **0.1.0-pre.1**](https://github.com/Nurullaev/nur-connect-windows/releases/tag/v0.1.0-pre.1) is available with an x64 installer, portable ZIP and matching source archive. See [build status and limitations](docs/windows/first-build.md) and the [roadmap](docs/windows/roadmap.md). The application and installer use the Nur Connect brand icon. New messages support Russian and English; other locales fall back to English. Fork Actions remain disabled until our release workflows are prepared.
 
 Build on Windows with Flutter, Go, Rust MSVC (`1.99.0` for the native API), Visual Studio C++ tools/CMake/Windows SDK/ATL and Inno Setup 6:
 
@@ -28,6 +28,5 @@ Outputs go to `dist/`. Add `--targets zip` for a portable archive only. Provider
 
 [GPL v3](LICENSE). Original author credits and third-party licenses are retained; see [NOTICE](NOTICE.md). Source base: FlClashX `a9bbb66f6aec3e47359819c93976148a1d270e23`, Mihomo `v1.19.34`. This is a separate project from the similarly named mobile apps and is not an official upstream release.
 
-The owner chose the simplified Nur Connect interface after comparing it with
-FlClashX. The home has a compact VPN (TUN) / Proxy selector, with VPN selected for new
-installs. Technical network options remain in advanced settings. The first public release is being prepared.
+The simplified home has a compact VPN (TUN) / Proxy selector, with VPN selected for new
+installs. Technical network options remain in advanced settings.
