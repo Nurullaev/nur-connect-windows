@@ -25,6 +25,9 @@ bool _isGenerated(String path) {
       _generatedL10n.any(path.startsWith);
 }
 
+/// Windows lists paths with backslashes; the rules here are written with `/`.
+String _posix(String path) => path.replaceAll(r'\', '/');
+
 void main() {
   test('material_ui is the only design library the project imports', () {
     final offenders = <String>[];
@@ -35,10 +38,10 @@ void main() {
         fail('$root no longer exists; update _roots.');
       }
       for (final entity in directory.listSync(recursive: true)) {
-        if (entity is! File || !entity.path.endsWith('.dart')) {
+        if (entity is! File || !_posix(entity.path).endsWith('.dart')) {
           continue;
         }
-        final relative = p.relative(entity.path);
+        final relative = _posix(p.relative(entity.path));
         if (_isGenerated(relative)) {
           continue;
         }

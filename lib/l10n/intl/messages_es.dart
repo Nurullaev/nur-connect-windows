@@ -1022,9 +1022,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Introduce el contenido de la regla",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Se denegó el permiso de lista de apps, por lo que no se pueden mostrar las apps instaladas. Concédelo manualmente en los ajustes del sistema.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Se denegó el permiso de lista de apps, por lo que no se pueden mostrar las apps instaladas. Concédelo manualmente en los ajustes del sistema.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Este sistema oculta la lista de apps instaladas hasta que se concede el permiso. Autorízalo para configurar el proxy por app.",
     ),
@@ -1353,6 +1354,62 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullTip": m57,
     "numberRangeTip": m58,
     "numberTip": m59,
+    "nurAddSubscription": MessageLookupByLibrary.simpleMessage(
+      "Añadir suscripción",
+    ),
+    "nurChooseServer": MessageLookupByLibrary.simpleMessage(
+      "Elige un servidor",
+    ),
+    "nurConnect": MessageLookupByLibrary.simpleMessage("Conectar"),
+    "nurConnectionMode": MessageLookupByLibrary.simpleMessage(
+      "Modo de conexión",
+    ),
+    "nurDisconnect": MessageLookupByLibrary.simpleMessage("Desconectar"),
+    "nurDisconnectToChangeMode": MessageLookupByLibrary.simpleMessage(
+      "Desconéctate para cambiar el modo de conexión.",
+    ),
+    "nurHomeSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Suscripción, servidor y conexión",
+    ),
+    "nurImportEmptyResponse": MessageLookupByLibrary.simpleMessage(
+      "El servidor devolvió una suscripción vacía. Inténtalo de nuevo o verifica el enlace con tu proveedor.",
+    ),
+    "nurImportFailed": MessageLookupByLibrary.simpleMessage(
+      "No se pudo importar la suscripción. Inténtalo de nuevo. Tu perfil guardado se ha conservado.",
+    ),
+    "nurImportInvalidConfig": MessageLookupByLibrary.simpleMessage(
+      "No se pudo validar la suscripción. Intenta actualizarla o contacta con tu proveedor. Tu perfil guardado se ha conservado.",
+    ),
+    "nurImportWrongFormat": MessageLookupByLibrary.simpleMessage(
+      "El enlace devolvió una página web o un formato no compatible. Pide a tu proveedor una suscripción para Mihomo / Clash.",
+    ),
+    "nurImporting": MessageLookupByLibrary.simpleMessage(
+      "Importando suscripción…",
+    ),
+    "nurProxyDescription": MessageLookupByLibrary.simpleMessage(
+      "El proxy funciona con las aplicaciones que siguen la configuración de proxy del sistema.",
+    ),
+    "nurProxyMode": MessageLookupByLibrary.simpleMessage("Proxy"),
+    "nurServers": MessageLookupByLibrary.simpleMessage("Servidores"),
+    "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
+      "Pega el enlace de suscripción de tu proveedor.",
+    ),
+    "nurTakeoverHint": MessageLookupByLibrary.simpleMessage(
+      "Activa TUN o el proxy del sistema para enrutar el tráfico a través de Nur Connect.",
+    ),
+    "nurUpdateLater": MessageLookupByLibrary.simpleMessage("Más tarde"),
+    "nurUpdatesHint": MessageLookupByLibrary.simpleMessage(
+      "Nur Connect te ofrecerá una nueva versión cuando esté disponible. Las actualizaciones se instalan con tu confirmación.",
+    ),
+    "nurVpnDescription": MessageLookupByLibrary.simpleMessage(
+      "La VPN enruta el tráfico de las aplicaciones de este ordenador.",
+    ),
+    "nurWelcomeHint": MessageLookupByLibrary.simpleMessage(
+      "Añade una suscripción para elegir un servidor y conectarte.",
+    ),
+    "nurWelcomeTitle": MessageLookupByLibrary.simpleMessage(
+      "Empieza con tu suscripción",
+    ),
     "obfs": MessageLookupByLibrary.simpleMessage("Ofuscación"),
     "obfsHost": MessageLookupByLibrary.simpleMessage("Host de ofuscación"),
     "obfsMode": MessageLookupByLibrary.simpleMessage("Modo de ofuscación"),

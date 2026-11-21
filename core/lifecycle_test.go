@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net"
+	"os"
 	"slices"
 	"strconv"
 	"strings"
@@ -160,13 +161,26 @@ func recreatedListeners(apply func()) []string {
 // inner tunnel set for every HTTP download the tests after it make.
 func runningApplies(t *testing.T) {
 	previous, innerTunnel := constant.Path.HomeDir(), inner.GetTunnel()
-	constant.SetHomeDir(t.TempDir())
+	constant.SetHomeDir(applyHomeDir(t))
 	t.Cleanup(func() {
 		constant.SetHomeDir(previous)
 		inner.New(innerTunnel)
 	})
 	isRunning.Store(true)
 	stopAfter(t)
+}
+
+// applyHomeDir is a scratch home for applied configs. Mihomo opens its cache
+// file in the home once per process and never closes it, and Windows will not
+// delete an open file, so the removal t.TempDir would insist on is best effort.
+func applyHomeDir(t *testing.T) string {
+	t.Helper()
+	dir, err := os.MkdirTemp("", "core-apply-")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = os.RemoveAll(dir) })
+	return dir
 }
 
 func TestApplyLeavesEveryListenerOnTheAccountingTunnel(t *testing.T) {

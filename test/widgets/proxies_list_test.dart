@@ -1,3 +1,4 @@
+import 'package:fl_clash/common/nur_layout.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
@@ -34,6 +35,10 @@ Group _group(String name, int count) => Group(
 );
 
 void main() {
+  // These check the FlClashX pages, which Windows replaces with Nur Connect's.
+  setUpAll(() => debugUpstreamLayout = true);
+  tearDownAll(() => debugUpstreamLayout = false);
+
   late ProviderContainer container;
 
   Future<void> pumpList(

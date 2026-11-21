@@ -985,6 +985,48 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullTip": m57,
     "numberRangeTip": m58,
     "numberTip": m59,
+    "nurAddSubscription": MessageLookupByLibrary.simpleMessage("添加订阅"),
+    "nurChooseServer": MessageLookupByLibrary.simpleMessage("选择服务器"),
+    "nurConnect": MessageLookupByLibrary.simpleMessage("连接"),
+    "nurConnectionMode": MessageLookupByLibrary.simpleMessage("连接模式"),
+    "nurDisconnect": MessageLookupByLibrary.simpleMessage("断开连接"),
+    "nurDisconnectToChangeMode": MessageLookupByLibrary.simpleMessage(
+      "断开连接后才能更改连接模式。",
+    ),
+    "nurHomeSubtitle": MessageLookupByLibrary.simpleMessage("订阅、服务器与连接"),
+    "nurImportEmptyResponse": MessageLookupByLibrary.simpleMessage(
+      "服务器返回了空订阅。请重试，或向服务商确认链接。",
+    ),
+    "nurImportFailed": MessageLookupByLibrary.simpleMessage(
+      "无法导入订阅。请重试。已保存的配置未改动。",
+    ),
+    "nurImportInvalidConfig": MessageLookupByLibrary.simpleMessage(
+      "无法验证订阅。请尝试更新，或联系服务商。已保存的配置未改动。",
+    ),
+    "nurImportWrongFormat": MessageLookupByLibrary.simpleMessage(
+      "该链接返回了网页或不支持的格式。请向服务商索取适用于 Mihomo / Clash 的订阅。",
+    ),
+    "nurImporting": MessageLookupByLibrary.simpleMessage("正在导入订阅…"),
+    "nurProxyDescription": MessageLookupByLibrary.simpleMessage(
+      "代理适用于遵循系统代理设置的应用。",
+    ),
+    "nurProxyMode": MessageLookupByLibrary.simpleMessage("代理"),
+    "nurServers": MessageLookupByLibrary.simpleMessage("服务器"),
+    "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
+      "粘贴服务商提供的订阅链接。",
+    ),
+    "nurTakeoverHint": MessageLookupByLibrary.simpleMessage(
+      "请启用 TUN 或系统代理，以便通过 Nur Connect 转发流量。",
+    ),
+    "nurUpdateLater": MessageLookupByLibrary.simpleMessage("稍后"),
+    "nurUpdatesHint": MessageLookupByLibrary.simpleMessage(
+      "有新版本时，Nur Connect 会提示您更新。更新需经您确认后安装。",
+    ),
+    "nurVpnDescription": MessageLookupByLibrary.simpleMessage(
+      "VPN 会转发这台电脑上应用的流量。",
+    ),
+    "nurWelcomeHint": MessageLookupByLibrary.simpleMessage("添加订阅后即可选择服务器并连接。"),
+    "nurWelcomeTitle": MessageLookupByLibrary.simpleMessage("从订阅开始"),
     "obfs": MessageLookupByLibrary.simpleMessage("混淆"),
     "obfsHost": MessageLookupByLibrary.simpleMessage("混淆主机"),
     "obfsMode": MessageLookupByLibrary.simpleMessage("混淆模式"),

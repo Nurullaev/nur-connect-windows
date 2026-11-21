@@ -60,6 +60,13 @@ ColorScheme genColorScheme(
   } else {
     seedColor = color ?? Color(themeSetting.primaryColor!);
   }
+  // Only a chosen gold is the brand look; the system accent falling back to
+  // the same gold still seeds, so that path keeps both brightnesses.
+  final chosen =
+      color?.toARGB32() ?? (ignoreConfig ? null : themeSetting.primaryColor);
+  if (isNurBrandColor(chosen)) {
+    return NurBrand.colorScheme;
+  }
   return _cachedColorScheme(
     seedColor,
     brightness,
@@ -99,6 +106,11 @@ Brightness currentBrightness(Ref ref) {
     themeSettingProvider.select((state) => state.themeMode),
   );
   final systemBrightness = ref.watch(systemBrightnessProvider);
+  if (ref.watch(
+    themeSettingProvider.select((state) => isNurBrandColor(state.primaryColor)),
+  )) {
+    return Brightness.dark;
+  }
   return switch (themeMode) {
     ThemeMode.system => systemBrightness,
     ThemeMode.light => Brightness.light,

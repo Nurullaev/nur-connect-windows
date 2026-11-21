@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fl_clash/providers/action.dart';
 import 'package:fl_clash/providers/app.dart';
 import 'package:fl_clash/providers/config.dart';
@@ -137,7 +139,11 @@ void main() {
     await tapCancel(tester);
     await shown;
 
-    expect(container.read(appSettingProvider).autoCheckUpdate, isFalse);
+    // On Windows "Later" only postpones: the checks stay on, as by default.
+    expect(
+      container.read(appSettingProvider).autoCheckUpdate,
+      Platform.isWindows ? isTrue : isFalse,
+    );
   });
 
   testWidgets('a manual check keeps the setting and reports a failure', (

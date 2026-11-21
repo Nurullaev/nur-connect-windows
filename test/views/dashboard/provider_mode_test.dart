@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:fl_clash/common/nur_layout.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/service_probe.dart' show routedOutbound;
 import 'package:fl_clash/enum/enum.dart';
@@ -88,6 +89,10 @@ Group _group(String name, List<String> proxies, {String? now}) => Group(
 );
 
 void main() {
+  // These check the FlClashX pages, which Windows replaces with Nur Connect's.
+  setUpAll(() => debugUpstreamLayout = true);
+  tearDownAll(() => debugUpstreamLayout = false);
+
   late ProviderContainer container;
 
   setUpAll(() async {

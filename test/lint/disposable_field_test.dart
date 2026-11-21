@@ -47,16 +47,19 @@ bool _isGenerated(String path) {
       path.endsWith('.freezed.dart');
 }
 
+/// Windows lists paths with backslashes; the rules here are written with `/`.
+String _posix(String path) => path.replaceAll(r'\', '/');
+
 void main() {
   test('every self-created disposable field is released in the same file', () {
     final root = Directory('lib');
     final offenders = <String>[];
 
     for (final entity in root.listSync(recursive: true)) {
-      if (entity is! File || !entity.path.endsWith('.dart')) {
+      if (entity is! File || !_posix(entity.path).endsWith('.dart')) {
         continue;
       }
-      final relative = p.relative(entity.path);
+      final relative = _posix(p.relative(entity.path));
       if (_isGenerated(relative)) {
         continue;
       }

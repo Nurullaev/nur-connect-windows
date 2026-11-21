@@ -1,3 +1,4 @@
+import 'package:fl_clash/common/nur_layout.dart';
 import 'package:fl_clash/common/app_localizations.dart';
 import 'package:fl_clash/common/app_ports.dart';
 import 'package:fl_clash/enum/enum.dart';
@@ -25,6 +26,10 @@ import '../helpers/test_app.dart';
 Finder _glyph(Glyph glyph) => find.byGlyph(glyph);
 
 void main() {
+  // These check the FlClashX pages, which Windows replaces with Nur Connect's.
+  setUpAll(() => debugUpstreamLayout = true);
+  tearDownAll(() => debugUpstreamLayout = false);
+
   setUp(() {
     navigationPort = navigation;
     addTearDown(() => navigationPort = null);

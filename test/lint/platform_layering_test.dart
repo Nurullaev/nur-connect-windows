@@ -62,12 +62,15 @@ Iterable<File> _dartFilesIn(String root) sync* {
   }
   for (final entity in directory.listSync(recursive: true)) {
     if (entity is File &&
-        entity.path.endsWith('.dart') &&
-        !entity.path.contains('/generated/')) {
+        _posix(entity.path).endsWith('.dart') &&
+        !_posix(entity.path).contains('/generated/')) {
       yield entity;
     }
   }
 }
+
+/// Windows lists paths with backslashes; the rules here are written with `/`.
+String _posix(String path) => path.replaceAll(r'\', '/');
 
 void main() {
   test('the common barrel never re-exports a platform module', () {
@@ -92,7 +95,7 @@ void main() {
 
     for (final root in ['lib/common', 'lib/enum', 'lib/models']) {
       for (final file in _dartFilesIn(root)) {
-        final relative = p.relative(file.path);
+        final relative = _posix(p.relative(file.path));
         if (_platformModules.contains(relative)) {
           continue;
         }
@@ -150,7 +153,7 @@ void main() {
         "import 'package:fl_clash/manager/manager.dart';",
       )) {
         offenders.add(
-          '${p.relative(file.path)} — import the one manager it needs, not the '
+          '${_posix(p.relative(file.path))} — import the one manager it needs, not the '
           'barrel that reaches every platform manager',
         );
       }

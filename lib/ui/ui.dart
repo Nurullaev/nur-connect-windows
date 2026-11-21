@@ -45,6 +45,7 @@ export 'navigation_dock.dart';
 export 'navigator_resizable.dart';
 export 'navigator.dart';
 export 'null_status.dart';
+export 'nur_brand.dart';
 export 'open_container.dart';
 export 'outer_shadow.dart';
 export 'page_transition.dart';

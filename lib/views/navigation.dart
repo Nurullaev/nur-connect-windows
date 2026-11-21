@@ -1,4 +1,5 @@
 import 'package:fl_clash/common/app_ports.dart';
+import 'package:fl_clash/common/nur_layout.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/ui/icons/app_glyphs.dart';
@@ -72,8 +73,7 @@ class Navigation implements NavigationPort {
       NavigationItem(
         glyph: AppGlyphs.settings,
         label: PageLabel.tools,
-        builder: (_) =>
-            SupportPlatform.currentPlatform == SupportPlatform.Windows
+        builder: (_) => nurWindowsLayout()
             ? const NurWindowsSettings(key: GlobalObjectKey(PageLabel.tools))
             : const ToolsView(key: GlobalObjectKey(PageLabel.tools)),
         modes: [NavigationItemMode.desktop, NavigationItemMode.mobile],

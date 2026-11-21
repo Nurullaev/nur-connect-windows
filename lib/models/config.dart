@@ -1,6 +1,7 @@
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/ui/color.dart';
+import 'package:fl_clash/ui/nur_brand.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
@@ -632,8 +633,28 @@ abstract class ThemeProps with _$ThemeProps {
     if (json == null) {
       return defaultThemeProps;
     }
-    return decodeSalvaging('theme settings', json, ThemeProps.fromJson);
+    return decodeSalvaging(
+      'theme settings',
+      _withoutLegacyDefaultColor(json),
+      ThemeProps.fromJson,
+    );
   }
+}
+
+/// FlClashX's light blue default stands in for "never chosen", so it gives way
+/// to the brand gold; every other choice is kept.
+Map<String, Object?> _withoutLegacyDefaultColor(Map<String, Object?> json) {
+  final colors = json['primaryColors'];
+  return {
+    ...json,
+    if (json['primaryColor'] == legacyDefaultPrimaryColor)
+      'primaryColor': defaultPrimaryColor,
+    if (colors is List && colors.contains(legacyDefaultPrimaryColor))
+      'primaryColors': [
+        for (final color in colors)
+          color == legacyDefaultPrimaryColor ? defaultPrimaryColor : color,
+      ],
+  };
 }
 
 @freezed

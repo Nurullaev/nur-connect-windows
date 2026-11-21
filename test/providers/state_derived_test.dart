@@ -858,6 +858,14 @@ void main() {
         .read(themeSettingProvider.notifier)
         .update((state) => state.copyWith(themeMode: ThemeMode.system));
     expect(container.read(currentBrightnessProvider), Brightness.light);
+    // The brand gold is dark only, whatever the system says.
+    container
+        .read(themeSettingProvider.notifier)
+        .update((state) => state.copyWith(primaryColor: defaultPrimaryColor));
+    expect(container.read(currentBrightnessProvider), Brightness.dark);
+    container
+        .read(themeSettingProvider.notifier)
+        .update((state) => state.copyWith(primaryColor: null));
 
     final fallback = container.read(
       genColorSchemeProvider(Brightness.light, ignoreConfig: true),

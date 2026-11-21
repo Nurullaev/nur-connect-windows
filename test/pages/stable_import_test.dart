@@ -1,3 +1,4 @@
+import 'package:fl_clash/common/constant.dart';
 import 'package:fl_clash/pages/stable_import.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
@@ -30,7 +31,7 @@ void main() {
   testWidgets('retry asks to take the stable data again', (tester) async {
     final choices = await pumpPrompt(tester);
 
-    expect(find.text('Bring over your FlClashX profiles'), findsOneWidget);
+    expect(find.text('Bring over your $appName profiles'), findsOneWidget);
     await tester.tap(find.text('Retry'));
     await tester.tap(find.text('Retry'));
     await tester.pump();

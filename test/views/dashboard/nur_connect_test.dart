@@ -146,7 +146,7 @@ void main() {
       final toggle = find.byKey(const ValueKey('nur-connect-toggle'));
       await tester.tap(toggle);
       await tester.pump();
-      expect(tester.widget<FilledButton>(toggle).onPressed, isNull);
+      expect(tester.widget<NurPowerButton>(toggle).onPressed, isNull);
       expect(setup.calls, [true]);
       pending.complete(true);
       await tester.pump();
@@ -177,12 +177,48 @@ void main() {
     await pump(tester, safe: true);
     expect(
       tester
-          .widget<FilledButton>(
+          .widget<NurPowerButton>(
             find.byKey(const ValueKey('nur-connect-toggle')),
           )
           .onPressed,
       isNull,
     );
+  });
+
+  testWidgets('a connected VPN lights the ring and shows time and speed', (
+    tester,
+  ) async {
+    final container = await pump(tester);
+    container
+        .read(patchClashConfigProvider.notifier)
+        .update((state) => state.copyWith.tun(enable: true));
+    container.read(runTimeProvider.notifier).value = 61000;
+    await tester.pump();
+    final toggle = find.byKey(const ValueKey('nur-connect-toggle'));
+    expect(
+      tester.widget<NurPowerButton>(toggle).state,
+      NurPowerState.connected,
+    );
+    expect(tester.widget<NurPowerButton>(toggle).caption, isNotNull);
+    expect(find.text(currentAppLocalizations.connected), findsOne);
+    expect(find.byKey(const ValueKey('nur-speed')), findsOne);
+    expect(find.text(currentAppLocalizations.nurTakeoverHint), findsNothing);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('an idle VPN shows a dashed ring and no time', (tester) async {
+    final container = await pump(tester);
+    container
+        .read(patchClashConfigProvider.notifier)
+        .update((state) => state.copyWith.tun(enable: true));
+    await tester.pump();
+    final button = tester.widget<NurPowerButton>(
+      find.byKey(const ValueKey('nur-connect-toggle')),
+    );
+    expect(button.state, NurPowerState.idle);
+    expect(button.caption, isNull);
+    expect(button.label, currentAppLocalizations.nurConnect);
+    expect(find.text(currentAppLocalizations.disconnected), findsOne);
   });
 
   testWidgets(

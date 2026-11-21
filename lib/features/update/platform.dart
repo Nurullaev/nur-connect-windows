@@ -482,8 +482,10 @@ final _innoUninstaller = RegExp(r'^unins\d{3}\.exe$', caseSensitive: false);
 /// old app's `unins000.exe` held the name until the setup retired it.
 @visibleForTesting
 Future<bool> hasInnoUninstaller(Directory directory) async {
+  // The install directory holds a handful of files; reading it at once keeps
+  // the answer from waiting on an event loop that a test may not run.
   try {
-    return await directory.list().any(
+    return directory.listSync().any(
       (entry) => _innoUninstaller.hasMatch(p.basename(entry.path)),
     );
   } on FileSystemException {

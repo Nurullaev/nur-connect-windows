@@ -20,14 +20,14 @@ import 'widgets/core_status_button.dart';
 import 'widgets/profile_detail.dart';
 import 'widgets/widgets.dart';
 
-/// The Windows home uses the existing profile, server and connection actions.
-/// Narrow windows and large text fall back to a single scrollable column.
+/// The Windows home, after the mobile app's design: one large power button,
+/// then the subscription and the chosen server. It drives the existing
+/// profile, server and connection actions.
 class NurConnectDashboard extends ConsumerWidget {
   const NurConnectDashboard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = context.appLocalizations;
     final profile = ref.watch(currentProfileProvider);
     final hasProfiles = ref.watch(
       profilesProvider.select((value) => value.isNotEmpty),
@@ -43,8 +43,8 @@ class NurConnectDashboard extends ConsumerWidget {
           ClipOval(
             child: Image.asset(
               'assets/images/icon.png',
-              width: 40,
-              height: 40,
+              width: 36,
+              height: 36,
               fit: BoxFit.cover,
               excludeFromSemantics: true,
             ),
@@ -59,26 +59,10 @@ class NurConnectDashboard extends ConsumerWidget {
       body: LayoutBuilder(
         builder: (context, constraints) {
           final twoColumns = constraints.maxWidth / scale >= 900;
-          final left = Column(
+          final details = Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: 16,
-            children: [
-              if (profile != null) ...[
-                const _ConnectionCard(),
-                const _ServerCard(),
-              ] else
-                _WelcomeCard(hasProfiles: hasProfiles),
-            ],
-          );
-          final right = Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: 16,
-            children: [
-              if (profile != null) ...[
-                const ProfilesCard(),
-                const NetworkSpeedCard(),
-              ],
-            ],
+            children: const [ProfilesCard(), _ServerCard()],
           );
           return DashboardDensityScope(
             // Natural-height cards avoid fixed-height overflow at large text.
@@ -88,34 +72,34 @@ class NurConnectDashboard extends ConsumerWidget {
               key: const PageStorageKey('nur-connect-home'),
               padding: EdgeInsets.fromLTRB(
                 24,
-                16 + context.contentTopPadding,
+                12 + context.contentTopPadding,
                 24,
                 24 + context.bottomInset,
               ),
               child: Center(
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 1120),
+                  constraints: BoxConstraints(
+                    maxWidth: twoColumns && profile != null ? 1040 : 560,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    spacing: 24,
+                    spacing: 20,
                     children: [
                       if (announcement) const AnnouncementCard(),
-                      Text(
-                        l10n.nurHomeSubtitle,
-                        style: AppTextStyle.callout.of(context),
-                      ),
-                      if (twoColumns && profile != null)
+                      if (profile == null)
+                        _WelcomeCard(hasProfiles: hasProfiles)
+                      else if (twoColumns)
                         Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 20,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          spacing: 32,
                           children: [
-                            Expanded(flex: 6, child: left),
-                            Expanded(flex: 5, child: right),
+                            const Expanded(flex: 5, child: _PowerPanel()),
+                            Expanded(flex: 6, child: details),
                           ],
                         )
                       else ...[
-                        left,
-                        right,
+                        const _PowerPanel(),
+                        details,
                       ],
                     ],
                   ),
@@ -144,17 +128,28 @@ class _WelcomeCard extends ConsumerWidget {
         child: Column(
           spacing: 20,
           children: [
-            GlyphIcon(
-              AppGlyphs.profiles,
-              size: 48,
-              color: context.colorScheme.primary,
+            // The idle button previews the home it leads to.
+            ExcludeSemantics(
+              child: IgnorePointer(
+                child: NurPowerButton(
+                  state: NurPowerState.idle,
+                  label: l10n.nurAddSubscription,
+                  onPressed: null,
+                ),
+              ),
             ),
             Text(
               l10n.nurWelcomeTitle,
               textAlign: TextAlign.center,
               style: AppTextStyle.title2.of(context, emphasized: true),
             ),
-            Text(l10n.nurWelcomeHint, textAlign: TextAlign.center),
+            Text(
+              l10n.nurWelcomeHint,
+              textAlign: TextAlign.center,
+              style: AppTextStyle.callout
+                  .of(context)
+                  .copyWith(color: context.colorScheme.onSurfaceVariant),
+            ),
             FilledButton(
               onPressed: () {
                 if (hasProfiles) {
@@ -174,14 +169,16 @@ class _WelcomeCard extends ConsumerWidget {
   }
 }
 
-class _ConnectionCard extends ConsumerStatefulWidget {
-  const _ConnectionCard();
+/// The power button with the state, time and speed under it, and the choice
+/// between a system-wide VPN and the system proxy.
+class _PowerPanel extends ConsumerStatefulWidget {
+  const _PowerPanel();
 
   @override
-  ConsumerState<_ConnectionCard> createState() => _ConnectionCardState();
+  ConsumerState<_PowerPanel> createState() => _PowerPanelState();
 }
 
-class _ConnectionCardState extends ConsumerState<_ConnectionCard> {
+class _PowerPanelState extends ConsumerState<_PowerPanel> {
   bool _busy = false;
 
   Future<void> _toggle() async {
@@ -206,6 +203,7 @@ class _ConnectionCardState extends ConsumerState<_ConnectionCard> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.appLocalizations;
+    final colorScheme = context.colorScheme;
     final running = ref.watch(isStartProvider);
     final suspended = running && ref.watch(suspendProvider);
     final core = ref.watch(coreStatusProvider);
@@ -221,6 +219,7 @@ class _ConnectionCardState extends ConsumerState<_ConnectionCard> {
         tun || (systemProxy && ref.watch(systemProxyAllowedProvider));
     final changing = _busy || core == CoreStatus.connecting;
     final ready = running && !suspended && core == CoreStatus.connected;
+    final connected = ready && routing;
     final refusal = ref.watch(currentProfileProvider)?.accessRefusal;
     final status = refusal != null
         ? subscriptionImportErrorMessage(
@@ -231,72 +230,300 @@ class _ConnectionCardState extends ConsumerState<_ConnectionCard> {
         ? l10n.connecting
         : suspended
         ? l10n.suspended
-        : ready && routing
+        : connected
         ? l10n.connected
         : l10n.disconnected;
-    return DashboardCard(
+    final muted = AppTextStyle.footnote
+        .of(context)
+        .copyWith(color: colorScheme.onSurfaceVariant);
+    return Column(
       key: const ValueKey('nur-connection'),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 12,
-        children: [
-          Row(
-            spacing: 12,
-            children: [
-              DecoratedBox(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: context.colorScheme.primary.withValues(alpha: 0.10),
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        NurPowerButton(
+          key: const ValueKey('nur-connect-toggle'),
+          state: changing
+              ? NurPowerState.changing
+              : connected
+              ? NurPowerState.connected
+              : NurPowerState.idle,
+          label: running ? l10n.nurDisconnect : l10n.nurConnect,
+          caption: ready ? getTimeText(time) : null,
+          onPressed: changing || safeMode || (!running && refusal != null)
+              ? null
+              : _toggle,
+        ),
+        const SizedBox(height: 18),
+        Text(
+          status,
+          textAlign: TextAlign.center,
+          style: AppTextStyle.title3
+              .of(context, emphasized: true)
+              .copyWith(color: refusal != null ? colorScheme.error : null),
+        ),
+        const SizedBox(height: 4),
+        if (ready)
+          const _SpeedLine()
+        else if (!routing)
+          Text(l10n.nurTakeoverHint, textAlign: TextAlign.center, style: muted)
+        else
+          Text(
+            running ? l10n.nurDisconnect : l10n.nurConnect,
+            textAlign: TextAlign.center,
+            style: muted,
+          ),
+        const SizedBox(height: 20),
+        ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 340),
+          child: const _ConnectionModeSelector(),
+        ),
+      ],
+    );
+  }
+}
+
+class _SpeedLine extends ConsumerWidget {
+  const _SpeedLine();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final latest = ref.watch(
+      trafficsProvider.select((state) => state.list.safeLast(const Traffic())),
+    );
+    return Text(
+      '↓ ${latest.down.shortTraffic.show}/s   ↑ ${latest.up.shortTraffic.show}/s',
+      key: const ValueKey('nur-speed'),
+      textAlign: TextAlign.center,
+      style: AppTextStyle.footnote
+          .of(context)
+          .copyWith(color: context.colorScheme.onSurfaceVariant),
+    );
+  }
+}
+
+enum NurPowerState { idle, changing, connected }
+
+/// A round power button: a dashed ring when idle, a gold arc running while
+/// connecting and a lit gold ring once connected.
+class NurPowerButton extends StatefulWidget {
+  const NurPowerButton({
+    super.key,
+    required this.state,
+    required this.label,
+    required this.onPressed,
+    this.caption,
+  });
+
+  static const size = 196.0;
+  static const faceSize = 136.0;
+
+  final NurPowerState state;
+
+  /// What pressing does, for the tooltip and screen readers.
+  final String label;
+
+  /// The time connected, shown under the glyph.
+  final String? caption;
+  final VoidCallback? onPressed;
+
+  @override
+  State<NurPowerButton> createState() => _NurPowerButtonState();
+}
+
+class _NurPowerButtonState extends State<NurPowerButton>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _spin = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 1400),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    _syncSpin();
+  }
+
+  @override
+  void didUpdateWidget(NurPowerButton oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.state != widget.state) _syncSpin();
+  }
+
+  void _syncSpin() {
+    if (widget.state == NurPowerState.changing) {
+      unawaited(_spin.repeat());
+    } else {
+      _spin.stop();
+    }
+  }
+
+  @override
+  void dispose() {
+    _spin.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
+    final lit = widget.state == NurPowerState.connected;
+    final enabled = widget.onPressed != null;
+    final accent = enabled
+        ? colorScheme.primary
+        : colorScheme.primary.withValues(alpha: 0.45);
+    final face = DecoratedBox(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: RadialGradient(
+          center: const Alignment(-0.3, -0.55),
+          radius: 1.05,
+          colors: [
+            Color.alphaBlend(
+              colorScheme.primary.withValues(alpha: lit ? 0.18 : 0.08),
+              colorScheme.surfaceContainerHigh,
+            ),
+            colorScheme.surfaceContainerLowest,
+          ],
+        ),
+        border: Border.all(
+          color: lit ? colorScheme.secondary : colorScheme.outlineVariant,
+          width: lit ? 1.5 : 1,
+        ),
+        boxShadow: lit
+            ? [
+                BoxShadow(
+                  color: colorScheme.primary.withValues(alpha: 0.30),
+                  blurRadius: 40,
+                  spreadRadius: 2,
                 ),
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: GlyphIcon(
-                    AppGlyphs.status,
-                    size: 24,
-                    color: context.colorScheme.primary,
-                  ),
-                ),
+              ]
+            : null,
+      ),
+      child: SizedBox.square(
+        dimension: NurPowerButton.faceSize,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          spacing: 6,
+          children: [
+            GlyphIcon(AppGlyphs.power, size: 44, color: accent),
+            if (widget.caption != null)
+              Text(
+                widget.caption!,
+                style: AppTextStyle.subheadline
+                    .of(context)
+                    .copyWith(color: colorScheme.onSurface),
               ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      status,
-                      style: AppTextStyle.headline.of(
-                        context,
-                        emphasized: true,
+          ],
+        ),
+      ),
+    );
+    return Semantics(
+      button: true,
+      enabled: enabled,
+      label: widget.label,
+      excludeSemantics: true,
+      child: Tooltip(
+        message: widget.label,
+        child: Material(
+          type: MaterialType.transparency,
+          child: InkWell(
+            customBorder: AppShape.circle,
+            mouseCursor: clickableCursor,
+            onTap: widget.onPressed,
+            child: SizedBox.square(
+              dimension: NurPowerButton.size,
+              child: Stack(
+                alignment: Alignment.center,
+                children: [
+                  Positioned.fill(
+                    child: CustomPaint(
+                      painter: _PowerRingPainter(
+                        state: widget.state,
+                        spin: _spin,
+                        accent: colorScheme.primary,
+                        soft: colorScheme.secondary,
+                        idle: colorScheme.outline,
                       ),
                     ),
-                    if (ready)
-                      Text(
-                        getTimeText(time),
-                        style: AppTextStyle.callout.of(context),
-                      ),
-                  ],
-                ),
+                  ),
+                  face,
+                ],
               ),
-            ],
-          ),
-          const _ConnectionModeSelector(),
-          if (!routing) Text(l10n.nurTakeoverHint),
-          SizedBox(
-            height: 44,
-            child: FilledButton(
-              key: const ValueKey('nur-connect-toggle'),
-              onPressed: changing || safeMode || (!running && refusal != null)
-                  ? null
-                  : _toggle,
-              child: changing
-                  ? const CommonCircleLoading(size: 20)
-                  : Text(running ? l10n.nurDisconnect : l10n.nurConnect),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
+}
+
+class _PowerRingPainter extends CustomPainter {
+  _PowerRingPainter({
+    required this.state,
+    required this.spin,
+    required this.accent,
+    required this.soft,
+    required this.idle,
+  }) : super(repaint: spin);
+
+  static const _dashes = 56;
+
+  final NurPowerState state;
+  final Animation<double> spin;
+  final Color accent;
+  final Color soft;
+  final Color idle;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = size.center(Offset.zero);
+    final radius = size.shortestSide / 2 - 3;
+    final rect = Rect.fromCircle(center: center, radius: radius);
+    Paint stroke(Color color, double width) => Paint()
+      ..color = color
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = width
+      ..strokeCap = StrokeCap.round;
+    const step = 2 * math.pi / _dashes;
+    switch (state) {
+      case NurPowerState.idle:
+        final dash = stroke(idle, 1.4);
+        for (var index = 0; index < _dashes; index++) {
+          canvas.drawArc(rect, index * step, step * 0.45, false, dash);
+        }
+      case NurPowerState.changing:
+        canvas.drawArc(rect, 0, 2 * math.pi, false, stroke(idle, 1.2));
+        canvas.drawArc(
+          rect,
+          spin.value * 2 * math.pi - math.pi / 2,
+          math.pi * 0.7,
+          false,
+          stroke(accent, 3),
+        );
+      case NurPowerState.connected:
+        canvas.drawArc(
+          rect,
+          0,
+          2 * math.pi,
+          false,
+          stroke(soft.withValues(alpha: 0.35), 1.4),
+        );
+        canvas.drawArc(
+          rect,
+          -math.pi / 2,
+          math.pi * 1.5,
+          false,
+          stroke(accent, 3),
+        );
+    }
+  }
+
+  @override
+  bool shouldRepaint(_PowerRingPainter oldDelegate) =>
+      oldDelegate.state != state ||
+      oldDelegate.accent != accent ||
+      oldDelegate.soft != soft ||
+      oldDelegate.idle != idle;
 }
 
 enum _ConnectionCaptureMode { vpn, proxy }
@@ -323,6 +550,7 @@ class _ConnectionModeSelector extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.appLocalizations;
+    final colorScheme = context.colorScheme;
     final vpn = ref.watch(patchClashConfigProvider.select((s) => s.tun.enable));
     final proxy = ref.watch(
       networkSettingProvider.select((s) => s.systemProxy),
@@ -350,6 +578,22 @@ class _ConnectionModeSelector extends ConsumerWidget {
             expandedInsets: EdgeInsets.zero,
             showSelectedIcon: false,
             emptySelectionAllowed: true,
+            style: ButtonStyle(
+              shape: const WidgetStatePropertyAll(AppShape.full),
+              side: WidgetStatePropertyAll(
+                BorderSide(color: colorScheme.outlineVariant),
+              ),
+              backgroundColor: WidgetStateProperty.resolveWith(
+                (states) => states.contains(WidgetState.selected)
+                    ? colorScheme.primary
+                    : colorScheme.surfaceContainer,
+              ),
+              foregroundColor: WidgetStateProperty.resolveWith(
+                (states) => states.contains(WidgetState.selected)
+                    ? colorScheme.onPrimary
+                    : colorScheme.onSurfaceVariant,
+              ),
+            ),
             segments: [
               ButtonSegment(
                 value: _ConnectionCaptureMode.vpn,
@@ -376,21 +620,25 @@ class _ConnectionModeSelector extends ConsumerWidget {
         if (locked || running)
           Text(
             locked ? l10n.managedByProvider : l10n.nurDisconnectToChangeMode,
+            textAlign: TextAlign.center,
             style: AppTextStyle.caption1
                 .of(context)
-                .copyWith(color: context.colorScheme.onSurfaceVariant),
+                .copyWith(color: colorScheme.onSurfaceVariant),
           ),
       ],
     );
   }
 }
 
+/// The chosen server as one row, like the selected row of the server list:
+/// a gold edge, the name with its flag, and the last measured delay.
 class _ServerCard extends ConsumerWidget {
   const _ServerCard();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final l10n = context.appLocalizations;
+    final colorScheme = context.colorScheme;
     final group = nurConnectServerGroups(
       ref.watch(currentGroupsStateProvider).value,
       ref.watch(patchClashConfigProvider.select((s) => s.mode)),
@@ -398,35 +646,72 @@ class _ServerCard extends ConsumerWidget {
     final selected = group == null
         ? null
         : ref.watch(selectedProxyNameProvider(group.name));
+    final chosen =
+        selected != null && selected.isNotEmpty && !isBuiltinOutbound(selected);
+    final delay = chosen
+        ? ref.watch(delayProvider(proxyName: selected, testUrl: group!.testUrl))
+        : null;
     return DashboardCard(
       key: const ValueKey('nur-selected-server'),
+      semanticLabel: l10n.server,
+      // The gold edge follows the card's rounded corner.
+      clipBehavior: Clip.antiAlias,
+      padding: const EdgeInsets.fromLTRB(0, 14, 16, 14),
       onTap: group == null
           ? null
           : () => showProxiesSheet(context, groupName: group.name),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        spacing: 10,
+      child: Row(
+        spacing: 14,
         children: [
-          DashboardCardHeader(
-            glyph: AppGlyphs.proxies,
-            title: l10n.server,
-            chevron: group != null,
+          Container(
+            width: 3,
+            height: 40,
+            decoration: ShapeDecoration(
+              color: chosen ? colorScheme.primary : colorScheme.outlineVariant,
+              shape: AppShape.xs,
+            ),
           ),
-          EmojiText(
-            selected != null &&
-                    selected.isNotEmpty &&
-                    !isBuiltinOutbound(selected)
-                ? selected
-                : l10n.nurChooseServer,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            style: AppTextStyle.headline.of(context, emphasized: true),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 2,
+              children: [
+                Text(
+                  l10n.server,
+                  style: AppTextStyle.caption1
+                      .of(context)
+                      .copyWith(color: colorScheme.onSurfaceVariant),
+                ),
+                EmojiText(
+                  chosen ? selected : l10n.nurChooseServer,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: AppTextStyle.headline.of(context),
+                ),
+                if (group == null)
+                  Text(
+                    ref.watch(isStartProvider)
+                        ? l10n.proxyGroupEmpty
+                        : l10n.proxyGroupsAfterStart,
+                    style: AppTextStyle.footnote
+                        .of(context)
+                        .copyWith(color: colorScheme.onSurfaceVariant),
+                  ),
+              ],
+            ),
           ),
-          if (group == null)
+          if (delay != null)
             Text(
-              ref.watch(isStartProvider)
-                  ? l10n.proxyGroupEmpty
-                  : l10n.proxyGroupsAfterStart,
+              delay < 0 ? l10n.timeout : '$delay ms',
+              style: AppTextStyle.footnote
+                  .of(context)
+                  .copyWith(color: colorScheme.delayColor(delay)),
+            ),
+          if (group != null)
+            GlyphIcon(
+              AppGlyphs.chevronForward,
+              size: 20,
+              color: colorScheme.primary,
             ),
         ],
       ),

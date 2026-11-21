@@ -32,6 +32,9 @@ String _argumentsOf(String source, int open) {
   return source.substring(open);
 }
 
+/// Windows lists paths with backslashes; the rules here are written with `/`.
+String _posix(String path) => path.replaceAll(r'\', '/');
+
 void main() {
   test(
     'reorderable lists in lib lift their rows with commonProxyDecorator',
@@ -40,11 +43,11 @@ void main() {
 
       for (final entity in Directory('lib').listSync(recursive: true)) {
         if (entity is! File ||
-            !entity.path.endsWith('.dart') ||
-            entity.path.contains('/generated/')) {
+            !_posix(entity.path).endsWith('.dart') ||
+            _posix(entity.path).contains('/generated/')) {
           continue;
         }
-        final path = p.relative(entity.path);
+        final path = _posix(p.relative(entity.path));
         if (_allowed.contains(path)) {
           continue;
         }

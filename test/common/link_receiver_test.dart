@@ -120,9 +120,10 @@ void main() {
       expect(page, contains('Sent'));
       expect(await receiver.link, link);
 
+      // Windows may still accept the connection and then drop it.
       await expectLater(
         _request(receiver.address),
-        throwsA(isA<SocketException>()),
+        throwsA(anyOf(isA<SocketException>(), isA<HttpException>())),
       );
     });
 

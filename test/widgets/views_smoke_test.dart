@@ -1,3 +1,4 @@
+import 'package:fl_clash/common/nur_layout.dart';
 import 'package:fl_clash/features/form/form.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
@@ -43,6 +44,10 @@ Finder _portField(String label) => find.descendant(
 );
 
 void main() {
+  // These check the FlClashX pages, which Windows replaces with Nur Connect's.
+  setUpAll(() => debugUpstreamLayout = true);
+  tearDownAll(() => debugUpstreamLayout = false);
+
   final cases = <String, Widget>{
     'dashboard': const DashboardView(),
     'proxies': const ProxiesView(),

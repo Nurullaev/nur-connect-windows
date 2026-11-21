@@ -1063,6 +1063,50 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullTip": m57,
     "numberRangeTip": m58,
     "numberTip": m59,
+    "nurAddSubscription": MessageLookupByLibrary.simpleMessage("구독 추가"),
+    "nurChooseServer": MessageLookupByLibrary.simpleMessage("서버 선택"),
+    "nurConnect": MessageLookupByLibrary.simpleMessage("연결"),
+    "nurConnectionMode": MessageLookupByLibrary.simpleMessage("연결 모드"),
+    "nurDisconnect": MessageLookupByLibrary.simpleMessage("연결 해제"),
+    "nurDisconnectToChangeMode": MessageLookupByLibrary.simpleMessage(
+      "연결 모드를 변경하려면 연결을 해제하세요.",
+    ),
+    "nurHomeSubtitle": MessageLookupByLibrary.simpleMessage("구독, 서버 및 연결"),
+    "nurImportEmptyResponse": MessageLookupByLibrary.simpleMessage(
+      "서버가 빈 구독을 반환했습니다. 다시 시도하거나 제공업체에 링크를 확인하세요.",
+    ),
+    "nurImportFailed": MessageLookupByLibrary.simpleMessage(
+      "구독을 가져올 수 없습니다. 다시 시도하세요. 저장된 프로필은 유지되었습니다.",
+    ),
+    "nurImportInvalidConfig": MessageLookupByLibrary.simpleMessage(
+      "구독을 검증할 수 없습니다. 업데이트하거나 제공업체에 문의하세요. 저장된 프로필은 유지되었습니다.",
+    ),
+    "nurImportWrongFormat": MessageLookupByLibrary.simpleMessage(
+      "링크가 웹 페이지 또는 지원되지 않는 형식을 반환했습니다. 제공업체에 Mihomo / Clash용 구독을 요청하세요.",
+    ),
+    "nurImporting": MessageLookupByLibrary.simpleMessage("구독을 가져오는 중…"),
+    "nurProxyDescription": MessageLookupByLibrary.simpleMessage(
+      "프록시는 시스템 프록시 설정을 따르는 앱에서 작동합니다.",
+    ),
+    "nurProxyMode": MessageLookupByLibrary.simpleMessage("프록시"),
+    "nurServers": MessageLookupByLibrary.simpleMessage("서버"),
+    "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
+      "제공업체에서 받은 구독 링크를 붙여넣으세요.",
+    ),
+    "nurTakeoverHint": MessageLookupByLibrary.simpleMessage(
+      "Nur Connect를 통해 트래픽을 보내려면 TUN 또는 시스템 프록시를 켜세요.",
+    ),
+    "nurUpdateLater": MessageLookupByLibrary.simpleMessage("나중에"),
+    "nurUpdatesHint": MessageLookupByLibrary.simpleMessage(
+      "새 버전이 나오면 Nur Connect가 알려 드립니다. 업데이트는 확인 후 설치됩니다.",
+    ),
+    "nurVpnDescription": MessageLookupByLibrary.simpleMessage(
+      "VPN은 이 컴퓨터의 앱 트래픽을 경유시킵니다.",
+    ),
+    "nurWelcomeHint": MessageLookupByLibrary.simpleMessage(
+      "구독을 추가하면 서버를 선택하고 연결할 수 있습니다.",
+    ),
+    "nurWelcomeTitle": MessageLookupByLibrary.simpleMessage("구독으로 시작하세요"),
     "obfs": MessageLookupByLibrary.simpleMessage("난독화"),
     "obfsHost": MessageLookupByLibrary.simpleMessage("난독화 호스트"),
     "obfsMode": MessageLookupByLibrary.simpleMessage("난독화 모드"),

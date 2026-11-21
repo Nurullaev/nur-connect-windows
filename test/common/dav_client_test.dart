@@ -65,7 +65,7 @@ class _TestServer {
       requests.add(
         _RecordedRequest(
           request.method,
-          request.uri.path,
+          Uri.decodeComponent(request.uri.path),
           request.headers.value(HttpHeaders.authorizationHeader),
           body,
         ),
@@ -94,7 +94,9 @@ class _TestServer {
 
   Future<void> _respond(HttpRequest request, List<int> body) async {
     final response = request.response;
-    final path = request.uri.path;
+    // Like a real server, store by the decoded name: the app's folder has a
+    // space, which travels as %20.
+    final path = Uri.decodeComponent(request.uri.path);
     switch (request.method) {
       case 'OPTIONS':
         response.headers.set('dav', '1,2');

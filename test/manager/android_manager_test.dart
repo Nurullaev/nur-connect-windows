@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:fl_clash/common/constant.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/manager/android_manager.dart';
 import 'package:fl_clash/models/models.dart';
@@ -73,7 +74,7 @@ void main() {
   }
 
   for (final (refusal, notice) in [
-    (VpnRefusal.cancelled, 'You did not allow FlClashX to connect as a VPN'),
+    (VpnRefusal.cancelled, 'You did not allow $appName to connect as a VPN'),
     (
       VpnRefusal.restricted,
       'VPN is restricted on this device by its administrator',

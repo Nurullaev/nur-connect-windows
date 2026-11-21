@@ -175,7 +175,10 @@ class ApplicationState extends ConsumerState<Application> {
           title: appName,
           locale: getLocaleForString(locale),
           supportedLocales: AppLocalizations.delegate.supportedLocales,
-          themeMode: themeProps.themeMode,
+          // The brand scheme is dark only; other colors follow the setting.
+          themeMode: isNurBrandColor(themeProps.primaryColor)
+              ? ThemeMode.dark
+              : themeProps.themeMode,
           theme: watchAppTheme(ref, Brightness.light),
           darkTheme: watchAppTheme(ref, Brightness.dark),
           themeAnimationStyle: AnimationStyle.noAnimation,

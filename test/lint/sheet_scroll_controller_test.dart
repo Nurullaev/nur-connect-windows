@@ -20,17 +20,20 @@ const _allowed = {
 int _lineOf(String source, int offset) =>
     '\n'.allMatches(source.substring(0, offset)).length + 1;
 
+/// Windows lists paths with backslashes; the rules here are written with `/`.
+String _posix(String path) => path.replaceAll(r'\', '/');
+
 void main() {
   test('scroll views in lib let a bottom sheet take their drags', () {
     final offenders = <String>[];
 
     for (final entity in Directory('lib').listSync(recursive: true)) {
       if (entity is! File ||
-          !entity.path.endsWith('.dart') ||
-          entity.path.contains('/generated/')) {
+          !_posix(entity.path).endsWith('.dart') ||
+          _posix(entity.path).contains('/generated/')) {
         continue;
       }
-      final path = p.relative(entity.path);
+      final path = _posix(p.relative(entity.path));
       if (_allowed.contains(path)) {
         continue;
       }

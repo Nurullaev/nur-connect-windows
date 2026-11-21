@@ -1641,6 +1641,12 @@ abstract final class AppGlyphs {
     ], role: GlyphRole.detail),
   ]);
 
+  /// The power symbol: a ring open at the top and the stroke through it.
+  static const power = Glyph([
+    GlyphArc(12, 13, 7.6, math.pi * -0.28, math.pi * 1.56),
+    GlyphPolyline([GlyphVertex(12, 3.4), GlyphVertex(12, 11.4)]),
+  ]);
+
   static const status = Glyph([
     GlyphBox(3, 4.2, 21, 19.8, 4.5),
     GlyphPolyline([

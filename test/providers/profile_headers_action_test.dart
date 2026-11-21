@@ -82,7 +82,13 @@ void main() {
     () async {
       container
           .read(appSettingProvider.notifier)
-          .update((state) => state.copyWith(autoRun: true, openLogs: true));
+          .update(
+            (state) => state.copyWith(
+              autoRun: true,
+              openLogs: true,
+              autoCheckUpdate: false,
+            ),
+          );
 
       await select(_profile(1, settings: 'minimize,autoupdate'));
 

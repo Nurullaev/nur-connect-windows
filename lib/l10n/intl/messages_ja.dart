@@ -1080,6 +1080,56 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullTip": m57,
     "numberRangeTip": m58,
     "numberTip": m59,
+    "nurAddSubscription": MessageLookupByLibrary.simpleMessage("サブスクリプションを追加"),
+    "nurChooseServer": MessageLookupByLibrary.simpleMessage("サーバーを選択"),
+    "nurConnect": MessageLookupByLibrary.simpleMessage("接続"),
+    "nurConnectionMode": MessageLookupByLibrary.simpleMessage("接続モード"),
+    "nurDisconnect": MessageLookupByLibrary.simpleMessage("切断"),
+    "nurDisconnectToChangeMode": MessageLookupByLibrary.simpleMessage(
+      "接続モードを変更するには切断してください。",
+    ),
+    "nurHomeSubtitle": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプション、サーバー、接続",
+    ),
+    "nurImportEmptyResponse": MessageLookupByLibrary.simpleMessage(
+      "サーバーが空のサブスクリプションを返しました。もう一度お試しいただくか、プロバイダーにリンクをご確認ください。",
+    ),
+    "nurImportFailed": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプションをインポートできませんでした。もう一度お試しください。保存済みのプロファイルはそのままです。",
+    ),
+    "nurImportInvalidConfig": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプションを検証できませんでした。更新するか、プロバイダーにお問い合わせください。保存済みのプロファイルはそのままです。",
+    ),
+    "nurImportWrongFormat": MessageLookupByLibrary.simpleMessage(
+      "リンク先が Web ページまたは未対応の形式でした。Mihomo / Clash 用のサブスクリプションをプロバイダーにご依頼ください。",
+    ),
+    "nurImporting": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプションをインポートしています…",
+    ),
+    "nurProxyDescription": MessageLookupByLibrary.simpleMessage(
+      "プロキシはシステムのプロキシ設定に従うアプリで機能します。",
+    ),
+    "nurProxyMode": MessageLookupByLibrary.simpleMessage("プロキシ"),
+    "nurServers": MessageLookupByLibrary.simpleMessage("サーバー"),
+    "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
+      "プロバイダーから提供されたサブスクリプションのリンクを貼り付けてください。",
+    ),
+    "nurTakeoverHint": MessageLookupByLibrary.simpleMessage(
+      "Nur Connect 経由で通信するには、TUN またはシステムプロキシを有効にしてください。",
+    ),
+    "nurUpdateLater": MessageLookupByLibrary.simpleMessage("後で"),
+    "nurUpdatesHint": MessageLookupByLibrary.simpleMessage(
+      "新しいバージョンが利用可能になると Nur Connect がお知らせします。更新は確認後にインストールされます。",
+    ),
+    "nurVpnDescription": MessageLookupByLibrary.simpleMessage(
+      "VPN はこのコンピューター上のアプリの通信を経由させます。",
+    ),
+    "nurWelcomeHint": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプションを追加すると、サーバーを選んで接続できます。",
+    ),
+    "nurWelcomeTitle": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプションから始めましょう",
+    ),
     "obfs": MessageLookupByLibrary.simpleMessage("難読化"),
     "obfsHost": MessageLookupByLibrary.simpleMessage("難読化ホスト"),
     "obfsMode": MessageLookupByLibrary.simpleMessage("難読化モード"),

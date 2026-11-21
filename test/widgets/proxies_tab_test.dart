@@ -1,3 +1,4 @@
+import 'package:fl_clash/common/nur_layout.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/app.dart';
@@ -31,6 +32,10 @@ class _TabStateNotifier extends Notifier<ProxiesTabState> {
 }
 
 void main() {
+  // These check the FlClashX pages, which Windows replaces with Nur Connect's.
+  setUpAll(() => debugUpstreamLayout = true);
+  tearDownAll(() => debugUpstreamLayout = false);
+
   late ProviderContainer globalContainer;
   late ProviderSubscription<Profile?> currentProfileSubscription;
 

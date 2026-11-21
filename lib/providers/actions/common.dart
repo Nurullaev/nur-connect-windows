@@ -154,7 +154,7 @@ class CommonAction extends _$CommonAction {
         return false;
       }
       if (system.isWindows && !ref.read(appVisibleProvider)) {
-        await window?.show();
+        await windowPort?.show();
       }
       await checkUpdateResultHandle(data: res);
       return true;

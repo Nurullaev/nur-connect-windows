@@ -11,7 +11,7 @@ const _libDir = 'lib';
 Map<String, Set<String>> _arbKeys() {
   final result = <String, Set<String>>{};
   for (final entity in Directory(_arbDir).listSync()) {
-    if (entity is! File || !entity.path.endsWith('.arb')) continue;
+    if (entity is! File || !_posix(entity.path).endsWith('.arb')) continue;
     final decoded =
         jsonDecode(entity.readAsStringSync()) as Map<String, Object?>;
     result[entity.uri.pathSegments.last] = decoded.keys
@@ -20,6 +20,9 @@ Map<String, Set<String>> _arbKeys() {
   }
   return result;
 }
+
+/// Windows lists paths with backslashes; the rules here are written with `/`.
+String _posix(String path) => path.replaceAll(r'\', '/');
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -45,8 +48,8 @@ void main() {
   test('no Intl.message call builds a key at runtime', () {
     final offenders = <String>[];
     for (final entity in Directory(_libDir).listSync(recursive: true)) {
-      if (entity is! File || !entity.path.endsWith('.dart')) continue;
-      final path = entity.path;
+      if (entity is! File || !_posix(entity.path).endsWith('.dart')) continue;
+      final path = _posix(entity.path);
       if (path.contains('/generated/') || path.contains('/l10n/')) continue;
       if (entity.readAsStringSync().contains('Intl.message(')) {
         offenders.add(path);

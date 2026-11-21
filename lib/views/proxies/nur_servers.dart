@@ -196,12 +196,12 @@ class _NurServersViewState extends ConsumerState<NurServersView> {
                       separatorBuilder: (_, _) => const SizedBox(height: 8),
                       itemBuilder: (_, index) => SizedBox(
                         key: ValueKey(proxies[index].name),
-                        height: getItemHeight(ProxyCardType.standard),
+                        height: getItemHeight(ProxyCardType.compact),
                         child: ProxyCard(
                           groupName: group.name,
                           groupType: group.type,
                           proxy: proxies[index],
-                          type: ProxyCardType.standard,
+                          type: ProxyCardType.compact,
                           testUrl: group.testUrl,
                         ),
                       ),

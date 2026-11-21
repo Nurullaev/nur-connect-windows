@@ -1023,9 +1023,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Saisissez le contenu de la règle",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "L’autorisation de la liste des apps a été refusée ; les apps installées ne peuvent donc pas être listées. Veuillez l’accorder manuellement dans les réglages du système.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "L’autorisation de la liste des apps a été refusée ; les apps installées ne peuvent donc pas être listées. Veuillez l’accorder manuellement dans les réglages du système.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Ce système masque la liste des apps installées tant que l’autorisation n’est pas accordée. Accordez-la pour configurer le proxy par app.",
     ),
@@ -1350,6 +1351,62 @@ class MessageLookup extends MessageLookupByLibrary {
     "nullTip": m57,
     "numberRangeTip": m58,
     "numberTip": m59,
+    "nurAddSubscription": MessageLookupByLibrary.simpleMessage(
+      "Ajouter un abonnement",
+    ),
+    "nurChooseServer": MessageLookupByLibrary.simpleMessage(
+      "Choisissez un serveur",
+    ),
+    "nurConnect": MessageLookupByLibrary.simpleMessage("Se connecter"),
+    "nurConnectionMode": MessageLookupByLibrary.simpleMessage(
+      "Mode de connexion",
+    ),
+    "nurDisconnect": MessageLookupByLibrary.simpleMessage("Se déconnecter"),
+    "nurDisconnectToChangeMode": MessageLookupByLibrary.simpleMessage(
+      "Déconnectez-vous pour changer de mode de connexion.",
+    ),
+    "nurHomeSubtitle": MessageLookupByLibrary.simpleMessage(
+      "Abonnement, serveur et connexion",
+    ),
+    "nurImportEmptyResponse": MessageLookupByLibrary.simpleMessage(
+      "Le serveur a renvoyé un abonnement vide. Réessayez ou vérifiez le lien auprès de votre fournisseur.",
+    ),
+    "nurImportFailed": MessageLookupByLibrary.simpleMessage(
+      "Impossible d’importer l’abonnement. Réessayez. Votre profil enregistré a été conservé.",
+    ),
+    "nurImportInvalidConfig": MessageLookupByLibrary.simpleMessage(
+      "Impossible de valider l’abonnement. Essayez de le mettre à jour ou contactez votre fournisseur. Votre profil enregistré a été conservé.",
+    ),
+    "nurImportWrongFormat": MessageLookupByLibrary.simpleMessage(
+      "Le lien a renvoyé une page web ou un format non pris en charge. Demandez à votre fournisseur un abonnement pour Mihomo / Clash.",
+    ),
+    "nurImporting": MessageLookupByLibrary.simpleMessage(
+      "Importation de l’abonnement…",
+    ),
+    "nurProxyDescription": MessageLookupByLibrary.simpleMessage(
+      "Le proxy fonctionne avec les applications qui suivent les paramètres de proxy du système.",
+    ),
+    "nurProxyMode": MessageLookupByLibrary.simpleMessage("Proxy"),
+    "nurServers": MessageLookupByLibrary.simpleMessage("Serveurs"),
+    "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
+      "Collez le lien d’abonnement fourni par votre fournisseur.",
+    ),
+    "nurTakeoverHint": MessageLookupByLibrary.simpleMessage(
+      "Activez TUN ou le proxy système pour faire passer le trafic par Nur Connect.",
+    ),
+    "nurUpdateLater": MessageLookupByLibrary.simpleMessage("Plus tard"),
+    "nurUpdatesHint": MessageLookupByLibrary.simpleMessage(
+      "Nur Connect vous proposera une nouvelle version dès qu’elle sera disponible. Les mises à jour s’installent avec votre confirmation.",
+    ),
+    "nurVpnDescription": MessageLookupByLibrary.simpleMessage(
+      "Le VPN fait passer le trafic des applications de cet ordinateur.",
+    ),
+    "nurWelcomeHint": MessageLookupByLibrary.simpleMessage(
+      "Ajoutez un abonnement pour choisir un serveur et vous connecter.",
+    ),
+    "nurWelcomeTitle": MessageLookupByLibrary.simpleMessage(
+      "Commencez par votre abonnement",
+    ),
     "obfs": MessageLookupByLibrary.simpleMessage("Obfuscation"),
     "obfsHost": MessageLookupByLibrary.simpleMessage("Hôte d’obfuscation"),
     "obfsMode": MessageLookupByLibrary.simpleMessage("Mode d’obfuscation"),

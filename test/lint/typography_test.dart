@@ -17,12 +17,15 @@ bool _isGenerated(String path) =>
     path.endsWith('.g.dart') ||
     path.startsWith('lib/l10n/');
 
+/// Windows lists paths with backslashes; the rules here are written with `/`.
+String _posix(String path) => path.replaceAll(r'\', '/');
+
 void main() {
   test('lib takes its text sizes from AppTextStyle', () {
     final offenders = <String>[];
 
     for (final entity in Directory('lib').listSync(recursive: true)) {
-      final path = p.relative(entity.path);
+      final path = _posix(p.relative(entity.path));
       if (entity is! File || !path.endsWith('.dart') || _isGenerated(path)) {
         continue;
       }

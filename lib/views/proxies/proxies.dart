@@ -142,8 +142,7 @@ class _ProxiesViewState extends ConsumerState<ProxiesView> {
 
   @override
   Widget build(BuildContext context) {
-    if ((widget.platform ?? SupportPlatform.currentPlatform) ==
-        SupportPlatform.Windows) {
+    if (nurWindowsLayout(widget.platform)) {
       return NurServersView(picker: widget.picker);
     }
     final proxiesType = ref.watch(

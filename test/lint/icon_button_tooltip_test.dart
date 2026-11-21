@@ -17,10 +17,10 @@ Iterable<File> _dartFilesIn(String root) sync* {
   }
   for (final entity in directory.listSync(recursive: true)) {
     if (entity is File &&
-        entity.path.endsWith('.dart') &&
-        !entity.path.endsWith('.g.dart') &&
-        !entity.path.endsWith('.freezed.dart') &&
-        !entity.path.contains('/generated/')) {
+        _posix(entity.path).endsWith('.dart') &&
+        !_posix(entity.path).endsWith('.g.dart') &&
+        !_posix(entity.path).endsWith('.freezed.dart') &&
+        !_posix(entity.path).contains('/generated/')) {
       yield entity;
     }
   }
@@ -37,13 +37,16 @@ String _arguments(String source, int start) {
   return source.substring(start, index - 1);
 }
 
+/// Windows lists paths with backslashes; the rules here are written with `/`.
+String _posix(String path) => path.replaceAll(r'\', '/');
+
 void main() {
   test('every icon-only IconButton carries a tooltip', () {
     final unlabelled = <String>[];
 
     for (final file in _dartFilesIn('lib')) {
       final source = file.readAsStringSync();
-      if (file.path == _wrappedInTooltip) continue;
+      if (_posix(file.path) == _wrappedInTooltip) continue;
 
       for (final match in _iconButton.allMatches(source)) {
         final arguments = _arguments(source, match.end);
@@ -53,7 +56,7 @@ void main() {
 
         final line = '\n'.allMatches(source.substring(0, match.start)).length;
         unlabelled.add(
-          '${file.path}:${line + 1} — an icon has no accessible name, so '
+          '${_posix(file.path)}:${line + 1} — an icon has no accessible name, so '
           'TalkBack and VoiceOver announce nothing and the desktop build shows '
           'no hover hint.',
         );

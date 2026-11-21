@@ -7,6 +7,7 @@ import 'package:collection/collection.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
+import 'package:fl_clash/ui/nur_brand.dart';
 import 'package:material_ui/material_ui.dart';
 
 const appName = productName;
@@ -177,7 +178,8 @@ const proxiesListStoreKey = PageStorageKey<String>('proxies_list');
 const toolsStoreKey = PageStorageKey<String>('tools');
 const profilesStoreKey = PageStorageKey<String>('profiles');
 
-const defaultPrimaryColor = 0xFF03A9F4;
+/// Nur Connect's gold, which selects the fixed black-and-gold scheme.
+const defaultPrimaryColor = nurGoldColor;
 
 const maxLogsLength = 5000;
 const maxRequestsLength = 2000;

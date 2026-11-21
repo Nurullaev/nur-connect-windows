@@ -7,6 +7,7 @@ export 'desktop_channel.dart';
 export 'cidr.dart';
 export 'compute.dart';
 export 'constant.dart';
+export 'nur_layout.dart';
 export 'product_identity.dart';
 export 'subscription_import.dart';
 export 'core_cli.dart';

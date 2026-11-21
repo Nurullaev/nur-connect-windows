@@ -28,7 +28,7 @@ Future<void> showProxiesSheet(BuildContext context, {String? groupName}) async {
         .read(proxiesActionProvider.notifier)
         .updateCurrentGroupName(groupName);
   }
-  if (system.isWindows) {
+  if (nurWindowsLayout()) {
     await showSheet<void>(
       context: context,
       builder: (_) => const ProxiesView(picker: true),
