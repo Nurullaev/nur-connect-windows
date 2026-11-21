@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 
@@ -10,4 +11,36 @@ List<Group> nurConnectServerGroups(List<Group> groups, Mode mode) {
       .where((g) => g.name != GroupName.GLOBAL.name)
       .toList();
   return subscription.isNotEmpty ? subscription : groups;
+}
+
+/// What GLOBAL carries when nothing was picked there, since mihomo starts it on
+/// DIRECT: the panel's server group, else the subscription's first group, else
+/// its first server. A plain selector is followed to the server it has chosen,
+/// so the home names that server; an automatic group is kept as it is.
+String? defaultGlobalTarget(List<Group> groups, [String? serverGroup]) {
+  final global = groups.getGroup(GroupName.GLOBAL.name);
+  if (global == null) return null;
+  final members = [
+    for (final proxy in global.all)
+      if (!isBuiltinOutbound(proxy.name) && proxy.name != GroupName.GLOBAL.name)
+        proxy.name,
+  ];
+  if (members.isEmpty) return null;
+  final groupName =
+      serverGroup != null &&
+          members.contains(serverGroup) &&
+          groups.getGroup(serverGroup) != null
+      ? serverGroup
+      : members.firstWhereOrNull((name) => groups.getGroup(name) != null);
+  if (groupName == null) return members.first;
+  final group = groups.getGroup(groupName)!;
+  final now = group.now;
+  if (group.type == GroupType.Selector &&
+      now != null &&
+      now.isNotEmpty &&
+      !isBuiltinOutbound(now) &&
+      members.contains(now)) {
+    return now;
+  }
+  return groupName;
 }

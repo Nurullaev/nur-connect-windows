@@ -1061,5 +1061,8 @@
   "nurProxyMode": "代理",
   "nurVpnDescription": "VPN 会转发这台电脑上应用的流量。",
   "nurProxyDescription": "代理适用于遵循系统代理设置的应用。",
-  "nurDisconnectToChangeMode": "断开连接后才能更改连接模式。"
+  "nurDisconnectToChangeMode": "断开连接后才能更改连接模式。",
+  "nurBot": "机器人",
+  "nurSubscriptionEnded": "订阅已结束",
+  "nurRenewToConnect": "请续订以继续连接。"
 }

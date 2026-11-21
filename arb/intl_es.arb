@@ -1061,5 +1061,8 @@
   "nurProxyMode": "Proxy",
   "nurVpnDescription": "La VPN enruta el tráfico de las aplicaciones de este ordenador.",
   "nurProxyDescription": "El proxy funciona con las aplicaciones que siguen la configuración de proxy del sistema.",
-  "nurDisconnectToChangeMode": "Desconéctate para cambiar el modo de conexión."
+  "nurDisconnectToChangeMode": "Desconéctate para cambiar el modo de conexión.",
+  "nurBot": "Bot",
+  "nurSubscriptionEnded": "La suscripción ha terminado",
+  "nurRenewToConnect": "Renueva tu suscripción para conectarte."
 }

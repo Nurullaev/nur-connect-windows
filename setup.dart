@@ -707,7 +707,7 @@ Future<void> _packageWindows(
     '$productName for Windows ${build.version}\n'
     'Source: https://github.com/$productRepository\n'
     'Build instructions: docs/windows/first-build.md in the source tree.\n'
-    'The corresponding source archive is provided alongside this preview.\n'
+    'The corresponding source archive is provided alongside this release.\n'
     'License: GNU GPL v3; see LICENSE.txt and NOTICE.md.\n',
   );
   if (targets.contains('zip')) {

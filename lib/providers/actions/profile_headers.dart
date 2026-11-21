@@ -79,7 +79,11 @@ class ProfileHeadersAction extends _$ProfileHeadersAction {
     final owned = ref.read(appSettingProvider).ownedSettings;
     final backup = {...ref.read(appSettingProvider).headerBackup};
     T pick<T>(String field, String key, T? said, T current, _Codec<T> codec) {
-      final saved = codec.decode(backup[field]);
+      // A missing field is no saved value: for a nullable setting such as the
+      // color, decoding null would otherwise read as a saved null.
+      final saved = backup.containsKey(field)
+          ? codec.decode(backup[field])
+          : null;
       if (saved == null || owned.contains(key)) {
         backup.remove(field);
       }

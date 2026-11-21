@@ -1061,5 +1061,8 @@
   "nurProxyMode": "Proxy",
   "nurVpnDescription": "VPN routes traffic for apps on this computer.",
   "nurProxyDescription": "Proxy works with apps that follow the system proxy settings.",
-  "nurDisconnectToChangeMode": "Disconnect to change connection mode."
+  "nurDisconnectToChangeMode": "Disconnect to change connection mode.",
+  "nurBot": "Bot",
+  "nurSubscriptionEnded": "Subscription has ended",
+  "nurRenewToConnect": "Renew your subscription to connect."
 }

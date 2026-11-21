@@ -21,12 +21,16 @@
 - **VPN 或代理**：按钮下方可切换 VPN (TUN) / 代理，默认 VPN。
 - **订阅一目了然**：剩余天数、剩余流量、刷新，以及置顶的服务商公告。
 - **服务器**：国旗、延迟、搜索与排序，所选服务器以金色标记。
+- **服务商链接**：网页、账户、机器人和客服，直接来自订阅响应头。
+- **清晰的拒绝提示**：“订阅已结束”并提供续订按钮；设备数量上限对话框显示服务商说明和客服入口。
 - **订阅导入**：清晰的错误提示，重试时保留已输入的链接。
 - **更新**：有新版本时提示“更新 / 稍后”。
 - **独立安装**：独立的进程、服务、数据目录和导入协议，可与 FlClashX 并存。
 - 已翻译为俄语、英语、西班牙语、法语、日语、韩语和中文。
 
-最新预览版见[发布页面](https://github.com/Nurullaev/nur-connect-windows/releases)，提供 x64 安装程序、便携 ZIP、源代码和校验文件。请参阅[构建状态及限制](docs/windows/first-build.md)和[路线图](docs/windows/roadmap.md)。安装程序暂未进行代码签名，Windows 可能显示 SmartScreen 提示。
+当前版本为 **1.0.0**，见[最新发布](https://github.com/Nurullaev/nur-connect-windows/releases/latest)，提供 x64 安装程序、便携 ZIP、源代码和校验文件。之后应用会自动提示“更新 / 稍后”。请参阅[路线图](docs/windows/roadmap.md)。安装程序暂未进行代码签名，Windows 可能显示 SmartScreen 提示。
+
+安装过 0.1.0-pre 预览版？它是独立的应用“Nur Connect Pre”，有自己的更新渠道，不会自动升级到 1.0.0。请安装 1.0.0，重新添加订阅，然后在“设置 → 应用”中卸载 Nur Connect Pre。
 
 在 Windows 上安装 Flutter、Go、Rust MSVC（本机 API 使用 `1.99.0`）、Visual Studio C++/CMake/Windows SDK/ATL 和 Inno Setup 6 后：
 
@@ -34,8 +38,10 @@
 flutter pub get
 flutter analyze
 flutter test
-dart setup.dart windows --env pre --arch amd64
+dart setup.dart windows --env stable --arch amd64
 ```
+
+`--env pre` 会构建独立的预览版“Nur Connect Pre”。
 
 构建产物位于 `dist/`。仅生成便携压缩包可添加 `--targets zip`。
 

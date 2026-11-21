@@ -213,6 +213,47 @@ void main() {
     );
   });
 
+  testWidgets('account and bot links from the panel get their own buttons', (
+    tester,
+  ) async {
+    setUpProfiles([
+      _profile(1, type: ProfileType.url).copyWith(
+        providerHeaders: const {
+          'support-url': 'https://help.example.com',
+          'profile-web-page-url': 'https://my.example.com',
+          'account-url': 'https://account.example.com',
+          'bot-url': 'https://t.me/example_bot',
+        },
+      ),
+    ]);
+    await pumpCard(tester);
+
+    expect(find.byTooltip('Account'), findsOneWidget);
+    expect(find.byTooltip('Bot'), findsOneWidget);
+    final globe = tester.getCenter(find.byGlyph(AppGlyphs.globe)).dx;
+    final account = tester.getCenter(find.byGlyph(AppGlyphs.account)).dx;
+    final bot = tester.getCenter(find.byGlyph(AppGlyphs.send)).dx;
+    final support = tester.getCenter(find.byGlyph(AppGlyphs.support)).dx;
+    expect(globe, lessThan(account));
+    expect(account, lessThan(bot));
+    expect(bot, lessThan(support));
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('an empty or invalid account or bot link hides its button', (
+    tester,
+  ) async {
+    setUpProfiles([
+      _profile(1, type: ProfileType.url).copyWith(
+        providerHeaders: const {'account-url': ' ', 'bot-url': 'not a link'},
+      ),
+    ]);
+    await pumpCard(tester);
+
+    expect(find.byTooltip('Account'), findsNothing);
+    expect(find.byTooltip('Bot'), findsNothing);
+  });
+
   testWidgets('the header keeps support and update, drawn larger, and no '
       'link to the profiles page', (tester) async {
     setUpProfiles([

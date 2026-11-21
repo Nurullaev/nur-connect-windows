@@ -15,9 +15,26 @@ enum SubscriptionImportIssue {
 
 /// Never retains a subscription URL, response body or Core diagnostic.
 final class SubscriptionImportException implements Exception {
-  const SubscriptionImportException(this.issue);
+  const SubscriptionImportException(
+    this.issue, {
+    this.providerHeaders = const {},
+    this.told = false,
+  });
 
   final SubscriptionImportIssue issue;
+
+  /// The panel's own headers on a refusal: its explanation and its links.
+  final Map<String, String> providerHeaders;
+
+  /// The refusal was already explained in a dialog of its own.
+  final bool told;
+
+  /// This failure, marked as already explained.
+  SubscriptionImportException get asTold => SubscriptionImportException(
+    issue,
+    providerHeaders: providerHeaders,
+    told: true,
+  );
 
   bool get isRefusal =>
       issue == SubscriptionImportIssue.deviceLimit ||

@@ -1081,6 +1081,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "numberRangeTip": m58,
     "numberTip": m59,
     "nurAddSubscription": MessageLookupByLibrary.simpleMessage("サブスクリプションを追加"),
+    "nurBot": MessageLookupByLibrary.simpleMessage("ボット"),
     "nurChooseServer": MessageLookupByLibrary.simpleMessage("サーバーを選択"),
     "nurConnect": MessageLookupByLibrary.simpleMessage("接続"),
     "nurConnectionMode": MessageLookupByLibrary.simpleMessage("接続モード"),
@@ -1110,7 +1111,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "プロキシはシステムのプロキシ設定に従うアプリで機能します。",
     ),
     "nurProxyMode": MessageLookupByLibrary.simpleMessage("プロキシ"),
+    "nurRenewToConnect": MessageLookupByLibrary.simpleMessage(
+      "接続するにはサブスクリプションを更新してください。",
+    ),
     "nurServers": MessageLookupByLibrary.simpleMessage("サーバー"),
+    "nurSubscriptionEnded": MessageLookupByLibrary.simpleMessage(
+      "サブスクリプションが終了しました",
+    ),
     "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
       "プロバイダーから提供されたサブスクリプションのリンクを貼り付けてください。",
     ),

@@ -59,10 +59,10 @@ class NurConnectDashboard extends ConsumerWidget {
       body: LayoutBuilder(
         builder: (context, constraints) {
           final twoColumns = constraints.maxWidth / scale >= 900;
-          final details = Column(
+          const details = Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             spacing: 16,
-            children: const [ProfilesCard(), _ServerCard()],
+            children: [ProfilesCard(), _ServerCard()],
           );
           return DashboardDensityScope(
             // Natural-height cards avoid fixed-height overflow at large text.
@@ -85,7 +85,7 @@ class NurConnectDashboard extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     spacing: 20,
                     children: [
-                      if (announcement) const AnnouncementCard(),
+                      if (announcement) const AnnouncementCard(compact: true),
                       if (profile == null)
                         _WelcomeCard(hasProfiles: hasProfiles)
                       else if (twoColumns)
@@ -220,12 +220,28 @@ class _PowerPanelState extends ConsumerState<_PowerPanel> {
     final changing = _busy || core == CoreStatus.connecting;
     final ready = running && !suspended && core == CoreStatus.connected;
     final connected = ready && routing;
-    final refusal = ref.watch(currentProfileProvider)?.accessRefusal;
+    final profile = ref.watch(currentProfileProvider);
+    final refusal = profile?.accessRefusal;
+    // An ended plan only stops a new connection; a running one is left alone.
+    final expired =
+        refusal == null &&
+        !running &&
+        (profile?.isExpiredAt(DateTime.now()) ?? false);
+    final blocked = refusal != null || expired;
+    final headers = profile?.headers;
+    final help = refusal != null
+        ? (url: headers?.supportUrl ?? headers?.botUrl, label: l10n.support)
+        : expired
+        ? (url: headers?.renewUrl, label: l10n.renew)
+        : null;
+    final helpUrl = help?.url;
     final status = refusal != null
         ? subscriptionImportErrorMessage(
             SubscriptionImportException(refusal),
             l10n,
           )
+        : expired
+        ? l10n.nurSubscriptionEnded
         : changing
         ? l10n.connecting
         : suspended
@@ -249,20 +265,27 @@ class _PowerPanelState extends ConsumerState<_PowerPanel> {
               : NurPowerState.idle,
           label: running ? l10n.nurDisconnect : l10n.nurConnect,
           caption: ready ? getTimeText(time) : null,
-          onPressed: changing || safeMode || (!running && refusal != null)
+          onPressed: changing || safeMode || (!running && blocked)
               ? null
               : _toggle,
         ),
         const SizedBox(height: 18),
         Text(
           status,
+          key: const ValueKey('nur-status'),
           textAlign: TextAlign.center,
           style: AppTextStyle.title3
               .of(context, emphasized: true)
-              .copyWith(color: refusal != null ? colorScheme.error : null),
+              .copyWith(color: blocked ? colorScheme.error : null),
         ),
         const SizedBox(height: 4),
-        if (ready)
+        if (expired)
+          Text(
+            l10n.nurRenewToConnect,
+            textAlign: TextAlign.center,
+            style: muted,
+          )
+        else if (ready)
           const _SpeedLine()
         else if (!routing)
           Text(l10n.nurTakeoverHint, textAlign: TextAlign.center, style: muted)
@@ -272,6 +295,14 @@ class _PowerPanelState extends ConsumerState<_PowerPanel> {
             textAlign: TextAlign.center,
             style: muted,
           ),
+        if (help != null && helpUrl != null) ...[
+          const SizedBox(height: 14),
+          FilledButton(
+            key: const ValueKey('nur-help-action'),
+            onPressed: () => dialogs.openUrl(helpUrl),
+            child: Text(help.label),
+          ),
+        ],
         const SizedBox(height: 20),
         ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 340),

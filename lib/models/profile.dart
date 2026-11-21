@@ -164,6 +164,12 @@ extension ProfileExtension on Profile {
     return null;
   }
 
+  /// The plan's end has passed; a panel then serves notices, not servers.
+  bool isExpiredAt(DateTime now) {
+    final expire = subscriptionInfo?.expire ?? 0;
+    return expire > 0 && expire * 1000 <= now.millisecondsSinceEpoch;
+  }
+
   String get realLabel => label.takeFirstValid([defaultLabel]);
 
   String get defaultLabel => url.webUri?.host ?? id.toString();
@@ -307,13 +313,15 @@ extension ProfileExtension on Profile {
     final providerHeaders = providerHeadersOf(response.headers.map);
     final metadata = ProviderHeaders(providerHeaders);
     if (metadata.deviceLimitReached) {
-      throw const SubscriptionImportException(
+      throw SubscriptionImportException(
         SubscriptionImportIssue.deviceLimit,
+        providerHeaders: providerHeaders,
       );
     }
     if (metadata.deviceIdUnsupported) {
-      throw const SubscriptionImportException(
+      throw SubscriptionImportException(
         SubscriptionImportIssue.deviceUnsupported,
+        providerHeaders: providerHeaders,
       );
     }
     final bytes = await decompressDownload(response.data ?? Uint8List(0));
@@ -381,6 +389,8 @@ const providerHeaderNames = {
   'support-url',
   'profile-title',
   'profile-web-page-url',
+  'bot-url',
+  'account-url',
   'profile-update-interval',
   'x-hwid-max-devices-reached',
   'x-hwid-not-supported',

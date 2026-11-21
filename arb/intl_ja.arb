@@ -1061,5 +1061,8 @@
   "nurProxyMode": "プロキシ",
   "nurVpnDescription": "VPN はこのコンピューター上のアプリの通信を経由させます。",
   "nurProxyDescription": "プロキシはシステムのプロキシ設定に従うアプリで機能します。",
-  "nurDisconnectToChangeMode": "接続モードを変更するには切断してください。"
+  "nurDisconnectToChangeMode": "接続モードを変更するには切断してください。",
+  "nurBot": "ボット",
+  "nurSubscriptionEnded": "サブスクリプションが終了しました",
+  "nurRenewToConnect": "接続するにはサブスクリプションを更新してください。"
 }

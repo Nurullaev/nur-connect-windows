@@ -482,6 +482,88 @@ void main() {
     });
   });
 
+  group('global routing without a pick', () {
+    ProxiesData globalData() => ProxiesData(
+      all: const ['GLOBAL', 'Servers'],
+      proxies: Map<String, dynamic>.from({
+        'GLOBAL': Map<String, dynamic>.from({
+          'name': 'GLOBAL',
+          'type': 'Selector',
+          'now': 'DIRECT',
+          'all': ['DIRECT', 'REJECT', 'Servers', 'NL', 'FR'],
+        }),
+        'Servers': Map<String, dynamic>.from({
+          'name': 'Servers',
+          'type': 'Selector',
+          'now': 'NL',
+          'all': ['NL', 'FR'],
+        }),
+        'DIRECT': Map<String, dynamic>.from({
+          'name': 'DIRECT',
+          'type': 'Direct',
+        }),
+        'REJECT': Map<String, dynamic>.from({
+          'name': 'REJECT',
+          'type': 'Reject',
+        }),
+        'NL': Map<String, dynamic>.from({'name': 'NL', 'type': 'vless'}),
+        'FR': Map<String, dynamic>.from({'name': 'FR', 'type': 'vless'}),
+      }),
+    );
+
+    setUp(() {
+      when(core.getProxies).thenAnswer((_) async => globalData());
+      when(
+        () => core.changeProxy(any()),
+      ).thenAnswer((_) async => const ChangeProxyResult(changed: true));
+      when(core.closeConnections).thenAnswer((_) async => true);
+      when(core.resetConnections).thenAnswer((_) async => true);
+    });
+
+    const plain = Profile(id: 1, autoUpdateDuration: Duration.zero);
+
+    test('GLOBAL left on DIRECT takes the subscription server', () async {
+      final container = buildContainer(profile: plain);
+      container.listen(patchClashConfigProvider, (_, _) {});
+      container
+          .read(patchClashConfigProvider.notifier)
+          .update((state) => state.copyWith(mode: Mode.global));
+
+      await actionOf(container).updateGroups();
+
+      expect(
+        container.read(profilesProvider).single.selectedMap['GLOBAL'],
+        'NL',
+      );
+      await Future<void>.delayed(const Duration(milliseconds: 700));
+      verify(
+        () => core.changeProxy(
+          const ChangeProxyParams(groupName: 'GLOBAL', proxyName: 'NL'),
+        ),
+      ).called(1);
+      debouncer.cancel(FunctionTag.updateGroups);
+    }, skip: SupportPlatform.currentPlatform != SupportPlatform.Windows);
+
+    test('a pick of the user\'s and rule routing are left alone', () async {
+      final picked = buildContainer(
+        profile: plain.copyWith(selectedMap: const {'GLOBAL': 'FR'}),
+      );
+      picked.listen(patchClashConfigProvider, (_, _) {});
+      picked
+          .read(patchClashConfigProvider.notifier)
+          .update((state) => state.copyWith(mode: Mode.global));
+      await actionOf(picked).updateGroups();
+      expect(picked.read(profilesProvider).single.selectedMap['GLOBAL'], 'FR');
+
+      final rule = buildContainer(profile: plain);
+      await actionOf(rule).updateGroups();
+      expect(
+        rule.read(profilesProvider).single.selectedMap.containsKey('GLOBAL'),
+        isFalse,
+      );
+    }, skip: SupportPlatform.currentPlatform != SupportPlatform.Windows);
+  });
+
   group('changeProxy', () {
     setUp(() {
       when(

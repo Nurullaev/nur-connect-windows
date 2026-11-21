@@ -28,8 +28,19 @@ class ProviderHeaders {
 
   String? get title => _plainOrBase64(text('profile-title'));
 
-  String? get webPageUrl {
-    final url = text('profile-web-page-url');
+  String? get webPageUrl => _url('profile-web-page-url');
+
+  /// The provider's bot, apart from support.
+  String? get botUrl => _url('bot-url');
+
+  /// The provider's account page, apart from the subscription's web page.
+  String? get accountUrl => _url('account-url');
+
+  /// Where renewing happens: the panel's offer, then its bot, then support.
+  String? get renewUrl => buyPlan?.url ?? botUrl ?? supportUrl;
+
+  String? _url(String name) {
+    final url = text(name);
     return url != null && url.isUrl ? url : null;
   }
 

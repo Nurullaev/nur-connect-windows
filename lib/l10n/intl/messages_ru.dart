@@ -1323,6 +1323,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "nurAddSubscription": MessageLookupByLibrary.simpleMessage(
       "Добавить подписку",
     ),
+    "nurBot": MessageLookupByLibrary.simpleMessage("Бот"),
     "nurChooseServer": MessageLookupByLibrary.simpleMessage("Выберите сервер"),
     "nurConnect": MessageLookupByLibrary.simpleMessage("Подключиться"),
     "nurConnectionMode": MessageLookupByLibrary.simpleMessage(
@@ -1354,7 +1355,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "Прокси работает с программами, использующими системные настройки прокси.",
     ),
     "nurProxyMode": MessageLookupByLibrary.simpleMessage("Прокси"),
+    "nurRenewToConnect": MessageLookupByLibrary.simpleMessage(
+      "Продлите подписку, чтобы подключиться.",
+    ),
     "nurServers": MessageLookupByLibrary.simpleMessage("Серверы"),
+    "nurSubscriptionEnded": MessageLookupByLibrary.simpleMessage(
+      "Подписка закончилась",
+    ),
     "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
       "Вставьте ссылку на подписку от вашего провайдера.",
     ),

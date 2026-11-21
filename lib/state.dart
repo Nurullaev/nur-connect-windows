@@ -121,6 +121,9 @@ class GlobalState {
             : '$title ===> ${compactError(e)}, $s',
         logLevel: LogLevel.warning,
       );
+      if (e is SubscriptionImportException && e.told) {
+        return null;
+      }
       final message = userFacingErrorMessage(e, currentAppLocalizations);
       if (silence) {
         dialogs.showNotifier(message, level: MessageLevel.error);

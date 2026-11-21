@@ -65,7 +65,7 @@ void _openProfile(BuildContext context, WidgetRef ref, Profile? profile) {
 const _nearlyUsedShare = 0.9;
 
 /// The name row already carries the way to other profiles, so the header
-/// keeps only the panel's two actions and gives them the room it saves.
+/// keeps only the panel's links and gives them the room it saves.
 const _actionGlyphSize = 22.0;
 
 const _soonDays = 7;
@@ -103,6 +103,26 @@ class ProfilesCard extends ConsumerWidget {
             tooltip: appLocalizations.website,
             iconSize: _actionGlyphSize,
             onPressed: () => dialogs.openUrl(webPageUrl),
+          );
+    final accountUrl = profile?.headers.accountUrl;
+    final account = accountUrl == null
+        ? null
+        : DashboardIconButton(
+            key: const ValueKey('profile-account'),
+            glyph: AppGlyphs.account,
+            tooltip: appLocalizations.account,
+            iconSize: _actionGlyphSize,
+            onPressed: () => dialogs.openUrl(accountUrl),
+          );
+    final botUrl = profile?.headers.botUrl;
+    final bot = botUrl == null
+        ? null
+        : DashboardIconButton(
+            key: const ValueKey('profile-bot'),
+            glyph: AppGlyphs.send,
+            tooltip: appLocalizations.nurBot,
+            iconSize: _actionGlyphSize,
+            onPressed: () => dialogs.openUrl(botUrl),
           );
     final supportUrl = profile?.headers.supportUrl;
     final support = supportUrl == null
@@ -146,7 +166,7 @@ class ProfilesCard extends ConsumerWidget {
           DashboardCardHeader(
             glyph: AppGlyphs.profiles,
             title: appLocalizations.profile,
-            trailing: [?webPage, ?support, ?sync],
+            trailing: [?webPage, ?account, ?bot, ?support, ?sync],
           ),
           SizedBox(height: mobile ? 12 : 10),
           nameRow,

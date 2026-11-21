@@ -158,6 +158,89 @@ void main() {
     );
   }
 
+  testWidgets('a manual update the panel refuses shows its words once', (
+    tester,
+  ) async {
+    final profile = Profile.normal(
+      url: 'https://example.test/sub',
+      sendDeviceHeaders: false,
+    );
+    container.read(profilesProvider.notifier).put(profile);
+    final action = container.read(profilesActionProvider.notifier);
+    action.fetch =
+        (
+          url, {
+          Duration timeout = downloadTimeoutDuration,
+          Map<String, String> headers = const {},
+        }) async => Response<Uint8List>(
+          requestOptions: RequestOptions(path: url),
+          statusCode: 200,
+          headers: Headers.fromMap({
+            'x-hwid-max-devices-reached': ['true'],
+            'announce': ['Plan A already has 2 of 2 devices'],
+            'support-url': ['https://help.example.test'],
+          }),
+          data: Uint8List.fromList(utf8.encode('proxies: []')),
+        );
+    await pumpHost(tester);
+
+    await expectLater(
+      action.updateProfile(profile, showLoading: true),
+      throwsA(
+        isA<SubscriptionImportException>()
+            .having((error) => error.told, 'told', isTrue)
+            .having(
+              (error) => error.issue,
+              'issue',
+              SubscriptionImportIssue.deviceLimit,
+            ),
+      ),
+    );
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+
+    expect(find.text(currentAppLocalizations.deviceLimitReached), findsOne);
+    expect(find.textContaining('Plan A already has 2 of 2 devices'), findsOne);
+    expect(find.text(currentAppLocalizations.support), findsOne);
+    expect(
+      container.read(profilesProvider).single.accessRefusal,
+      SubscriptionImportIssue.deviceLimit,
+    );
+  });
+
+  testWidgets('a link the panel refuses on import shows its words, no tip', (
+    tester,
+  ) async {
+    final action = container.read(profilesActionProvider.notifier);
+    action.fetch =
+        (
+          url, {
+          Duration timeout = downloadTimeoutDuration,
+          Map<String, String> headers = const {},
+        }) async => Response<Uint8List>(
+          requestOptions: RequestOptions(path: url),
+          statusCode: 200,
+          headers: Headers.fromMap({
+            'x-hwid-max-devices-reached': ['true'],
+            'announce': ['No room for this device on plan B'],
+          }),
+          data: Uint8List.fromList(utf8.encode('proxies: []')),
+        );
+    await pumpHost(tester);
+
+    final added = await action.addProfileFromLink(
+      'https://example.test/sub',
+      sendDeviceHeaders: false,
+    );
+    await tester.pump(const Duration(seconds: 1));
+    await tester.pumpAndSettle();
+
+    expect(added, isNull);
+    expect(find.textContaining('No room for this device on plan B'), findsOne);
+    expect(find.text(currentAppLocalizations.tip), findsNothing);
+    expect(container.read(profilesProvider), isEmpty);
+  });
+
   Future<List<Map>> savedProxies(Profile profile) async {
     final config = loadYaml(await (await profile.file).readAsString()) as Map;
     return [for (final proxy in config['proxies'] as List) proxy as Map];

@@ -1357,6 +1357,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "nurAddSubscription": MessageLookupByLibrary.simpleMessage(
       "Añadir suscripción",
     ),
+    "nurBot": MessageLookupByLibrary.simpleMessage("Bot"),
     "nurChooseServer": MessageLookupByLibrary.simpleMessage(
       "Elige un servidor",
     ),
@@ -1390,7 +1391,13 @@ class MessageLookup extends MessageLookupByLibrary {
       "El proxy funciona con las aplicaciones que siguen la configuración de proxy del sistema.",
     ),
     "nurProxyMode": MessageLookupByLibrary.simpleMessage("Proxy"),
+    "nurRenewToConnect": MessageLookupByLibrary.simpleMessage(
+      "Renueva tu suscripción para conectarte.",
+    ),
     "nurServers": MessageLookupByLibrary.simpleMessage("Servidores"),
+    "nurSubscriptionEnded": MessageLookupByLibrary.simpleMessage(
+      "La suscripción ha terminado",
+    ),
     "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
       "Pega el enlace de suscripción de tu proveedor.",
     ),

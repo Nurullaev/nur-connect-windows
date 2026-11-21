@@ -1061,5 +1061,8 @@
   "nurProxyMode": "Прокси",
   "nurVpnDescription": "VPN направляет трафик приложений этого компьютера.",
   "nurProxyDescription": "Прокси работает с программами, использующими системные настройки прокси.",
-  "nurDisconnectToChangeMode": "Отключитесь, чтобы сменить режим подключения."
+  "nurDisconnectToChangeMode": "Отключитесь, чтобы сменить режим подключения.",
+  "nurBot": "Бот",
+  "nurSubscriptionEnded": "Подписка закончилась",
+  "nurRenewToConnect": "Продлите подписку, чтобы подключиться."
 }

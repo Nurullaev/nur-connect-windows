@@ -164,7 +164,7 @@ class ProfilesAction extends _$ProfilesAction {
   Future<void> _showExpiry(Profile profile, int threshold) async {
     final appLocalizations = currentAppLocalizations;
     final headers = profile.headers;
-    final renewUrl = headers.buyPlan?.url ?? headers.supportUrl;
+    final renewUrl = headers.renewUrl;
     final message = threshold < 0
         ? appLocalizations.subscriptionExpired
         : threshold == 0
@@ -322,7 +322,7 @@ class ProfilesAction extends _$ProfilesAction {
         );
       } on ProfileUpdateSupersededException {
         return;
-      } catch (error) {
+      } catch (error, trace) {
         if (!_isCurrentUpdate(profile, request)) {
           return;
         }
@@ -345,6 +345,11 @@ class ProfilesAction extends _$ProfilesAction {
             await globalState.safeRun(
               () => ref.read(setupActionProvider.notifier).setRunning(false),
             );
+          }
+          if (showLoading) {
+            unawaited(_explainRefusal(latest, error));
+            // Still thrown for the callers, but their generic alert stays away.
+            Error.throwWithStackTrace(error.asTold, trace);
           }
         }
         rethrow;
@@ -580,12 +585,25 @@ class ProfilesAction extends _$ProfilesAction {
     }
     final profile = await globalState.loadingRun(
       tag: LoadingTag.profiles,
-      () => importProfileFromLink(
-        link,
-        label: label,
-        ageSecretKey: ageSecretKey,
-        sendDeviceHeaders: sendDeviceHeaders,
-      ),
+      () async {
+        try {
+          return await importProfileFromLink(
+            link,
+            label: label,
+            ageSecretKey: ageSecretKey,
+            sendDeviceHeaders: sendDeviceHeaders,
+          );
+        } on SubscriptionImportException catch (error, trace) {
+          if (!error.isRefusal || error.told) rethrow;
+          unawaited(
+            _explainRefusal(
+              Profile.normal(sendDeviceHeaders: sendDeviceHeaders),
+              error,
+            ),
+          );
+          Error.throwWithStackTrace(error.asTold, trace);
+        }
+      },
       title: currentAppLocalizations.addProfile,
     );
     return profile;
@@ -651,13 +669,35 @@ class ProfilesAction extends _$ProfilesAction {
     }
   }
 
+  /// A manual update the panel refused: its own words when it sent them, and
+  /// the way to support.
+  Future<void> _explainRefusal(
+    Profile profile,
+    SubscriptionImportException error,
+  ) {
+    final appLocalizations = currentAppLocalizations;
+    final limit = error.issue == SubscriptionImportIssue.deviceLimit;
+    return _showPanelRefusal(
+      ProviderHeaders({...profile.providerHeaders, ...error.providerHeaders}),
+      title: limit
+          ? appLocalizations.deviceLimitReached
+          : appLocalizations.deviceIdUnsupportedTitle,
+      message: limit
+          ? ProviderHeaders(error.providerHeaders).fullAnnouncement ??
+                appLocalizations.deviceLimitReached
+          : profile.sendDeviceHeaders
+          ? appLocalizations.deviceIdUnsupported
+          : appLocalizations.deviceIdNotSent,
+    );
+  }
+
   Future<void> _showPanelRefusal(
     ProviderHeaders headers, {
     required String title,
     required String message,
   }) async {
     final appLocalizations = currentAppLocalizations;
-    final supportUrl = headers.supportUrl;
+    final supportUrl = headers.supportUrl ?? headers.botUrl;
     final toSupport = await dialogs.showMessage(
       title: title,
       message: TextSpan(text: message),

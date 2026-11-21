@@ -47,6 +47,7 @@ void main() {
   Future<ProviderContainer> pump(
     WidgetTester tester, {
     bool profile = true,
+    Profile subscription = _profile,
     bool safe = false,
     _Setup? setup,
     Size size = const Size(1200, 900),
@@ -59,7 +60,7 @@ void main() {
     final container = ProviderContainer(
       overrides: [
         profilesProvider.overrideWith(
-          () => TestProfiles(profile ? [_profile] : []),
+          () => TestProfiles(profile ? [subscription] : []),
         ),
         patchClashConfigProvider.overrideWithBuild(
           (_, _) => const PatchClashConfig(tun: Tun(enable: false)),
@@ -229,4 +230,98 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  testWidgets('an ended plan blocks connecting and offers renewal', (
+    tester,
+  ) async {
+    final yesterday = DateTime.now().subtract(const Duration(days: 1));
+    await pump(
+      tester,
+      subscription: _profile.copyWith(
+        subscriptionInfo: SubscriptionInfo(
+          expire: yesterday.millisecondsSinceEpoch ~/ 1000,
+        ),
+        providerHeaders: const {
+          'bot-url': 'https://t.me/example_bot',
+          'support-url': 'https://t.me/example_support',
+        },
+      ),
+    );
+    expect(
+      tester
+          .widget<NurPowerButton>(
+            find.byKey(const ValueKey('nur-connect-toggle')),
+          )
+          .onPressed,
+      isNull,
+    );
+    expect(
+      tester.widget<Text>(find.byKey(const ValueKey('nur-status'))).data,
+      currentAppLocalizations.nurSubscriptionEnded,
+    );
+    expect(find.text(currentAppLocalizations.nurRenewToConnect), findsOne);
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('nur-help-action')),
+        matching: find.text(currentAppLocalizations.renew),
+      ),
+      findsOne,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('a device limit refusal blocks connecting and offers support', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      subscription: _profile.copyWith(
+        providerHeaders: const {
+          'x-hwid-max-devices-reached': 'true',
+          'support-url': 'https://t.me/example_support',
+        },
+      ),
+    );
+    expect(
+      tester
+          .widget<NurPowerButton>(
+            find.byKey(const ValueKey('nur-connect-toggle')),
+          )
+          .onPressed,
+      isNull,
+    );
+    expect(
+      tester.widget<Text>(find.byKey(const ValueKey('nur-status'))).data,
+      currentAppLocalizations.deviceLimitReached,
+    );
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('nur-help-action')),
+        matching: find.text(currentAppLocalizations.support),
+      ),
+      findsOne,
+    );
+  });
+
+  testWidgets('a plan with time left has no help action', (tester) async {
+    final nextWeek = DateTime.now().add(const Duration(days: 7));
+    await pump(
+      tester,
+      subscription: _profile.copyWith(
+        subscriptionInfo: SubscriptionInfo(
+          expire: nextWeek.millisecondsSinceEpoch ~/ 1000,
+        ),
+        providerHeaders: const {'bot-url': 'https://t.me/example_bot'},
+      ),
+    );
+    expect(
+      tester
+          .widget<NurPowerButton>(
+            find.byKey(const ValueKey('nur-connect-toggle')),
+          )
+          .onPressed,
+      isNotNull,
+    );
+    expect(find.byKey(const ValueKey('nur-help-action')), findsNothing);
+  });
 }

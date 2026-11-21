@@ -1064,6 +1064,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "numberRangeTip": m58,
     "numberTip": m59,
     "nurAddSubscription": MessageLookupByLibrary.simpleMessage("구독 추가"),
+    "nurBot": MessageLookupByLibrary.simpleMessage("봇"),
     "nurChooseServer": MessageLookupByLibrary.simpleMessage("서버 선택"),
     "nurConnect": MessageLookupByLibrary.simpleMessage("연결"),
     "nurConnectionMode": MessageLookupByLibrary.simpleMessage("연결 모드"),
@@ -1089,7 +1090,11 @@ class MessageLookup extends MessageLookupByLibrary {
       "프록시는 시스템 프록시 설정을 따르는 앱에서 작동합니다.",
     ),
     "nurProxyMode": MessageLookupByLibrary.simpleMessage("프록시"),
+    "nurRenewToConnect": MessageLookupByLibrary.simpleMessage(
+      "연결하려면 구독을 갱신하세요.",
+    ),
     "nurServers": MessageLookupByLibrary.simpleMessage("서버"),
+    "nurSubscriptionEnded": MessageLookupByLibrary.simpleMessage("구독이 종료되었습니다"),
     "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
       "제공업체에서 받은 구독 링크를 붙여넣으세요.",
     ),

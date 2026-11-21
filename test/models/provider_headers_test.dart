@@ -613,4 +613,85 @@ void main() {
       );
     });
   });
+
+  group('bot, account and renewal links', () {
+    test('bot-url and account-url must be URLs', () {
+      const headers = ProviderHeaders({
+        'bot-url': 'https://t.me/example_bot',
+        'account-url': 'https://account.example/',
+      });
+      expect(headers.botUrl, 'https://t.me/example_bot');
+      expect(headers.accountUrl, 'https://account.example/');
+      expect(const ProviderHeaders({'bot-url': 'nope'}).botUrl, isNull);
+      expect(const ProviderHeaders({'account-url': ' '}).accountUrl, isNull);
+    });
+
+    test('renewal goes to the offer, then the bot, then support', () {
+      expect(
+        const ProviderHeaders({
+          'flclashx-buyplan': 'https://shop.example/',
+          'bot-url': 'https://t.me/example_bot',
+          'support-url': 'https://help.example/',
+        }).renewUrl,
+        'https://shop.example/',
+      );
+      expect(
+        const ProviderHeaders({
+          'bot-url': 'https://t.me/example_bot',
+          'support-url': 'https://help.example/',
+        }).renewUrl,
+        'https://t.me/example_bot',
+      );
+      expect(
+        const ProviderHeaders({
+          'support-url': 'https://help.example/',
+        }).renewUrl,
+        'https://help.example/',
+      );
+      expect(const ProviderHeaders({}).renewUrl, isNull);
+    });
+
+    test('the answer keeps bot-url and account-url in any case', () {
+      expect(
+        providerHeadersOf({
+          'Bot-Url': ['https://t.me/example_bot'],
+          'Account-Url': ['https://account.example/'],
+          'X-Other': ['dropped'],
+        }),
+        {
+          'bot-url': 'https://t.me/example_bot',
+          'account-url': 'https://account.example/',
+        },
+      );
+    });
+  });
+
+  group('isExpiredAt', () {
+    final now = DateTime.utc(2026, 11, 21, 12);
+    int seconds(DateTime time) => time.millisecondsSinceEpoch ~/ 1000;
+
+    test('a passed end is expired, a coming one or none is not', () {
+      expect(
+        _profile(
+          info: SubscriptionInfo(
+            expire: seconds(now.subtract(const Duration(minutes: 1))),
+          ),
+        ).isExpiredAt(now),
+        isTrue,
+      );
+      expect(
+        _profile(
+          info: SubscriptionInfo(
+            expire: seconds(now.add(const Duration(days: 1))),
+          ),
+        ).isExpiredAt(now),
+        isFalse,
+      );
+      expect(_profile().isExpiredAt(now), isFalse);
+      expect(
+        _profile(info: const SubscriptionInfo()).isExpiredAt(now),
+        isFalse,
+      );
+    });
+  });
 }

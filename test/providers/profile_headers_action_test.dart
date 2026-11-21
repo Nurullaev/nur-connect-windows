@@ -400,6 +400,22 @@ void main() {
     expect(themeMode(), ThemeMode.dark);
   });
 
+  test('a profile without a colour keeps the colour the user has', () async {
+    const gold = 0xFFE0A045;
+    container
+        .read(themeSettingProvider.notifier)
+        .update((state) => state.copyWith(primaryColor: gold));
+
+    await select(_profile(1));
+    expect(container.read(themeSettingProvider).primaryColor, gold);
+
+    await select(_profile(2, view: 'app.theme:dark'));
+    expect(container.read(themeSettingProvider).primaryColor, gold);
+    final backup = container.read(appSettingProvider).headerBackup;
+    expect(backup, containsPair('theme.mode', 'system'));
+    expect(backup.containsKey('theme.color'), isFalse);
+  });
+
   test('every update of the profile applies the header again', () async {
     final first = DateTime(2026, 10, 19, 10);
     await select(_profile(1, view: 'app.theme:dark', updatedAt: first));

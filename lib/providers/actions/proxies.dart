@@ -215,6 +215,7 @@ class ProxiesAction extends _$ProxiesAction {
       if (profileId == ref.read(currentProfileIdProvider)) {
         _unfoldFirstGroupOf(profileId);
       }
+      _pickGlobalDefault(groups, profileId);
       await _dropLostPins(
         groups,
         asked,
@@ -231,6 +232,24 @@ class ProxiesAction extends _$ProxiesAction {
         logLevel: coreFailureLogLevel(e),
       );
     }
+  }
+
+  /// Global routing sends everything through GLOBAL, which mihomo starts on
+  /// DIRECT: until the user picks there, the subscription's servers take it,
+  /// so a connected VPN carries the traffic instead of passing it by.
+  void _pickGlobalDefault(List<Group> groups, int? profileId) {
+    if (!nurWindowsLayout() ||
+        profileId == null ||
+        ref.read(patchClashConfigProvider).mode != Mode.global) {
+      return;
+    }
+    final global = GroupName.GLOBAL.name;
+    final profile = ref.read(currentProfileProvider);
+    if (profile == null || profile.selectedMap.containsKey(global)) return;
+    final now = groups.getGroup(global)?.now;
+    if (now != null && now.isNotEmpty && !isBuiltinOutbound(now)) return;
+    final target = defaultGlobalTarget(groups, profile.headers.serverGroup);
+    if (target != null) changeProxyDebounce(global, target);
   }
 
   /// mihomo forgets a Fallback pin once its node fails a check. A read that

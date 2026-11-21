@@ -8022,7 +8022,8 @@ class AppLocalizations {
   String customImportDroppedSubRules(num count, Object label) {
     return Intl.plural(
       count,
-      one: '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
+      one:
+          '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
       other:
           '$label SUB-RULE rules were dropped, since custom profiles do not support sub-rules',
       name: 'customImportDroppedSubRules',
@@ -8971,6 +8972,31 @@ class AppLocalizations {
     return Intl.message(
       'Disconnect to change connection mode.',
       name: 'nurDisconnectToChangeMode',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Bot`
+  String get nurBot {
+    return Intl.message('Bot', name: 'nurBot', desc: '', args: []);
+  }
+
+  /// `Subscription has ended`
+  String get nurSubscriptionEnded {
+    return Intl.message(
+      'Subscription has ended',
+      name: 'nurSubscriptionEnded',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Renew your subscription to connect.`
+  String get nurRenewToConnect {
+    return Intl.message(
+      'Renew your subscription to connect.',
+      name: 'nurRenewToConnect',
       desc: '',
       args: [],
     );

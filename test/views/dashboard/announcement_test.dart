@@ -86,6 +86,47 @@ void main() {
     return found!;
   }
 
+  test('the compact text drops blank lines and edge spaces', () {
+    expect(
+      compactAnnouncement('📢 Free until 30.11.\n\n  Your key: abc  \n'),
+      '📢 Free until 30.11.\nYour key: abc',
+    );
+  });
+
+  testWidgets('the compact card puts the icon beside the text, no header', (
+    tester,
+  ) async {
+    setUpProfiles([_profile(announce: 'One line.\n\n Two line.')]);
+    tester.view.physicalSize = const Size(412, 400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const TestApp(
+          child: Align(
+            alignment: Alignment.topCenter,
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: AnnouncementCard(compact: true),
+            ),
+          ),
+        ),
+      ),
+    );
+    await tester.pump();
+
+    expect(find.byKey(const ValueKey('announcement-compact')), findsOne);
+    expect(find.textContaining('One line.\nTwo line.'), findsOne);
+    expect(find.text('Announcement'), findsNothing);
+    expect(
+      tester.getSize(find.byKey(const ValueKey('announcement-compact'))).height,
+      lessThan(90),
+    );
+    await teardown(tester);
+  });
+
   testWidgets('shows the announcement first, above the status card', (
     tester,
   ) async {

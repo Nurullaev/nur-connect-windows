@@ -986,6 +986,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "numberRangeTip": m58,
     "numberTip": m59,
     "nurAddSubscription": MessageLookupByLibrary.simpleMessage("添加订阅"),
+    "nurBot": MessageLookupByLibrary.simpleMessage("机器人"),
     "nurChooseServer": MessageLookupByLibrary.simpleMessage("选择服务器"),
     "nurConnect": MessageLookupByLibrary.simpleMessage("连接"),
     "nurConnectionMode": MessageLookupByLibrary.simpleMessage("连接模式"),
@@ -1011,7 +1012,9 @@ class MessageLookup extends MessageLookupByLibrary {
       "代理适用于遵循系统代理设置的应用。",
     ),
     "nurProxyMode": MessageLookupByLibrary.simpleMessage("代理"),
+    "nurRenewToConnect": MessageLookupByLibrary.simpleMessage("请续订以继续连接。"),
     "nurServers": MessageLookupByLibrary.simpleMessage("服务器"),
+    "nurSubscriptionEnded": MessageLookupByLibrary.simpleMessage("订阅已结束"),
     "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
       "粘贴服务商提供的订阅链接。",
     ),

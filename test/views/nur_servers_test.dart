@@ -148,4 +148,78 @@ void main() {
       },
     );
   }
+
+  testWidgets(
+    'an ended plan shows the panel notices and renewal, not servers',
+    (tester) async {
+      final yesterday = DateTime.now().subtract(const Duration(days: 1));
+      final profile = Profile(
+        id: 1,
+        label: 'Plan',
+        autoUpdateDuration: Duration.zero,
+        subscriptionInfo: SubscriptionInfo(
+          expire: yesterday.millisecondsSinceEpoch ~/ 1000,
+        ),
+        providerHeaders: const {'bot-url': 'https://t.me/example_bot'},
+      );
+      final action = _Proxies();
+      final container = ProviderContainer(
+        overrides: [
+          profilesProvider.overrideWith(() => TestProfiles([profile])),
+          proxiesActionProvider.overrideWith(() => action),
+          coreStatusProvider.overrideWithBuild((_, _) => CoreStatus.connected),
+        ],
+      );
+      addTearDown(container.dispose);
+      globalState.container = container;
+      tester.view.physicalSize = const Size(430, 900);
+      tester.view.devicePixelRatio = 1;
+      addTearDown(tester.view.resetPhysicalSize);
+      addTearDown(tester.view.resetDevicePixelRatio);
+      container.read(viewSizeProvider.notifier).value = const Size(430, 900);
+      container.listen(currentProfileIdProvider, (_, _) {});
+      container.read(currentProfileIdProvider.notifier).value = 1;
+      container.listen(groupsProvider, (_, _) {});
+      container.read(groupsProvider.notifier).value = [
+        const Group(
+          name: 'Nur VPN',
+          type: GroupType.Selector,
+          hidden: false,
+          now: 'Plan over, says the panel',
+          all: [
+            Proxy(name: 'Plan over, says the panel', type: 'vless'),
+            Proxy(name: 'Renew in the bot', type: 'vless'),
+            Proxy(name: 'Inner', type: 'Selector'),
+            Proxy(name: 'DIRECT', type: 'Direct'),
+          ],
+        ),
+        const Group(
+          name: 'Inner',
+          type: GroupType.Selector,
+          hidden: false,
+          now: 'Renew in the bot',
+          all: [Proxy(name: 'Renew in the bot', type: 'vless')],
+        ),
+      ];
+      await tester.pumpWidget(
+        UncontrolledProviderScope(
+          container: container,
+          child: const TestApp(locale: Locale('en'), child: NurServersView()),
+        ),
+      );
+      await tester.pumpAndSettle();
+      expect(tester.takeException(), isNull);
+      expect(find.byKey(const ValueKey('nur-servers-expired')), findsOne);
+      expect(find.text(currentAppLocalizations.nurSubscriptionEnded), findsOne);
+      expect(find.text('Plan over, says the panel'), findsOne);
+      expect(find.text('Renew in the bot'), findsOne);
+      expect(find.text('DIRECT'), findsNothing);
+      expect(find.text('Inner'), findsNothing);
+      expect(find.byKey(const ValueKey('nur-server-search')), findsNothing);
+      expect(find.byKey(const ValueKey('nur-servers-renew')), findsOne);
+      await tester.tap(find.byTooltip(currentAppLocalizations.delayTest).last);
+      await tester.pumpAndSettle();
+      expect(action.tested, isEmpty);
+    },
+  );
 }

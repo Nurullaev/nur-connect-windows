@@ -15,7 +15,11 @@ const _linkTrailing = '.,;:!?)';
 /// What the subscription announced in its `announce` header, its links
 /// opening after the external link prompt.
 class AnnouncementCard extends ConsumerStatefulWidget {
-  const AnnouncementCard({super.key});
+  const AnnouncementCard({super.key, this.compact = false});
+
+  /// A low card for the Windows home: the icon beside the text instead of a
+  /// header, smaller type and the panel's blank lines dropped.
+  final bool compact;
 
   @override
   ConsumerState<AnnouncementCard> createState() => _AnnouncementCardState();
@@ -82,6 +86,38 @@ class _AnnouncementCardState extends ConsumerState<AnnouncementCard> {
     }
     final colorScheme = context.colorScheme;
     final appLocalizations = context.appLocalizations;
+    if (widget.compact) {
+      return DashboardCard(
+        key: const ValueKey('announcement-compact'),
+        semanticLabel: appLocalizations.announcement,
+        padding: const EdgeInsets.fromLTRB(14, 10, 16, 10),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 10,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 1),
+              child: GlyphIcon(
+                AppGlyphs.info,
+                size: 16,
+                color: colorScheme.primary,
+              ),
+            ),
+            Expanded(
+              child: Text.rich(
+                _spanOf(
+                  compactAnnouncement(text),
+                  AppTextStyle.footnote
+                      .of(context)
+                      .copyWith(color: colorScheme.onSurface),
+                  colorScheme.primary,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
     final style = AppTextStyle.subheadline
         .of(context)
         .copyWith(color: colorScheme.onSurface);
@@ -102,3 +138,10 @@ class _AnnouncementCardState extends ConsumerState<AnnouncementCard> {
     );
   }
 }
+
+/// [text] without its blank lines and the spaces around each line.
+String compactAnnouncement(String text) => text
+    .split('\n')
+    .map((line) => line.trim())
+    .where((line) => line.isNotEmpty)
+    .join('\n');

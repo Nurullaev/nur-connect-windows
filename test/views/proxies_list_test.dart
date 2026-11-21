@@ -1,4 +1,3 @@
-import 'package:fl_clash/common/nur_layout.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/core/controller.dart';
 import 'package:fl_clash/core/interface.dart';
