@@ -226,7 +226,8 @@ void main() {
     'a narrow window with large text uses a scrollable single column',
     (tester) async {
       await pump(tester, size: const Size(540, 900), scale: 2);
-      expect(find.byType(SingleChildScrollView), findsWidgets);
+      expect(find.byType(CustomScrollView), findsOne);
+      expect(find.byKey(const ValueKey('nur-home-servers')), findsNothing);
       expect(tester.takeException(), isNull);
     },
   );
@@ -352,32 +353,63 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
-  testWidgets('the connect button leads and the notices follow the plan card', (
+  testWidgets(
+    'the connect button leads, the card carries the notices, servers follow',
+    (tester) async {
+      await pump(
+        tester,
+        size: const Size(440, 1400),
+        subscription: _profile.copyWith(
+          providerHeaders: const {
+            'announce': 'Traffic is free until the end of the month',
+            'banner-text': 'Invite friends, pay less',
+            'banner-button-text': 'Invite',
+            'banner-button-url': 'https://t.me/example_bot?start=partner',
+          },
+        ),
+      );
+      Rect rect(String key) => tester.getRect(find.byKey(ValueKey(key)));
+      final card = rect('profile-card-dense');
+      final banner = rect('nur-banner');
+      final announcement = rect('announcement-inline');
+      expect(rect('nur-connect-toggle').top, lessThan(card.top));
+      expect(card.contains(banner.center), isTrue);
+      expect(card.contains(announcement.center), isTrue);
+      expect(banner.top, lessThan(announcement.top));
+      expect(rect('nur-home-servers-header').top, greaterThan(card.bottom));
+      expect(rect('Finland').top, greaterThan(card.bottom));
+      expect(find.byKey(const ValueKey('nur-home-servers')), findsNothing);
+      expect(tester.takeException(), isNull);
+    },
+  );
+
+  testWidgets('a wide window puts the servers in a column of their own', (
     tester,
   ) async {
+    await pump(tester, size: const Size(1200, 800));
+    Rect rect(String key) => tester.getRect(find.byKey(ValueKey(key)));
+    final panel = rect('nur-home-servers');
+    final card = rect('profile-card-dense');
+    expect(rect('nur-connect-toggle').center.dx, lessThan(panel.left));
+    expect(card.right, lessThan(panel.left));
+    expect(card.top, greaterThan(rect('nur-connect-toggle').bottom));
+    expect(find.byKey(const ValueKey('Finland')), findsOneWidget);
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('an ended plan shows no server list', (tester) async {
+    final yesterday = DateTime.now().subtract(const Duration(days: 1));
     await pump(
       tester,
       size: const Size(440, 1400),
       subscription: _profile.copyWith(
-        providerHeaders: const {
-          'announce': 'Traffic is free until the end of the month',
-          'banner-text': 'Invite friends, pay less',
-          'banner-button-text': 'Invite',
-          'banner-button-url': 'https://t.me/example_bot?start=partner',
-        },
+        subscriptionInfo: SubscriptionInfo(
+          expire: yesterday.millisecondsSinceEpoch ~/ 1000,
+        ),
       ),
     );
-    double top(String key) => tester.getTopLeft(find.byKey(ValueKey(key))).dy;
-    final power = top('nur-connect-toggle');
-    final plan = top('profile-card-dense');
-    final announcement = top('announcement-compact');
-    final banner = top('nur-banner');
-    final server = top('nur-selected-server');
-    expect(power, lessThan(plan));
-    expect(plan, lessThan(announcement));
-    expect(announcement, lessThan(banner));
-    expect(banner, lessThan(server));
-    expect(tester.takeException(), isNull);
+    expect(find.byKey(const ValueKey('nur-home-servers-header')), findsNothing);
+    expect(find.byKey(const ValueKey('Finland')), findsNothing);
   });
 
   testWidgets('without a provider name the header keeps the app name', (

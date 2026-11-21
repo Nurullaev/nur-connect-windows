@@ -43,8 +43,17 @@ class _UpdateDialogState extends State<UpdateDialog> {
 
   void _close() => Navigator.of(context).pop();
 
-  Widget _action(String label, VoidCallback onPressed) =>
-      TextButton(onPressed: onPressed, child: Text(label));
+  /// [autofocus] puts the keyboard back on a step forward that replaced the
+  /// progress bar, which held no focus to hand over.
+  Widget _action(
+    String label,
+    VoidCallback onPressed, {
+    bool autofocus = false,
+  }) => TextButton(
+    autofocus: autofocus,
+    onPressed: onPressed,
+    child: Text(label),
+  );
 
   /// Stacked with the first at the bottom, so the step forward sits on top.
   List<Widget> _actions(AppLocalizations l10n, UpdateState state) {
@@ -92,11 +101,14 @@ class _UpdateDialogState extends State<UpdateDialog> {
       ],
       UpdatePhase.ready => [
         close,
-        _action(l10n.updateInstall, _controller.install),
+        _action(l10n.updateInstall, _controller.install, autofocus: true),
       ],
       UpdatePhase.installing => const [],
       UpdatePhase.done => [close],
-      UpdatePhase.failed => [close, _action(l10n.retry, _controller.download)],
+      UpdatePhase.failed => [
+        close,
+        _action(l10n.retry, _controller.download, autofocus: true),
+      ],
     };
   }
 

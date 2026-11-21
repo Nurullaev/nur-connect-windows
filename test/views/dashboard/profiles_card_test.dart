@@ -74,6 +74,16 @@ class _QuietProfilesAction extends ProfilesAction {
   }) async {}
 }
 
+class _DeletingProfilesAction extends ProfilesAction {
+  static final deleted = <int>[];
+
+  @override
+  Future<void> deleteProfile(int id) async => deleted.add(id);
+
+  @override
+  Future<List<Profile>> providerUsers(Profile profile) async => const [];
+}
+
 class _GatedProfilesAction extends ProfilesAction {
   static Completer<void>? gate;
 
@@ -732,6 +742,69 @@ void main() {
     expect(
       ModalRoute.of(tester.element(find.byType(CustomRulesView))),
       isA<PagedSheetRoute<void>>(),
+    );
+  });
+
+  testWidgets('the dense card deletes its profile once confirmed', (
+    tester,
+  ) async {
+    _DeletingProfilesAction.deleted.clear();
+    setUpProfiles(
+      [_profile(1, type: ProfileType.url)],
+      overrides: [
+        profilesActionProvider.overrideWith(_DeletingProfilesAction.new),
+      ],
+    );
+    await pumpCard(tester, card: const ProfilesCard(dense: true));
+
+    await tester.tap(find.byKey(const ValueKey('profile-more')));
+    await tester.pump();
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.text('Details'), findsOneWidget);
+    await tester.tap(find.text('Delete').last);
+    final dialog = find.byType(CommonDialog);
+    for (var i = 0; i < 20 && dialog.evaluate().isEmpty; i++) {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 20)),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    expect(dialog, findsOneWidget);
+    expect(_DeletingProfilesAction.deleted, isEmpty);
+
+    await tester.tap(
+      find.descendant(of: dialog, matching: find.text('Delete')),
+    );
+    for (var i = 0; i < 20 && _DeletingProfilesAction.deleted.isEmpty; i++) {
+      await tester.runAsync(
+        () => Future<void>.delayed(const Duration(milliseconds: 20)),
+      );
+      await tester.pump(const Duration(milliseconds: 100));
+    }
+    expect(_DeletingProfilesAction.deleted, [1]);
+  });
+
+  testWidgets('the dense card shows its footer rows under the plan', (
+    tester,
+  ) async {
+    setUpProfiles([_profile(1, type: ProfileType.url)]);
+    await pumpCard(
+      tester,
+      card: const ProfilesCard(
+        dense: true,
+        footer: [Text('Promo row', key: ValueKey('footer-promo'))],
+      ),
+    );
+    final card = tester.getRect(
+      find.byKey(const ValueKey('profile-card-dense')),
+    );
+    final promo = tester.getRect(find.byKey(const ValueKey('footer-promo')));
+    expect(card.contains(promo.center), isTrue);
+    expect(
+      promo.top,
+      greaterThan(
+        tester.getRect(find.byKey(const ValueKey('profile-card-name'))).bottom,
+      ),
     );
   });
 

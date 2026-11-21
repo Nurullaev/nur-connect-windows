@@ -4,16 +4,87 @@ import 'package:collection/collection.dart';
 import 'package:fl_clash/common/common.dart';
 import 'package:fl_clash/common/nur_connect_servers.dart';
 import 'package:fl_clash/enum/enum.dart';
+import 'package:fl_clash/l10n/l10n.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
+import 'package:fl_clash/views/dashboard/widgets/proxy_groups.dart'
+    show showProxiesSheet;
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
 import 'card.dart';
 import 'common.dart';
+
+/// What the servers page and the home list show for the current profile:
+/// [groups] sorted, the [group] on show and its [proxies] matching [search].
+typedef NurServerList = ({
+  Profile? profile,
+  List<Group> groups,
+  Group? group,
+  List<Proxy> proxies,
+  bool alive,
+  bool expired,
+  List<String> notices,
+});
+
+NurServerList watchNurServerList(WidgetRef ref, {String search = ''}) {
+  final profile = ref.watch(currentProfileProvider);
+  final style = ref.watch(proxiesStyleSettingProvider);
+  final allGroups = ref.watch(visibleGroupsStateProvider).value;
+  var groups = nurConnectServerGroups(
+    allGroups,
+    ref.watch(patchClashConfigProvider.select((s) => s.mode)),
+  );
+  if (ref.watch(oneGroupProvider)) {
+    final server = groups.panelServerGroup(profile?.headers.serverGroup);
+    groups = server == null ? [] : [server];
+  }
+  final sorted = computeSort(
+    groups: groups,
+    sortType: style.sortType,
+    delayMap: ref.watch(delayDataSourceProvider),
+    selectedMap: ref.watch(selectedMapProvider),
+    defaultTestUrl: ref.watch(realTestUrlProvider(null)),
+  );
+  final group =
+      sorted.firstWhereOrNull(
+        (item) => item.name == profile?.currentGroupName,
+      ) ??
+      sorted.panelServerGroup(profile?.headers.serverGroup);
+  final choices = group == null
+      ? const <Proxy>[]
+      : nurConnectServerChoices(group, ref.watch(groupsProvider));
+  final proxies = choices
+      .whereMatches(SearchQuery(search), (proxy) => proxy.searchFields)
+      .toList();
+  final alive = ref.watch(coreStatusProvider) == CoreStatus.connected;
+  // After the plan's end a panel lists its notices in place of servers.
+  final expired = profile?.isExpiredAt(DateTime.now()) ?? false;
+  // Global routing lists the subscription's groups inside GLOBAL as well.
+  final groupNames = {for (final item in allGroups) item.name};
+  final notices = expired
+      ? [
+          ...{
+            for (final proxy in group?.all ?? const <Proxy>[])
+              if (!isBuiltinOutbound(proxy.name) &&
+                  !groupNames.contains(proxy.name))
+                proxy.name,
+          },
+        ].take(_maxNotices).toList()
+      : const <String>[];
+  return (
+    profile: profile,
+    groups: sorted,
+    group: group,
+    proxies: proxies,
+    alive: alive,
+    expired: expired,
+    notices: notices,
+  );
+}
 
 /// Search belongs to this view, so closing a picker never changes another
 /// server page's query. Selection and its rollback still use ProxiesAction.
@@ -51,50 +122,18 @@ class _NurServersViewState extends ConsumerState<NurServersView> {
   @override
   Widget build(BuildContext context) {
     final l10n = context.appLocalizations;
-    final profile = ref.watch(currentProfileProvider);
-    final style = ref.watch(proxiesStyleSettingProvider);
-    final allGroups = ref.watch(visibleGroupsStateProvider).value;
-    var groups = nurConnectServerGroups(
-      allGroups,
-      ref.watch(patchClashConfigProvider.select((s) => s.mode)),
+    final (
+      :profile,
+      groups: sorted,
+      :group,
+      :proxies,
+      :alive,
+      :expired,
+      :notices,
+    ) = watchNurServerList(
+      ref,
+      search: _search.text,
     );
-    if (ref.watch(oneGroupProvider)) {
-      final server = groups.panelServerGroup(profile?.headers.serverGroup);
-      groups = server == null ? [] : [server];
-    }
-    final sorted = computeSort(
-      groups: groups,
-      sortType: style.sortType,
-      delayMap: ref.watch(delayDataSourceProvider),
-      selectedMap: ref.watch(selectedMapProvider),
-      defaultTestUrl: ref.watch(realTestUrlProvider(null)),
-    );
-    final group =
-        sorted.firstWhereOrNull(
-          (item) => item.name == profile?.currentGroupName,
-        ) ??
-        sorted.panelServerGroup(profile?.headers.serverGroup);
-    final choices = group == null
-        ? const <Proxy>[]
-        : nurConnectServerChoices(group, ref.watch(groupsProvider));
-    final proxies = choices
-        .whereMatches(SearchQuery(_search.text), (proxy) => proxy.searchFields)
-        .toList();
-    final alive = ref.watch(coreStatusProvider) == CoreStatus.connected;
-    // After the plan's end a panel lists its notices in place of servers.
-    final expired = profile?.isExpiredAt(DateTime.now()) ?? false;
-    // Global routing lists the subscription's groups inside GLOBAL as well.
-    final groupNames = {for (final item in allGroups) item.name};
-    final notices = expired
-        ? [
-            ...{
-              for (final proxy in group?.all ?? const <Proxy>[])
-                if (!isBuiltinOutbound(proxy.name) &&
-                    !groupNames.contains(proxy.name))
-                  proxy.name,
-            },
-          ].take(_maxNotices).toList()
-        : const <String>[];
     return CommonScaffold(
       title: l10n.nurServers,
       iconActions: [
@@ -329,4 +368,181 @@ class _ServerOptions extends StatelessWidget {
       ),
     ],
   );
+}
+
+Widget _serverRow(Group group, Proxy proxy) => SizedBox(
+  key: ValueKey(proxy.name),
+  height: getItemHeight(ProxyCardType.compact),
+  child: ProxyCard(
+    groupName: group.name,
+    groupType: group.type,
+    proxy: proxy,
+    type: ProxyCardType.compact,
+    testUrl: group.testUrl,
+  ),
+);
+
+String _emptyText(AppLocalizations l10n, WidgetRef ref, Profile? profile) =>
+    profile == null
+    ? l10n.nurWelcomeHint
+    : !ref.watch(isStartProvider)
+    ? l10n.proxyGroupsAfterStart
+    : l10n.proxyGroupEmpty;
+
+/// The home's server section title with a delay test and the way to the full
+/// list, where search, sorting and other groups live.
+class NurHomeServersHeader extends ConsumerStatefulWidget {
+  const NurHomeServersHeader({super.key});
+
+  @override
+  ConsumerState<NurHomeServersHeader> createState() =>
+      _NurHomeServersHeaderState();
+}
+
+class _NurHomeServersHeaderState extends ConsumerState<NurHomeServersHeader> {
+  bool _testing = false;
+
+  Future<void> _test(List<Proxy> proxies, String? url) async {
+    if (_testing || proxies.isEmpty) return;
+    setState(() => _testing = true);
+    try {
+      await globalState.safeRun(
+        () => ref.read(proxiesActionProvider.notifier).delayTest(proxies, url),
+      );
+    } finally {
+      if (mounted) setState(() => _testing = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.appLocalizations;
+    final (
+      :group,
+      :proxies,
+      :alive,
+      :expired,
+      profile: _,
+      groups: _,
+      notices: _,
+    ) = watchNurServerList(
+      ref,
+    );
+    return Row(
+      key: const ValueKey('nur-home-servers-header'),
+      children: [
+        Expanded(
+          child: Text(
+            l10n.nurServers,
+            style: AppTextStyle.headline.of(context, emphasized: true),
+          ),
+        ),
+        if (_testing)
+          const Padding(
+            padding: EdgeInsets.all(12),
+            child: CommonCircleLoading(size: 20),
+          )
+        else
+          IconButton(
+            key: const ValueKey('nur-home-servers-test'),
+            tooltip: l10n.delayTest,
+            icon: const GlyphIcon(AppGlyphs.bolt),
+            onPressed: expired || !alive || proxies.isEmpty
+                ? null
+                : () => unawaited(_test(proxies, group?.testUrl)),
+          ),
+        IconButton(
+          key: const ValueKey('nur-home-servers-all'),
+          tooltip: l10n.search,
+          icon: const GlyphIcon(AppGlyphs.search),
+          onPressed: group == null
+              ? null
+              : () =>
+                    unawaited(showProxiesSheet(context, groupName: group.name)),
+        ),
+      ],
+    );
+  }
+}
+
+/// Every server of the group on show, for the single column home.
+class NurHomeServerSliver extends ConsumerWidget {
+  const NurHomeServerSliver({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final (
+      :profile,
+      :group,
+      :proxies,
+      groups: _,
+      alive: _,
+      expired: _,
+      notices: _,
+    ) = watchNurServerList(
+      ref,
+    );
+    if (group == null || proxies.isEmpty) {
+      return SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: 24),
+          child: Text(
+            _emptyText(context.appLocalizations, ref, profile),
+            textAlign: TextAlign.center,
+          ),
+        ),
+      );
+    }
+    return SliverList.separated(
+      key: ValueKey((profile?.id, group.name)),
+      itemCount: proxies.length,
+      separatorBuilder: (_, _) => const SizedBox(height: 8),
+      itemBuilder: (_, index) => _serverRow(group, proxies[index]),
+    );
+  }
+}
+
+/// The server list as a column of its own, scrolling inside, for the wide
+/// home. Its rows are cards already, so the column has no card behind them.
+class NurHomeServersPanel extends ConsumerWidget {
+  const NurHomeServersPanel({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final (
+      :profile,
+      :group,
+      :proxies,
+      groups: _,
+      alive: _,
+      expired: _,
+      notices: _,
+    ) = watchNurServerList(
+      ref,
+    );
+    return Column(
+      key: const ValueKey('nur-home-servers'),
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const NurHomeServersHeader(),
+        const SizedBox(height: 4),
+        Expanded(
+          child: group == null || proxies.isEmpty
+              ? Center(
+                  child: Text(
+                    _emptyText(context.appLocalizations, ref, profile),
+                    textAlign: TextAlign.center,
+                  ),
+                )
+              : ListView.separated(
+                  key: ValueKey((profile?.id, group.name)),
+                  padding: const EdgeInsets.only(top: 4, bottom: 16),
+                  itemCount: proxies.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 8),
+                  itemBuilder: (_, index) => _serverRow(group, proxies[index]),
+                ),
+        ),
+      ],
+    );
+  }
 }

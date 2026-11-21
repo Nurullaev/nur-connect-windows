@@ -1,7 +1,7 @@
 name: fl_clash
 description: Nur Connect for Windows, an independent Mihomo client based on FlClashX and FlClash.
 publish_to: 'none'
-version: 1.0.3+15
+version: 1.0.4+16
 environment:
   sdk: '>=3.10.0 <4.0.0'
 

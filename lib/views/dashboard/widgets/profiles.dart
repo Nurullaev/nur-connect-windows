@@ -62,6 +62,32 @@ void _openProfile(BuildContext context, WidgetRef ref, Profile? profile) {
   }
 }
 
+/// The same confirmation the profiles page asks before it deletes.
+Future<void> _deleteProfile(
+  BuildContext context,
+  WidgetRef ref,
+  Profile profile,
+) async {
+  final profilesAction = ref.read(profilesActionProvider.notifier);
+  final appLocalizations = context.appLocalizations;
+  final users = await profilesAction.providerUsers(profile);
+  final confirmed = await dialogs.showMessage(
+    title: appLocalizations.tip,
+    message: TextSpan(
+      text: users.isEmpty
+          ? appLocalizations.deleteTip(appLocalizations.profile)
+          : appLocalizations.providerInUse(
+              profile.realLabel,
+              users.map((item) => item.realLabel).join(', '),
+            ),
+    ),
+    destructive: true,
+    confirmText: appLocalizations.delete,
+  );
+  if (confirmed != true) return;
+  await profilesAction.deleteProfile(profile.id);
+}
+
 const _nearlyUsedShare = 0.9;
 
 /// The name row already carries the way to other profiles, so the header
@@ -71,11 +97,15 @@ const _actionGlyphSize = 22.0;
 const _soonDays = 7;
 
 class ProfilesCard extends ConsumerWidget {
-  const ProfilesCard({super.key, this.dense = false});
+  const ProfilesCard({super.key, this.dense = false, this.footer = const []});
 
   /// One header row carrying the profile's name, with the plan figures right
   /// under it: the Nur Connect home keeps the card low.
   final bool dense;
+
+  /// Rows the dense card shows under the plan, each after a thin rule: the
+  /// panel's promotion and announcement share the card, as in Happ.
+  final List<Widget> footer;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -151,6 +181,38 @@ class ProfilesCard extends ConsumerWidget {
         profile != null &&
         (expiry != null || usage != null || offers.isNotEmpty);
     if (dense) {
+      final more = profile == null
+          ? null
+          : CommonPopupBox(
+              targetBuilder: (open) => DashboardIconButton(
+                key: const ValueKey('profile-more'),
+                glyph: AppGlyphs.more,
+                tooltip: appLocalizations.more,
+                iconSize: _actionGlyphSize,
+                onPressed: open,
+              ),
+              popupBuilder: (_) => CommonPopupMenu(
+                items: [
+                  CommonPopupMenuItem(
+                    glyph: AppGlyphs.info,
+                    label: appLocalizations.profileDetails,
+                    onPressed: () => _openProfile(context, ref, profile),
+                  ),
+                  CommonPopupMenuItem(
+                    danger: true,
+                    glyph: AppGlyphs.delete,
+                    label: appLocalizations.delete,
+                    onPressed: () =>
+                        unawaited(_deleteProfile(context, ref, profile)),
+                  ),
+                ],
+              ),
+            );
+      final rule = Divider(
+        height: 1,
+        thickness: 1,
+        color: DashboardColors.of(context).tone2,
+      );
       return DashboardCard(
         key: const ValueKey('profile-card-dense'),
         semanticLabel: appLocalizations.profile,
@@ -192,6 +254,7 @@ class ProfilesCard extends ConsumerWidget {
                 ?bot,
                 ?support,
                 ?sync,
+                ?more,
               ],
             ),
             if (hasFigures) ...[
@@ -203,6 +266,12 @@ class ProfilesCard extends ConsumerWidget {
                 figure: AppTextStyle.headline,
                 gap: 6,
               ),
+            ],
+            for (final row in footer) ...[
+              const SizedBox(height: 12),
+              rule,
+              const SizedBox(height: 10),
+              row,
             ],
           ],
         ),

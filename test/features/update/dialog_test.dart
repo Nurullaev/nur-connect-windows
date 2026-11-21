@@ -218,6 +218,27 @@ void main() {
     expect(find.text(l10n.updateInstall), findsOneWidget);
   });
 
+  testWidgets('Install takes the keyboard after the progress bar', (
+    tester,
+  ) async {
+    final l10n = await pump(tester);
+    await show(tester, const UpdateState(UpdatePhase.verifying));
+    await show(tester, const UpdateState(UpdatePhase.ready));
+    final install = find.ancestor(
+      of: find.text(l10n.updateInstall),
+      matching: find.byType(TextButton),
+    );
+    final focused = FocusManager.instance.primaryFocus?.context;
+    expect(focused, isNotNull);
+    expect(
+      find.descendant(
+        of: install,
+        matching: find.byElementPredicate((e) => e == focused),
+      ),
+      findsOneWidget,
+    );
+  });
+
   testWidgets('installing holds the dialog open', (tester) async {
     final l10n = await pump(tester);
     await show(tester, const UpdateState(UpdatePhase.installing));

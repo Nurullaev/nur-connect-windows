@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:math' as math;
 
 import 'package:fl_clash/common/common.dart';
-import 'package:fl_clash/common/nur_connect_servers.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
 import 'package:fl_clash/state.dart';
 import 'package:fl_clash/ui/icons/icons.dart';
 import 'package:fl_clash/views/profiles/add.dart';
+import 'package:fl_clash/views/proxies/nur_servers.dart';
 import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -21,8 +21,10 @@ import 'widgets/profile_detail.dart';
 import 'widgets/widgets.dart';
 
 /// The Windows home, after the mobile app's design: one large power button,
-/// then the subscription and the chosen server. It drives the existing
-/// profile, server and connection actions.
+/// the subscription with the panel's notices in one card, then every server.
+/// A wide window keeps the button and the card on the left and the servers
+/// on the right. It drives the existing profile, server and connection
+/// actions.
 class NurConnectDashboard extends ConsumerWidget {
   const NurConnectDashboard({super.key});
 
@@ -68,63 +70,94 @@ class NurConnectDashboard extends ConsumerWidget {
       body: LayoutBuilder(
         builder: (context, constraints) {
           final twoColumns = constraints.maxWidth / scale >= 900;
-          // The panel's notices sit under the plan, as in the other Nur
-          // Connect apps, so the connect button leads the page.
-          final notices = [
-            if (announcement) const AnnouncementCard(compact: true),
-            if (banner != null) _BannerCard(banner: banner),
-          ];
-          final details = Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            spacing: 16,
-            children: [
-              const ProfilesCard(dense: true),
-              ...notices,
-              const _ServerCard(),
+          final expired = profile?.isExpiredAt(DateTime.now()) ?? false;
+          final servers = profile != null && !expired;
+          // The panel's promotion and announcement share the plan's card, as
+          // in Happ, so the connect button leads and the servers follow.
+          final card = ProfilesCard(
+            dense: true,
+            footer: [
+              if (banner != null) _BannerRow(banner: banner),
+              if (announcement) const AnnouncementCard(inline: true),
             ],
           );
-          return DashboardDensityScope(
-            // Natural-height cards avoid fixed-height overflow at large text.
-            density: DashboardDensity.mobile,
-            scale: scale,
-            child: SingleChildScrollView(
+          final top = 12 + context.contentTopPadding;
+          final bottom = 24 + context.bottomInset;
+          final Widget content;
+          if (profile == null) {
+            content = SingleChildScrollView(
               key: const PageStorageKey('nur-connect-home'),
-              padding: EdgeInsets.fromLTRB(
-                24,
-                12 + context.contentTopPadding,
-                24,
-                24 + context.bottomInset,
-              ),
+              padding: EdgeInsets.fromLTRB(24, top, 24, bottom),
               child: Center(
                 child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: twoColumns && profile != null ? 1040 : 560,
-                  ),
-                  child: Column(
+                  constraints: const BoxConstraints(maxWidth: 560),
+                  child: _WelcomeCard(hasProfiles: hasProfiles),
+                ),
+              ),
+            );
+          } else if (twoColumns) {
+            final power = SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                spacing: 24,
+                children: [const _PowerPanel(), if (servers) card],
+              ),
+            );
+            content = Padding(
+              padding: EdgeInsets.fromLTRB(24, top, 24, bottom),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 1120),
+                  child: Row(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
-                    spacing: 20,
+                    spacing: 32,
                     children: [
-                      if (profile == null) ...[
-                        _WelcomeCard(hasProfiles: hasProfiles),
-                        ...notices,
-                      ] else if (twoColumns)
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          spacing: 32,
-                          children: [
-                            const Expanded(flex: 5, child: _PowerPanel()),
-                            Expanded(flex: 6, child: details),
-                          ],
-                        )
-                      else ...[
-                        const _PowerPanel(),
-                        details,
-                      ],
+                      Expanded(flex: 5, child: power),
+                      Expanded(
+                        flex: 6,
+                        child: servers
+                            ? const NurHomeServersPanel()
+                            : SingleChildScrollView(child: card),
+                      ),
                     ],
                   ),
                 ),
               ),
-            ),
+            );
+          } else {
+            final side = math.max(24.0, (constraints.maxWidth - 560) / 2);
+            content = CustomScrollView(
+              key: const PageStorageKey('nur-connect-home'),
+              slivers: [
+                SliverPadding(
+                  padding: EdgeInsets.fromLTRB(side, top, side, 0),
+                  sliver: SliverToBoxAdapter(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      spacing: 20,
+                      children: [
+                        const _PowerPanel(),
+                        card,
+                        if (servers) const NurHomeServersHeader(),
+                      ],
+                    ),
+                  ),
+                ),
+                if (servers)
+                  SliverPadding(
+                    padding: EdgeInsets.fromLTRB(side, 4, side, bottom),
+                    sliver: const NurHomeServerSliver(),
+                  )
+                else
+                  SliverToBoxAdapter(child: SizedBox(height: bottom)),
+              ],
+            );
+          }
+          return DashboardDensityScope(
+            // Natural-height cards avoid fixed-height overflow at large text.
+            density: DashboardDensity.mobile,
+            scale: scale,
+            child: content,
           );
         },
       ),
@@ -133,8 +166,8 @@ class NurConnectDashboard extends ConsumerWidget {
 }
 
 /// The panel's promotion in one low row, its button opening the link.
-class _BannerCard extends StatelessWidget {
-  const _BannerCard({required this.banner});
+class _BannerRow extends StatelessWidget {
+  const _BannerRow({required this.banner});
 
   final PanelBanner banner;
 
@@ -142,30 +175,27 @@ class _BannerCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = context.colorScheme;
     final url = banner.url;
-    return DashboardCard(
+    return Row(
       key: const ValueKey('nur-banner'),
-      padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
-      child: Row(
-        spacing: 8,
-        children: [
-          Expanded(
-            child: EmojiText(
-              banner.text,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: AppTextStyle.footnote
-                  .of(context)
-                  .copyWith(color: colorScheme.onSurface),
-            ),
+      spacing: 8,
+      children: [
+        Expanded(
+          child: EmojiText(
+            banner.text,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyle.footnote
+                .of(context)
+                .copyWith(color: colorScheme.onSurface),
           ),
-          if (url != null)
-            TextButton(
-              key: const ValueKey('nur-banner-action'),
-              onPressed: () => dialogs.openUrl(url),
-              child: Text(banner.buttonText ?? context.appLocalizations.go),
-            ),
-        ],
-      ),
+        ),
+        if (url != null)
+          TextButton(
+            key: const ValueKey('nur-banner-action'),
+            onPressed: () => dialogs.openUrl(url),
+            child: Text(banner.buttonText ?? context.appLocalizations.go),
+          ),
+      ],
     );
   }
 }
@@ -714,95 +744,6 @@ class _ConnectionModeSelector extends ConsumerWidget {
                 .copyWith(color: colorScheme.onSurfaceVariant),
           ),
       ],
-    );
-  }
-}
-
-/// The chosen server as one row, like the selected row of the server list:
-/// a gold edge, the name with its flag, and the last measured delay.
-class _ServerCard extends ConsumerWidget {
-  const _ServerCard();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final l10n = context.appLocalizations;
-    final colorScheme = context.colorScheme;
-    final group = nurConnectServerGroups(
-      ref.watch(currentGroupsStateProvider).value,
-      ref.watch(patchClashConfigProvider.select((s) => s.mode)),
-    ).panelServerGroup(ref.watch(currentProfileProvider)?.headers.serverGroup);
-    final selected = group == null
-        ? null
-        : ref.watch(selectedProxyNameProvider(group.name));
-    final chosen =
-        selected != null && selected.isNotEmpty && !isBuiltinOutbound(selected);
-    final delay = chosen
-        ? ref.watch(delayProvider(proxyName: selected, testUrl: group!.testUrl))
-        : null;
-    return DashboardCard(
-      key: const ValueKey('nur-selected-server'),
-      semanticLabel: l10n.server,
-      // The gold edge follows the card's rounded corner.
-      clipBehavior: Clip.antiAlias,
-      padding: const EdgeInsets.fromLTRB(0, 14, 16, 14),
-      onTap: group == null
-          ? null
-          : () => showProxiesSheet(context, groupName: group.name),
-      child: Row(
-        spacing: 14,
-        children: [
-          Container(
-            width: 3,
-            height: 40,
-            decoration: ShapeDecoration(
-              color: chosen ? colorScheme.primary : colorScheme.outlineVariant,
-              shape: AppShape.xs,
-            ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              spacing: 2,
-              children: [
-                Text(
-                  l10n.server,
-                  style: AppTextStyle.caption1
-                      .of(context)
-                      .copyWith(color: colorScheme.onSurfaceVariant),
-                ),
-                EmojiText(
-                  chosen ? selected : l10n.nurChooseServer,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: AppTextStyle.headline.of(context),
-                ),
-                if (group == null)
-                  Text(
-                    ref.watch(isStartProvider)
-                        ? l10n.proxyGroupEmpty
-                        : l10n.proxyGroupsAfterStart,
-                    style: AppTextStyle.footnote
-                        .of(context)
-                        .copyWith(color: colorScheme.onSurfaceVariant),
-                  ),
-              ],
-            ),
-          ),
-          if (delay != null)
-            Text(
-              delay < 0 ? l10n.timeout : '$delay ms',
-              style: AppTextStyle.footnote
-                  .of(context)
-                  .copyWith(color: colorScheme.delayColor(delay)),
-            ),
-          if (group != null)
-            GlyphIcon(
-              AppGlyphs.chevronForward,
-              size: 20,
-              color: colorScheme.primary,
-            ),
-        ],
-      ),
     );
   }
 }
