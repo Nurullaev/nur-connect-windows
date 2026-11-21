@@ -324,4 +324,45 @@ void main() {
     );
     expect(find.byKey(const ValueKey('nur-help-action')), findsNothing);
   });
+
+  testWidgets('the header names the provider and its banner offers a link', (
+    tester,
+  ) async {
+    await pump(
+      tester,
+      subscription: _profile.copyWith(
+        providerHeaders: const {
+          'profile-title': 'Incy VPN',
+          'banner-text': 'Invite friends, pay less',
+          'banner-button-text': 'Invite',
+          'banner-button-url': 'tg://resolve?domain=IncyRu_bot&start=partner',
+        },
+      ),
+    );
+    expect(find.byKey(const ValueKey('nur-brand')), findsOne);
+    expect(find.textContaining('Incy VPN'), findsWidgets);
+    expect(find.byKey(const ValueKey('nur-banner')), findsOne);
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('nur-banner-action')),
+        matching: find.text('Invite'),
+      ),
+      findsOne,
+    );
+    expect(tester.takeException(), isNull);
+  });
+
+  testWidgets('without a provider name the header keeps the app name', (
+    tester,
+  ) async {
+    await pump(tester);
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('nur-brand')),
+        matching: find.textContaining(appName),
+      ),
+      findsOne,
+    );
+    expect(find.byKey(const ValueKey('nur-banner')), findsNothing);
+  });
 }

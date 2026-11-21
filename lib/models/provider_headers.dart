@@ -31,17 +31,48 @@ class ProviderHeaders {
   String? get webPageUrl => _url('profile-web-page-url');
 
   /// The provider's bot, apart from support.
-  String? get botUrl => _url('bot-url');
+  String? get botUrl => _link('bot-url');
 
   /// The provider's account page, apart from the subscription's web page.
-  String? get accountUrl => _url('account-url');
+  String? get accountUrl => _link('account-url');
 
-  /// Where renewing happens: the panel's offer, then its bot, then support.
-  String? get renewUrl => buyPlan?.url ?? botUrl ?? supportUrl;
+  /// Where the panel sends an ended plan, Happ's `sub-expire-button-link`.
+  String? get expireButtonUrl => _link('sub-expire-button-link');
+
+  /// Where renewing happens: the panel's offer, its renewal link, its bot,
+  /// then support.
+  String? get renewUrl =>
+      buyPlan?.url ?? expireButtonUrl ?? botUrl ?? supportUrl;
+
+  /// The promotion Happ's banner keys carry, shown under the announcement.
+  PanelBanner? get banner {
+    final message = _plainOrBase64(text('banner-text'));
+    if (message == null) {
+      return null;
+    }
+    return PanelBanner(
+      text: message,
+      buttonText: _plainOrBase64(text('banner-button-text')),
+      url: _link('banner-button-url'),
+    );
+  }
 
   String? _url(String name) {
     final url = text(name);
     return url != null && url.isUrl ? url : null;
+  }
+
+  /// A web link as given, or a Telegram `tg://resolve` link as its t.me page,
+  /// which opens with or without Telegram installed.
+  String? _link(String name) {
+    final value = text(name);
+    if (value == null) {
+      return null;
+    }
+    if (value.isUrl) {
+      return value;
+    }
+    return telegramWebLink(value);
   }
 
   bool get deviceLimitReached => _flag('x-hwid-max-devices-reached');
@@ -182,12 +213,13 @@ class ProviderHeaders {
 
   /// The panel's other hosts in the order to try them, each a host,
   /// `host:port` or a full origin.
-  List<String> get fallbackHosts => (text('flclashx-newdomain') ?? '')
-      .split(',')
-      .map((host) => host.trim())
-      .where((host) => host.isNotEmpty)
-      .take(maxFallbackHosts)
-      .toList();
+  /// Happ's `new-domain` joins the FlClashX list after it.
+  List<String> get fallbackHosts => {
+    for (final raw in [text('flclashx-newdomain'), text('new-domain')])
+      if (raw != null)
+        for (final host in raw.split(','))
+          if (host.trim().isNotEmpty) host.trim(),
+  }.take(maxFallbackHosts).toList();
 
   /// [url] on each fallback host, keeping its path, query and credentials;
   /// the scheme and port follow the host when it names them.
@@ -598,4 +630,49 @@ extension ProfileHeaders on Profile {
   ProviderHeaders get headers => ProviderHeaders(providerHeaders);
 
   String? get announcement => headers.announcement;
+}
+
+/// `tg://resolve?domain=<name>[&start=<payload>]` as
+/// `https://t.me/<name>[?start=<payload>]`; anything else gives null.
+String? telegramWebLink(String value) {
+  final uri = Uri.tryParse(value.trim());
+  if (uri == null || uri.scheme != 'tg' || uri.host != 'resolve') {
+    return null;
+  }
+  final String? domain;
+  final String? start;
+  try {
+    domain = uri.queryParameters['domain'];
+    start = uri.queryParameters['start'];
+  } on FormatException {
+    return null;
+  }
+  if (domain == null || !RegExp(r'^[A-Za-z0-9_]{3,64}$').hasMatch(domain)) {
+    return null;
+  }
+  // An empty query map would still leave a trailing '?'.
+  return Uri.https(
+    't.me',
+    '/$domain',
+    start != null && start.isNotEmpty ? {'start': start} : null,
+  ).toString();
+}
+
+/// A panel's promotion: its text, and a button when it names a link.
+class PanelBanner {
+  const PanelBanner({required this.text, this.buttonText, this.url});
+
+  final String text;
+  final String? buttonText;
+  final String? url;
+
+  @override
+  bool operator ==(Object other) =>
+      other is PanelBanner &&
+      other.text == text &&
+      other.buttonText == buttonText &&
+      other.url == url;
+
+  @override
+  int get hashCode => Object.hash(text, buttonText, url);
 }

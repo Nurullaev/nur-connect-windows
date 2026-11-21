@@ -33,6 +33,10 @@ class NurConnectDashboard extends ConsumerWidget {
       profilesProvider.select((value) => value.isNotEmpty),
     );
     final announcement = ref.watch(announcementProvider) != null;
+    final headers = profile?.headers;
+    final banner = headers?.banner;
+    // The provider's own name when its subscription sends one.
+    final brand = headers?.serviceName ?? headers?.title ?? appName;
     final scale = math.max(1.0, MediaQuery.textScalerOf(context).scale(1));
     return CommonScaffold(
       title: appName,
@@ -49,8 +53,13 @@ class NurConnectDashboard extends ConsumerWidget {
               excludeFromSemantics: true,
             ),
           ),
-          const Flexible(
-            child: Text(appName, maxLines: 1, overflow: TextOverflow.ellipsis),
+          Flexible(
+            child: EmojiText(
+              brand,
+              key: const ValueKey('nur-brand'),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),
@@ -86,6 +95,7 @@ class NurConnectDashboard extends ConsumerWidget {
                     spacing: 20,
                     children: [
                       if (announcement) const AnnouncementCard(compact: true),
+                      if (banner != null) _BannerCard(banner: banner),
                       if (profile == null)
                         _WelcomeCard(hasProfiles: hasProfiles)
                       else if (twoColumns)
@@ -108,6 +118,44 @@ class NurConnectDashboard extends ConsumerWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+/// The panel's promotion in one low row, its button opening the link.
+class _BannerCard extends StatelessWidget {
+  const _BannerCard({required this.banner});
+
+  final PanelBanner banner;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = context.colorScheme;
+    final url = banner.url;
+    return DashboardCard(
+      key: const ValueKey('nur-banner'),
+      padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
+      child: Row(
+        spacing: 8,
+        children: [
+          Expanded(
+            child: EmojiText(
+              banner.text,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              style: AppTextStyle.footnote
+                  .of(context)
+                  .copyWith(color: colorScheme.onSurface),
+            ),
+          ),
+          if (url != null)
+            TextButton(
+              key: const ValueKey('nur-banner-action'),
+              onPressed: () => dialogs.openUrl(url),
+              child: Text(banner.buttonText ?? context.appLocalizations.go),
+            ),
+        ],
       ),
     );
   }

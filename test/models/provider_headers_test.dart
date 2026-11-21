@@ -694,4 +694,94 @@ void main() {
       );
     });
   });
+
+  group('Happ keys the panel already sends', () {
+    test('a tg resolve link becomes its t.me page', () {
+      expect(
+        telegramWebLink('tg://resolve?domain=NurVPNbot&start=partner'),
+        'https://t.me/NurVPNbot?start=partner',
+      );
+      expect(
+        telegramWebLink('tg://resolve?domain=NurVPNbot'),
+        'https://t.me/NurVPNbot',
+      );
+      expect(telegramWebLink('tg://resolve?domain=a b'), isNull);
+      expect(telegramWebLink('tg://msg?text=hi'), isNull);
+      expect(telegramWebLink('https://t.me/x'), isNull);
+    });
+
+    test('renewal prefers the expiry link over the bot and support', () {
+      expect(
+        const ProviderHeaders({
+          'sub-expire-button-link': 'tg://resolve?domain=IncyRu_bot',
+          'bot-url': 'https://t.me/other_bot',
+          'support-url': 'https://t.me/IncyRu_bot?start=profile',
+        }).renewUrl,
+        'https://t.me/IncyRu_bot',
+      );
+      expect(
+        const ProviderHeaders({
+          'flclashx-buyplan': 'https://shop.example/',
+          'sub-expire-button-link': 'tg://resolve?domain=IncyRu_bot',
+        }).renewUrl,
+        'https://shop.example/',
+      );
+    });
+
+    test('new-domain joins the fallback hosts after the FlClashX list', () {
+      expect(
+        const ProviderHeaders({'new-domain': 'nursubs.app'}).fallbackHosts,
+        ['nursubs.app'],
+      );
+      expect(
+        const ProviderHeaders({
+          'flclashx-newdomain': 'a.example, nursubs.app',
+          'new-domain': 'nursubs.app, b.example',
+        }).fallbackHosts,
+        ['a.example', 'nursubs.app', 'b.example'],
+      );
+    });
+
+    test('the banner keys make a promotion with its button', () {
+      final text = base64.encode(utf8.encode('💰 Invite friends'));
+      final button = base64.encode(utf8.encode('Invite'));
+      expect(
+        ProviderHeaders({
+          'banner-text': 'base64:$text',
+          'banner-button-text': 'base64:$button',
+          'banner-button-url': 'tg://resolve?domain=NurVPNbot&start=partner',
+        }).banner,
+        const PanelBanner(
+          text: '💰 Invite friends',
+          buttonText: 'Invite',
+          url: 'https://t.me/NurVPNbot?start=partner',
+        ),
+      );
+      expect(const ProviderHeaders({}).banner, isNull);
+      expect(
+        const ProviderHeaders({'banner-text': 'Plain'}).banner,
+        const PanelBanner(text: 'Plain'),
+      );
+    });
+
+    test('the answer keeps the Happ keys the app reads', () {
+      expect(
+        providerHeadersOf({
+          'sub-expire-button-link': ['tg://resolve?domain=X_bot'],
+          'new-domain': ['nursubs.app'],
+          'banner-text': ['t'],
+          'banner-button-text': ['b'],
+          'banner-button-url': ['https://x.example'],
+          'color-profile': ['{}'],
+        }).keys,
+        unorderedEquals([
+          'sub-expire-button-link',
+          'new-domain',
+          'banner-text',
+          'banner-button-text',
+          'banner-button-url',
+        ]),
+      );
+    });
+  });
 }
