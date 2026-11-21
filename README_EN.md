@@ -4,16 +4,30 @@
 
 # Nur Connect for Windows
 
+Your subscription, your server and one button to connect, in Nur Connect's black and gold.
 An independent Windows client built on [FlClashX](https://github.com/pluralplay/FlClashX), [FlClash](https://github.com/chen08209/FlClash) and [Mihomo](https://github.com/MetaCubeX/mihomo).
 
-- Dedicated home with connection status, selected server and subscription details.
-- Subscription import with safe error messages and in-place retry.
-- Server search, sorting and latency checks that preserve your selection.
-- Windows settings: TUN, system proxy, startup, background launch, language, theme and diagnostics.
-- Independent app, helper, data-directory and URI identities.
-- Automatic release checks with Update / Later prompts; see [updates](docs/windows/updates.md).
+<p align="center">
+  <img src="docs/assets/screenshots/home-wide-en.png" alt="Nur Connect home screen, connected" width="100%">
+</p>
+<p align="center">
+  <img src="docs/assets/screenshots/home-narrow-en.png" alt="Home screen in a narrow window" width="45%">
+  &nbsp;
+  <img src="docs/assets/screenshots/servers-en.png" alt="Servers page" width="45%">
+</p>
 
-The first [preview release **0.1.0-pre.1**](https://github.com/Nurullaev/nur-connect-windows/releases/tag/v0.1.0-pre.1) is available with an x64 installer, portable ZIP and matching source archive. See [build status and limitations](docs/windows/first-build.md) and the [roadmap](docs/windows/roadmap.md). The application and installer use the Nur Connect brand icon. New messages support Russian and English; other locales fall back to English. Fork Actions remain disabled until our release workflows are prepared.
+<sub>Screenshots use a demo subscription.</sub>
+
+- **One button.** A dashed ring when idle, a running gold arc while connecting, and a lit ring with the time and speed once connected.
+- **VPN or proxy.** A VPN (TUN) / Proxy switch under the button; VPN by default.
+- **Your plan at a glance.** Days left, remaining traffic, refresh and the provider's announcement on top.
+- **Servers.** Flags, latency, search and sorting; the chosen server is marked in gold.
+- **Subscription import** with clear errors and a retry that keeps what you typed.
+- **Updates.** The app offers each new version with Update / Later; see [updates](docs/windows/updates.md).
+- **Installs on its own.** Separate processes, helper service, data folders and URI schemes, so it sits beside FlClashX.
+- Translated into Russian, English, Spanish, French, Japanese, Korean and Chinese.
+
+The latest preview is on the [releases page](https://github.com/Nurullaev/nur-connect-windows/releases) with an x64 installer, portable ZIP, source archive and checksums. See [build status and limitations](docs/windows/first-build.md) and the [roadmap](docs/windows/roadmap.md). The installer is not code-signed yet, so Windows may show a SmartScreen warning.
 
 Build on Windows with Flutter, Go, Rust MSVC (`1.99.0` for the native API), Visual Studio C++ tools/CMake/Windows SDK/ATL and Inno Setup 6:
 
@@ -27,6 +41,3 @@ dart setup.dart windows --env pre --arch amd64
 Outputs go to `dist/`. Add `--targets zip` for a portable archive only. Provider-signed updates require our own signing keys; the upstream key is no longer trusted.
 
 [GPL v3](LICENSE). Original author credits and third-party licenses are retained; see [NOTICE](NOTICE.md). Source base: FlClashX `a9bbb66f6aec3e47359819c93976148a1d270e23`, Mihomo `v1.19.34`. This is a separate project from the similarly named mobile apps and is not an official upstream release.
-
-The simplified home has a compact VPN (TUN) / Proxy selector, with VPN selected for new
-installs. Technical network options remain in advanced settings.

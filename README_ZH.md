@@ -4,15 +4,29 @@
 
 # Nur Connect Windows 版
 
-基于 [FlClashX](https://github.com/pluralplay/FlClashX)、[FlClash](https://github.com/chen08209/FlClash) 和 [Mihomo](https://github.com/MetaCubeX/mihomo) 的独立 Windows 客户端。
+订阅、服务器和一键连接，采用 Nur Connect 的黑金风格。基于 [FlClashX](https://github.com/pluralplay/FlClashX)、[FlClash](https://github.com/chen08209/FlClash) 和 [Mihomo](https://github.com/MetaCubeX/mihomo) 的独立 Windows 客户端。
 
-- 专用首页：连接状态、所选服务器和订阅信息。
-- 订阅导入：安全的错误提示，保留输入以便重试。
-- 服务器搜索、排序、延迟测试和选择保存。
-- Windows 设置：TUN、系统代理、开机启动、语言、主题和诊断。
-- 独立的进程、服务、数据目录和导入协议。
+<p align="center">
+  <img src="docs/assets/screenshots/home-wide-en.png" alt="Nur Connect 首页（已连接）" width="100%">
+</p>
+<p align="center">
+  <img src="docs/assets/screenshots/home-narrow-en.png" alt="窄窗口中的首页" width="45%">
+  &nbsp;
+  <img src="docs/assets/screenshots/servers-en.png" alt="服务器页面" width="45%">
+</p>
 
-首个[预览版本 **0.1.0-pre.1**](https://github.com/Nurullaev/nur-connect-windows/releases/tag/v0.1.0-pre.1) 已发布，提供 x64 安装程序、便携 ZIP 和对应源代码。请参阅[构建状态及限制](docs/windows/first-build.md)和[路线图](docs/windows/roadmap.md)。应用和安装程序采用 Nur Connect 品牌图标。新界面文本支持俄语和英语，其他语言暂用英语。分支的 GitHub Actions 尚未启用。
+<sub>截图使用演示订阅。</sub>
+
+- **一键连接**：未连接时为虚线圆环，连接中为流动的金色弧线，连接后圆环点亮并显示时长与速度。
+- **VPN 或代理**：按钮下方可切换 VPN (TUN) / 代理，默认 VPN。
+- **订阅一目了然**：剩余天数、剩余流量、刷新，以及置顶的服务商公告。
+- **服务器**：国旗、延迟、搜索与排序，所选服务器以金色标记。
+- **订阅导入**：清晰的错误提示，重试时保留已输入的链接。
+- **更新**：有新版本时提示“更新 / 稍后”。
+- **独立安装**：独立的进程、服务、数据目录和导入协议，可与 FlClashX 并存。
+- 已翻译为俄语、英语、西班牙语、法语、日语、韩语和中文。
+
+最新预览版见[发布页面](https://github.com/Nurullaev/nur-connect-windows/releases)，提供 x64 安装程序、便携 ZIP、源代码和校验文件。请参阅[构建状态及限制](docs/windows/first-build.md)和[路线图](docs/windows/roadmap.md)。安装程序暂未进行代码签名，Windows 可能显示 SmartScreen 提示。
 
 在 Windows 上安装 Flutter、Go、Rust MSVC（本机 API 使用 `1.99.0`）、Visual Studio C++/CMake/Windows SDK/ATL 和 Inno Setup 6 后：
 

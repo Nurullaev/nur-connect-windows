@@ -1,11 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 320" role="img" aria-labelledby="title desc">
-<title id="title">Nur Connect for Windows</title><desc id="desc">Open-source Mihomo client for Windows. Nur Connect.</desc>
-<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101c2b"/><stop offset="1" stop-color="#0b131f"/></linearGradient><linearGradient id="gold"><stop stop-color="#f0dca6"/><stop offset="1" stop-color="#b68a36"/></linearGradient></defs>
-<rect width="1200" height="320" rx="24" fill="url(#bg)"/>
-<path d="M48 268H1152" stroke="#927331" stroke-opacity=".5"/>
-<text x="62" y="74" fill="#b0a58e" font-family="Arial,sans-serif" font-size="15" letter-spacing="4">WINDOWS · MIHOMO · OPEN SOURCE</text>
-<text x="58" y="163" fill="url(#gold)" font-family="Georgia,serif" font-size="72" letter-spacing="2">Nur Connect</text>
-<text x="62" y="214" fill="#ddd3bb" font-family="Arial,sans-serif" font-size="22">Your subscription. Your server. One connection.</text>
-<text x="62" y="297" fill="#b0a58e" font-family="Arial,sans-serif" font-size="15">nurconnect.app</text>
-<g transform="translate(1040 110)" fill="#d4ae5a"><rect width="36" height="36" rx="2"/><rect x="44" width="36" height="36" rx="2"/><rect y="44" width="36" height="36" rx="2"/><rect x="44" y="44" width="36" height="36" rx="2"/></g>
+<title id="title">Nur Connect for Windows</title><desc id="desc">Open-source Mihomo client for Windows in black and gold. Nur Connect.</desc>
+<defs>
+<radialGradient id="glow" cx="0.82" cy="0.5" r="0.5"><stop stop-color="#E0A045" stop-opacity=".22"/><stop offset="1" stop-color="#E0A045" stop-opacity="0"/></radialGradient>
+<linearGradient id="gold" x2="1" y2="1"><stop stop-color="#F5D08A"/><stop offset="1" stop-color="#C69F5A"/></linearGradient>
+<radialGradient id="face" cx="0.35" cy="0.25" r="0.9"><stop stop-color="#2A2316"/><stop offset="1" stop-color="#080808"/></radialGradient>
+</defs>
+<rect width="1200" height="320" rx="24" fill="#050505"/>
+<rect width="1200" height="320" rx="24" fill="url(#glow)"/>
+<rect x=".5" y=".5" width="1199" height="319" rx="23.5" fill="none" stroke="#242424"/>
+<text x="62" y="78" fill="#9C968C" font-family="Segoe UI,Arial,sans-serif" font-size="15" letter-spacing="4">WINDOWS · MIHOMO · OPEN SOURCE</text>
+<text x="58" y="166" fill="url(#gold)" font-family="Georgia,serif" font-size="72" letter-spacing="2">Nur Connect</text>
+<text x="62" y="216" fill="#F2EEE8" font-family="Segoe UI,Arial,sans-serif" font-size="22">Your subscription. Your server. One connection.</text>
+<path d="M62 262H700" stroke="#C69F5A" stroke-opacity=".35"/>
+<text x="62" y="294" fill="#9C968C" font-family="Segoe UI,Arial,sans-serif" font-size="15">nurconnect.app</text>
+<g transform="translate(980 160)">
+<circle r="96" fill="none" stroke="#C69F5A" stroke-opacity=".35" stroke-width="2"/>
+<path d="M0-96A96 96 0 1 1-96 0" fill="none" stroke="#E0A045" stroke-width="5" stroke-linecap="round"/>
+<circle r="66" fill="url(#face)" stroke="#C69F5A" stroke-width="1.5"/>
+<path d="M-15-18A23 23 0 1 0 15-18" fill="none" stroke="#E0A045" stroke-width="5" stroke-linecap="round"/>
+<path d="M0-30V-4" stroke="#E0A045" stroke-width="5" stroke-linecap="round"/>
+</g>
 </svg>
