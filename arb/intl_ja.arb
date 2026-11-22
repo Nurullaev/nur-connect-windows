@@ -1063,6 +1063,7 @@
   "nurProxyDescription": "プロキシはシステムのプロキシ設定に従うアプリで機能します。",
   "nurDisconnectToChangeMode": "接続モードを変更するには切断してください。",
   "nurBot": "ボット",
+  "nurSubscriptionPage": "サブスクリプション",
   "nurSubscriptionEnded": "サブスクリプションが終了しました",
   "nurRenewToConnect": "接続するにはサブスクリプションを更新してください。",
   "splitTunnel": "スプリットトンネル",

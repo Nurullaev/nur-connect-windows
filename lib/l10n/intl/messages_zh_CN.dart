@@ -1018,6 +1018,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
       "粘贴服务商提供的订阅链接。",
     ),
+    "nurSubscriptionPage": MessageLookupByLibrary.simpleMessage("订阅"),
     "nurTakeoverHint": MessageLookupByLibrary.simpleMessage(
       "请启用 TUN 或系统代理，以便通过 Nur Connect 转发流量。",
     ),

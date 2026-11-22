@@ -1063,6 +1063,7 @@
   "nurProxyDescription": "Proxy works with apps that follow the system proxy settings.",
   "nurDisconnectToChangeMode": "Disconnect to change connection mode.",
   "nurBot": "Bot",
+  "nurSubscriptionPage": "Subscription",
   "nurSubscriptionEnded": "Subscription has ended",
   "nurRenewToConnect": "Renew your subscription to connect.",
   "splitTunnel": "Split tunneling",

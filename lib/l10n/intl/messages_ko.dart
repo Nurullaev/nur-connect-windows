@@ -1098,6 +1098,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
       "제공업체에서 받은 구독 링크를 붙여넣으세요.",
     ),
+    "nurSubscriptionPage": MessageLookupByLibrary.simpleMessage("구독"),
     "nurTakeoverHint": MessageLookupByLibrary.simpleMessage(
       "Nur Connect를 통해 트래픽을 보내려면 TUN 또는 시스템 프록시를 켜세요.",
     ),

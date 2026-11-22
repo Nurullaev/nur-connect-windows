@@ -1308,6 +1308,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
       "Paste the subscription link from your provider.",
     ),
+    "nurSubscriptionPage": MessageLookupByLibrary.simpleMessage("Subscription"),
     "nurTakeoverHint": MessageLookupByLibrary.simpleMessage(
       "Enable TUN or system proxy to route traffic through Nur Connect.",
     ),

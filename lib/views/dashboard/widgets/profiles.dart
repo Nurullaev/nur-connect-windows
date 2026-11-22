@@ -129,24 +129,27 @@ class ProfilesCard extends ConsumerWidget {
     final sync = profile != null && profile.type == ProfileType.url
         ? _SyncButton(key: ValueKey(profile.id), profile: profile)
         : null;
-    final webPageUrl = profile?.headers.webPageUrl;
-    final webPage = webPageUrl == null
+    // Provider links, in this order: site (the provider's web cabinet from
+    // account-url), bot, subscription page (profile-web-page-url), support.
+    final siteUrl = profile?.headers.accountUrl;
+    final site = siteUrl == null
         ? null
         : DashboardIconButton(
+            key: const ValueKey('profile-site'),
             glyph: AppGlyphs.globe,
             tooltip: appLocalizations.website,
             iconSize: _actionGlyphSize,
-            onPressed: () => dialogs.openUrl(webPageUrl),
+            onPressed: () => dialogs.openUrl(siteUrl),
           );
-    final accountUrl = profile?.headers.accountUrl;
-    final account = accountUrl == null
+    final subscriptionPageUrl = profile?.headers.webPageUrl;
+    final subscriptionPage = subscriptionPageUrl == null
         ? null
         : DashboardIconButton(
-            key: const ValueKey('profile-account'),
-            glyph: AppGlyphs.account,
-            tooltip: appLocalizations.account,
+            key: const ValueKey('profile-subscription-page'),
+            glyph: AppGlyphs.link,
+            tooltip: appLocalizations.nurSubscriptionPage,
             iconSize: _actionGlyphSize,
-            onPressed: () => dialogs.openUrl(accountUrl),
+            onPressed: () => dialogs.openUrl(subscriptionPageUrl),
           );
     final botUrl = profile?.headers.botUrl;
     final bot = botUrl == null
@@ -249,9 +252,9 @@ class ProfilesCard extends ConsumerWidget {
                     ],
                   ),
                 ),
-                ?webPage,
-                ?account,
+                ?site,
                 ?bot,
+                ?subscriptionPage,
                 ?support,
                 ?sync,
                 ?more,
@@ -302,7 +305,7 @@ class ProfilesCard extends ConsumerWidget {
           DashboardCardHeader(
             glyph: AppGlyphs.profiles,
             title: appLocalizations.profile,
-            trailing: [?webPage, ?account, ?bot, ?support, ?sync],
+            trailing: [?site, ?bot, ?subscriptionPage, ?support, ?sync],
           ),
           SizedBox(height: mobile ? 12 : 10),
           nameRow,

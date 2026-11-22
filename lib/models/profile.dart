@@ -391,6 +391,7 @@ const providerHeaderNames = {
   'profile-web-page-url',
   'bot-url',
   'account-url',
+  'sub-expire',
   'sub-expire-button-link',
   'new-domain',
   'banner-text',

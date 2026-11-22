@@ -353,6 +353,137 @@ void main() {
     expect(tester.takeException(), isNull);
   });
 
+  group('end-of-plan notice (Happ sub-expire)', () {
+    Profile endingIn(Duration left, {Map<String, String> extra = const {}}) =>
+        _profile.copyWith(
+          subscriptionInfo: SubscriptionInfo(
+            expire: DateTime.now().add(left).millisecondsSinceEpoch ~/ 1000,
+          ),
+          providerHeaders: {
+            'banner-text': 'Invite friends, pay less',
+            'banner-button-text': 'Invite',
+            'banner-button-url': 'tg://resolve?domain=Example_bot&start=x',
+            'bot-url': 'https://t.me/Example_bot',
+            ...extra,
+          },
+        );
+
+    testWidgets('on the last day it replaces the promotion with renewal', (
+      tester,
+    ) async {
+      await pump(
+        tester,
+        subscription: endingIn(
+          const Duration(hours: 21),
+          extra: const {
+            'sub-expire': '1',
+            'sub-expire-button-link': 'tg://resolve?domain=Example_bot',
+          },
+        ),
+      );
+      expect(find.byKey(const ValueKey('nur-banner')), findsNothing);
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey('nur-expiry')),
+          matching: find.text(currentAppLocalizations.subscriptionExpiresToday),
+        ),
+        findsOne,
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey('nur-expiry-action')),
+          matching: find.text(currentAppLocalizations.renew),
+        ),
+        findsOne,
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    testWidgets('three days ahead it counts the days', (tester) async {
+      await pump(
+        tester,
+        subscription: endingIn(
+          const Duration(days: 2, hours: 12),
+          extra: const {'sub-expire': '1'},
+        ),
+      );
+      expect(
+        find.text(currentAppLocalizations.subscriptionExpiresInDays(2)),
+        findsOne,
+      );
+      // Without sub-expire-button-link «Renew» goes to the bot.
+      expect(find.byKey(const ValueKey('nur-expiry-action')), findsOne);
+      expect(find.byKey(const ValueKey('nur-banner')), findsNothing);
+    });
+
+    testWidgets('further out the promotion stays', (tester) async {
+      await pump(
+        tester,
+        subscription: endingIn(
+          const Duration(days: 5),
+          extra: const {'sub-expire': '1'},
+        ),
+      );
+      expect(find.byKey(const ValueKey('nur-banner')), findsOne);
+      expect(find.byKey(const ValueKey('nur-expiry')), findsNothing);
+    });
+
+    testWidgets('without sub-expire the promotion stays to the end', (
+      tester,
+    ) async {
+      await pump(tester, subscription: endingIn(const Duration(hours: 21)));
+      expect(find.byKey(const ValueKey('nur-banner')), findsOne);
+      expect(find.byKey(const ValueKey('nur-expiry')), findsNothing);
+    });
+
+    testWidgets('after the end it says so in the card', (tester) async {
+      await pump(
+        tester,
+        subscription: endingIn(
+          const Duration(days: -1),
+          extra: const {'sub-expire': '1'},
+        ),
+      );
+      expect(
+        find.descendant(
+          of: find.byKey(const ValueKey('nur-expiry')),
+          matching: find.text(currentAppLocalizations.subscriptionExpired),
+        ),
+        findsOne,
+      );
+      expect(tester.takeException(), isNull);
+    });
+
+    test('days follow Happ: ended, last day, whole days, off', () {
+      final now = DateTime(2026, 11, 22, 12);
+      Profile at(Duration left, [String flag = '1']) => _profile.copyWith(
+        subscriptionInfo: SubscriptionInfo(
+          expire: now.add(left).millisecondsSinceEpoch ~/ 1000,
+        ),
+        providerHeaders: {'sub-expire': flag},
+      );
+      expect(nurExpiryNoticeDays(at(const Duration(hours: -1)), now), -1);
+      expect(nurExpiryNoticeDays(at(const Duration(hours: 21)), now), 0);
+      expect(
+        nurExpiryNoticeDays(at(const Duration(days: 3, hours: 5)), now),
+        3,
+      );
+      expect(nurExpiryNoticeDays(at(const Duration(days: 4)), now), isNull);
+      expect(
+        nurExpiryNoticeDays(at(const Duration(hours: 5), '0'), now),
+        isNull,
+      );
+      expect(
+        nurExpiryNoticeDays(
+          _profile.copyWith(providerHeaders: const {'sub-expire': '1'}),
+          now,
+        ),
+        isNull,
+      );
+      expect(nurExpiryNoticeDays(null, now), isNull);
+    });
+  });
+
   testWidgets(
     'the connect button leads, the card carries the notices, servers follow',
     (tester) async {

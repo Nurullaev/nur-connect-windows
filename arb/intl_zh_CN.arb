@@ -1063,6 +1063,7 @@
   "nurProxyDescription": "代理适用于遵循系统代理设置的应用。",
   "nurDisconnectToChangeMode": "断开连接后才能更改连接模式。",
   "nurBot": "机器人",
+  "nurSubscriptionPage": "订阅",
   "nurSubscriptionEnded": "订阅已结束",
   "nurRenewToConnect": "请续订以继续连接。",
   "splitTunnel": "分应用代理",

@@ -34,6 +34,10 @@ class ProviderHeaders {
   /// copy, QR code or edit field.
   bool get hideUrl => _switchOn('hide-url');
 
+  /// Happ's `sub-expire`: in the plan's last three days and after it ends the
+  /// card shows the end-of-plan notice with «Renew» in place of the promotion.
+  bool get subExpire => _switchOn('sub-expire');
+
   /// Happ's switches come as `1`; `true` and `yes` read the same.
   bool _switchOn(String name) => switch (text(name)?.toLowerCase()) {
     '1' || 'true' || 'yes' => true,

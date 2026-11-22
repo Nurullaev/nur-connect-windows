@@ -1063,6 +1063,7 @@
   "nurProxyDescription": "El proxy funciona con las aplicaciones que siguen la configuración de proxy del sistema.",
   "nurDisconnectToChangeMode": "Desconéctate para cambiar el modo de conexión.",
   "nurBot": "Bot",
+  "nurSubscriptionPage": "Suscripción",
   "nurSubscriptionEnded": "La suscripción ha terminado",
   "nurRenewToConnect": "Renueva tu suscripción para conectarte.",
   "splitTunnel": "Túnel dividido",

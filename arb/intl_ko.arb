@@ -1063,6 +1063,7 @@
   "nurProxyDescription": "프록시는 시스템 프록시 설정을 따르는 앱에서 작동합니다.",
   "nurDisconnectToChangeMode": "연결 모드를 변경하려면 연결을 해제하세요.",
   "nurBot": "봇",
+  "nurSubscriptionPage": "구독",
   "nurSubscriptionEnded": "구독이 종료되었습니다",
   "nurRenewToConnect": "연결하려면 구독을 갱신하세요.",
   "splitTunnel": "분할 터널링",

@@ -1365,6 +1365,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
       "Вставьте ссылку на подписку от вашего провайдера.",
     ),
+    "nurSubscriptionPage": MessageLookupByLibrary.simpleMessage("Подписка"),
     "nurTakeoverHint": MessageLookupByLibrary.simpleMessage(
       "Включите TUN или системный прокси, чтобы направить трафик через Nur Connect.",
     ),

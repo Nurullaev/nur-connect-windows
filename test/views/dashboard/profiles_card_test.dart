@@ -202,7 +202,7 @@ void main() {
     expect(find.byTooltip('Support'), findsOneWidget);
   });
 
-  testWidgets('a web page from the panel gets a globe beside support', (
+  testWidgets('the subscription page from the panel gets a link button', (
     tester,
   ) async {
     setUpProfiles([
@@ -215,15 +215,18 @@ void main() {
     ]);
     await pumpCard(tester);
 
-    expect(find.byTooltip('Website'), findsOneWidget);
-    expect(find.byGlyph(AppGlyphs.globe), findsOneWidget);
+    expect(find.byTooltip('Subscription'), findsOneWidget);
+    expect(find.byGlyph(AppGlyphs.link), findsOneWidget);
+    // Without account-url there is no site button.
+    expect(find.byTooltip('Website'), findsNothing);
+    expect(find.byGlyph(AppGlyphs.globe), findsNothing);
     expect(
-      tester.getCenter(find.byGlyph(AppGlyphs.globe)).dx,
+      tester.getCenter(find.byGlyph(AppGlyphs.link)).dx,
       lessThan(tester.getCenter(find.byGlyph(AppGlyphs.support)).dx),
     );
   });
 
-  testWidgets('account and bot links from the panel get their own buttons', (
+  testWidgets('site, bot, subscription and support go in that order', (
     tester,
   ) async {
     setUpProfiles([
@@ -236,18 +239,38 @@ void main() {
         },
       ),
     ]);
-    await pumpCard(tester);
+    for (final pump in <Future<void> Function(WidgetTester)>[
+      pumpCard,
+      pumpDesktopCard,
+    ]) {
+      await pump(tester);
 
-    expect(find.byTooltip('Account'), findsOneWidget);
-    expect(find.byTooltip('Bot'), findsOneWidget);
-    final globe = tester.getCenter(find.byGlyph(AppGlyphs.globe)).dx;
-    final account = tester.getCenter(find.byGlyph(AppGlyphs.account)).dx;
-    final bot = tester.getCenter(find.byGlyph(AppGlyphs.send)).dx;
-    final support = tester.getCenter(find.byGlyph(AppGlyphs.support)).dx;
-    expect(globe, lessThan(account));
-    expect(account, lessThan(bot));
-    expect(bot, lessThan(support));
-    expect(tester.takeException(), isNull);
+      expect(find.byTooltip('Website'), findsOneWidget);
+      expect(find.byTooltip('Bot'), findsOneWidget);
+      expect(find.byTooltip('Subscription'), findsOneWidget);
+      expect(find.byTooltip('Support'), findsOneWidget);
+      expect(find.byTooltip('Account'), findsNothing);
+      expect(find.byGlyph(AppGlyphs.account), findsNothing);
+      final site = tester.getCenter(find.byGlyph(AppGlyphs.globe)).dx;
+      final bot = tester.getCenter(find.byGlyph(AppGlyphs.send)).dx;
+      final page = tester.getCenter(find.byGlyph(AppGlyphs.link)).dx;
+      final support = tester.getCenter(find.byGlyph(AppGlyphs.support)).dx;
+      expect(site, lessThan(bot));
+      expect(bot, lessThan(page));
+      expect(page, lessThan(support));
+      expect(tester.takeException(), isNull);
+    }
+  });
+
+  test('the site button opens account-url, subscription the web page', () {
+    final source = File(
+      'lib/views/dashboard/widgets/profiles.dart',
+    ).readAsStringSync();
+    expect(source, contains('final siteUrl = profile?.headers.accountUrl;'));
+    expect(
+      source,
+      contains('final subscriptionPageUrl = profile?.headers.webPageUrl;'),
+    );
   });
 
   testWidgets('an empty or invalid account or bot link hides its button', (
@@ -260,7 +283,7 @@ void main() {
     ]);
     await pumpCard(tester);
 
-    expect(find.byTooltip('Account'), findsNothing);
+    expect(find.byTooltip('Website'), findsNothing);
     expect(find.byTooltip('Bot'), findsNothing);
   });
 

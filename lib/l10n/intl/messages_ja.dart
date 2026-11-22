@@ -1121,6 +1121,7 @@ class MessageLookup extends MessageLookupByLibrary {
     "nurSubscriptionHint": MessageLookupByLibrary.simpleMessage(
       "プロバイダーから提供されたサブスクリプションのリンクを貼り付けてください。",
     ),
+    "nurSubscriptionPage": MessageLookupByLibrary.simpleMessage("サブスクリプション"),
     "nurTakeoverHint": MessageLookupByLibrary.simpleMessage(
       "Nur Connect 経由で通信するには、TUN またはシステムプロキシを有効にしてください。",
     ),

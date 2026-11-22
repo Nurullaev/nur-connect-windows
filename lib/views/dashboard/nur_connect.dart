@@ -70,14 +70,24 @@ class NurConnectDashboard extends ConsumerWidget {
       body: LayoutBuilder(
         builder: (context, constraints) {
           final twoColumns = constraints.maxWidth / scale >= 900;
-          final expired = profile?.isExpiredAt(DateTime.now()) ?? false;
+          final now = DateTime.now();
+          final expired = profile?.isExpiredAt(now) ?? false;
           final servers = profile != null && !expired;
+          final expiryDays = nurExpiryNoticeDays(profile, now);
           // The panel's promotion and announcement share the plan's card, as
-          // in Happ, so the connect button leads and the servers follow.
+          // in Happ, so the connect button leads and the servers follow. Near
+          // and after the end the end-of-plan notice takes the promotion's
+          // place; the announcement stays.
           final card = ProfilesCard(
             dense: true,
             footer: [
-              if (banner != null) _BannerRow(banner: banner),
+              if (expiryDays != null)
+                _ExpiryRow(
+                  days: expiryDays,
+                  url: headers?.expireButtonUrl ?? headers?.botUrl,
+                )
+              else if (banner != null)
+                _BannerRow(banner: banner),
               if (announcement) const AnnouncementCard(inline: true),
             ],
           );
@@ -161,6 +171,72 @@ class NurConnectDashboard extends ConsumerWidget {
           );
         },
       ),
+    );
+  }
+}
+
+/// Days left for Happ's end-of-plan notice: `-1` once the plan has ended, `0`
+/// for its last day, otherwise whole days up to three. `null` when the panel
+/// does not ask for it (`sub-expire`), sends no end date, or more is left.
+int? nurExpiryNoticeDays(Profile? profile, DateTime now) {
+  if (profile == null || !profile.headers.subExpire) {
+    return null;
+  }
+  final expire = profile.subscriptionInfo?.expire ?? 0;
+  if (expire <= 0) {
+    return null;
+  }
+  final left = DateTime.fromMillisecondsSinceEpoch(
+    expire * 1000,
+  ).difference(now);
+  if (left.isNegative) {
+    return -1;
+  }
+  final days = left.inDays;
+  return days <= _expiryNoticeWindowDays ? days : null;
+}
+
+/// Happ shows its end-of-plan notice three days ahead, not configurable.
+const _expiryNoticeWindowDays = 3;
+
+/// The end-of-plan notice in the promotion's row, with «Renew» when the panel
+/// sends where to renew.
+class _ExpiryRow extends StatelessWidget {
+  const _ExpiryRow({required this.days, required this.url});
+
+  final int days;
+  final String? url;
+
+  @override
+  Widget build(BuildContext context) {
+    final l10n = context.appLocalizations;
+    final message = days < 0
+        ? l10n.subscriptionExpired
+        : days == 0
+        ? l10n.subscriptionExpiresToday
+        : l10n.subscriptionExpiresInDays(days);
+    final url = this.url;
+    return Row(
+      key: const ValueKey('nur-expiry'),
+      spacing: 8,
+      children: [
+        Expanded(
+          child: Text(
+            message,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: AppTextStyle.footnote
+                .of(context, emphasized: true)
+                .copyWith(color: DashboardColors.of(context).warn),
+          ),
+        ),
+        if (url != null)
+          TextButton(
+            key: const ValueKey('nur-expiry-action'),
+            onPressed: () => dialogs.openUrl(url),
+            child: Text(l10n.renew),
+          ),
+      ],
     );
   }
 }
