@@ -41,9 +41,8 @@ void main() {
   });
 
   test('a pre-release Helper keeps names of its own', () {
-    final identity = File(
-      'services/helper/src/service/identity.rs',
-    ).readAsStringSync();
+    final identity = File('services/helper/src/service/identity.rs')
+        .readAsStringSync();
 
     for (final pre in [false, true]) {
       expect(identity, contains('"${helperServiceFor(pre: pre)}"'));
@@ -64,6 +63,22 @@ void main() {
       isTrue,
     );
     expect(isPreExecutable('/opt/FlClashXPre/FlClashXPre'), isTrue);
+    expect(
+      isPreExecutable(
+        '/Applications/Nur Connect Pre.app/Contents/MacOS/Nur Connect',
+      ),
+      isTrue,
+    );
+    expect(
+      isPreExecutable(
+        '/Applications/Nur Connect.app/Contents/MacOS/Nur Connect',
+      ),
+      isFalse,
+    );
+    expect(
+      isPreExecutable('/Applications/FlClashX.app/Contents/MacOS/FlClashX'),
+      isFalse,
+    );
     expect(isPreExecutable('/opt/FlClashX/FlClashX'), isFalse);
     expect(
       helperServiceFor(pre: false, windows: true),
@@ -403,15 +418,13 @@ void main() {
           livenessProbe: (_) async => alive,
         );
         return await launcher.start(
-              sessionId: _sessionId,
-              address: 'test-address',
-            )
-            as HelperCoreLease;
+          sessionId: _sessionId,
+          address: 'test-address',
+        ) as HelperCoreLease;
       }
 
-      final released = await (await leaseWith(
-        alive: false,
-      )).stop(const Duration(seconds: 1));
+      final released = await (await leaseWith(alive: false))
+          .stop(const Duration(seconds: 1));
       expect(released.stopped, isFalse);
       expect(released.exitConfirmed, isTrue);
 

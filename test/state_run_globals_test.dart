@@ -41,13 +41,17 @@ void main() {
         .update((state) => state.copyWith(globalUa: value));
   }
 
+  final userAgent = Platform.isMacOS
+      ? 'Nur-Connect-macOS'
+      : 'Nur-Connect-Windows';
+
   group('user agent', () {
     test('the app always speaks with its own user agent', () {
       setGlobalUa('custom-agent/1.0');
 
       expect(
         globalState.ua,
-        'Nur-Connect-Windows/v1.2.3 Platform/${Platform.operatingSystem}',
+        '$userAgent/v1.2.3 Platform/${Platform.operatingSystem}',
       );
     });
 
@@ -57,14 +61,14 @@ void main() {
 
       expect(
         globalState.ua,
-        'Nur-Connect-Windows/v1.2.3 core/v1.19.32 Platform/${Platform.operatingSystem}',
+        '$userAgent/v1.2.3 core/v1.19.32 Platform/${Platform.operatingSystem}',
       );
     });
 
     test('an Android TV names itself androidtv', () {
       expect(
         _packageInfo.uaWith('v1.19.32', tv: true),
-        'Nur-Connect-Windows/v1.2.3 core/v1.19.32 Platform/androidtv',
+        '$userAgent/v1.2.3 core/v1.19.32 Platform/androidtv',
       );
     });
   });

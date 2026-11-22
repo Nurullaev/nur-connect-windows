@@ -43,7 +43,7 @@ ResponseBody _json(Object body) =>
 
 Map<String, dynamic> _manifest(
   String version, {
-  List<String> names = const ['FlClashX-macos-arm64.dmg'],
+  List<String> names = const ['NurConnect-macos-universal.dmg'],
 }) => {
   'version': version,
   'assets': [
@@ -308,7 +308,7 @@ void main() {
     });
 
     test('duplicate asset names are refused', () async {
-      const name = 'FlClashX-macos-arm64.dmg';
+      const name = 'NurConnect-macos-universal.dmg';
       await expectLater(
         serve({
           ..._manifest('v0.5.2', names: [name, name]),

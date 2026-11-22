@@ -187,14 +187,13 @@ String createPackageTargets(String platform, String? customTargets) {
 /// pre-release gets its own bundle id and name, so it installs beside the
 /// stable app; null for every other build, which goes without the file.
 String? macosChannelConfig(String env) => env == 'pre'
-    ? 'PRODUCT_BUNDLE_IDENTIFIER = com.follow.clashx.pre\n'
-          'APP_DISPLAY_NAME = $_appName Pre\n'
+    ? 'PRODUCT_BUNDLE_IDENTIFIER = $macosBundleId.pre\n'
+          'APP_DISPLAY_NAME = $macosProductName Pre\n'
+          'NUR_CONNECT_URL_SCHEME = $macosPreProtocolScheme\n'
     : null;
 
-/// The `.app` name a DMG of [env] installs, kept apart from the stable one in
-/// `/Applications`.
 String macosBundleName(String env) =>
-    env == 'pre' ? '$_appName Pre.app' : '$_appName.app';
+    env == 'pre' ? '$macosProductName Pre.app' : '$macosProductName.app';
 
 /// The app and the Helper derive their system names from these executables'.
 class DesktopIdentity {
@@ -323,7 +322,7 @@ List<int> utf16le(String value) => [
 /// `FlClashX-<platform>-<arch>` plus the format's extension; the release
 /// templates and the AUR package link these names.
 String artifactName(String platform, String arch, String extension) =>
-    '${platform == 'windows' ? productFileName : _appName}-$platform-$arch$extension';
+    '${platform == 'windows' || platform == 'macos' ? productFileName : _appName}-$platform-${platform == 'macos' ? 'universal' : arch}$extension';
 
 void _showHelp(ArgParser parser) {
   stderr.writeln('Usage: dart setup.dart [platform] [options]');
@@ -541,12 +540,17 @@ Future<void> _packageMacos(_Build build, {required String env}) async {
     if (channel.existsSync()) channel.deleteSync();
   }
   final products = p.join(build.rootDir, 'build/macos/Build/Products/Release');
-  final built = p.join(products, '$_appName.app');
-  final app = p.join(products, macosBundleName(env));
-  if (app != built) {
-    if (Directory(app).existsSync()) Directory(app).deleteSync(recursive: true);
-    Directory(built).renameSync(app);
-  }
+  final built = p.join(products, '$macosProductName.app');
+  // Keep Flutter's build product in place for incremental builds and for a
+  // preview that may still be running. Package a separate, channel-named copy.
+  final packageStage = Directory(
+    p.join(build.rootDir, 'build', 'macos-package'),
+  );
+  if (packageStage.existsSync()) packageStage.deleteSync(recursive: true);
+  packageStage.createSync(recursive: true);
+  final app = p.join(packageStage.path, macosBundleName(env));
+  await build.mustRun('/usr/bin/ditto', [built, app]);
+  await requireMacosUniversalBundle(Directory(app));
   final identity = Platform.environment['APPLE_DEVELOPER_ID'] ?? '';
   if (identity.isNotEmpty) {
     await _signMacosApp(build, app, identity);
@@ -554,33 +558,27 @@ Future<void> _packageMacos(_Build build, {required String env}) async {
   final staging = Directory(p.join(build.rootDir, 'build', 'dmg'));
   if (staging.existsSync()) staging.deleteSync(recursive: true);
   staging.createSync(recursive: true);
-  // Without a signing identity create-dmg still writes the image, then exits
-  // non-zero over the signature it could not add.
-  final code = await build.run('create-dmg', [
-    '--overwrite',
-    if (identity.isNotEmpty) '--no-code-sign',
-    '--dmg-title',
-    p.basenameWithoutExtension(app),
+  // The system disk-image tool keeps local builds free of global npm installs.
+  final payload = Directory(p.join(staging.path, 'payload'))..createSync();
+  await build.mustRun('/usr/bin/ditto', [
     app,
-    staging.path,
+    p.join(payload.path, p.basename(app)),
   ]);
-  final created = staging
-      .listSync()
-      .whereType<File>()
-      .where((file) => file.path.endsWith('.dmg'))
-      .toList();
-  if (created.isEmpty || (identity.isNotEmpty && code != 0)) {
-    throw ProcessException('create-dmg', const [], 'no DMG was created', code);
-  }
-  if (identity.isNotEmpty) {
-    await _codesign(build, identity, created.first.path);
-  } else if (code != 0) {
-    stderr.writeln('create-dmg exited with $code; the DMG is unsigned.');
-  }
-  build.copy(
-    created.first.path,
-    build.dist(artifactName('macos', build.arch, '.dmg')),
-  );
+  Link(p.join(payload.path, 'Applications')).createSync('/Applications');
+  final image = build.dist(artifactName('macos', build.arch, '.dmg'));
+  await build.mustRun('/usr/bin/hdiutil', [
+    'create',
+    '-ov',
+    '-format',
+    'UDZO',
+    '-volname',
+    p.basenameWithoutExtension(app),
+    '-srcfolder',
+    payload.path,
+    image,
+  ]);
+  if (identity.isNotEmpty) await _codesign(build, identity, image);
+  await writeSha256Sidecar(File(image));
   staging.deleteSync(recursive: true);
 }
 
@@ -604,7 +602,7 @@ List<String> macosSigningOrder(String app) {
       p.join('Library', 'LoginItems'),
       (path) => path.endsWith('.app'),
     ),
-    ...entries('MacOS', (path) => p.basename(path) != _appName),
+    ...entries('MacOS', (path) => p.basename(path) != macosProductName),
     app,
   ];
 }
@@ -614,7 +612,7 @@ Future<void> _signMacosApp(_Build build, String app, String identity) async {
     // Xcode's ad-hoc signature carries get-task-allow, which notarization rejects.
     app: 'Release.entitlements',
     // EasyTier's wazero makes the writable pages it compiled into executable.
-    p.join(app, 'Contents', 'MacOS', 'FlClashCore'): 'Core.entitlements',
+    p.join(app, 'Contents', 'MacOS', macosCoreName): 'Core.entitlements',
   };
   for (final code in macosSigningOrder(app)) {
     final file = entitlements[code];
@@ -1271,17 +1269,6 @@ String _detectArch() {
   return machine;
 }
 
-Future<bool> _hasCommand(String cmd) async {
-  final which = Platform.isWindows ? 'where' : 'command';
-  final args = Platform.isWindows ? [cmd] : ['-v', cmd];
-  final result = await Process.run(
-    which,
-    args,
-    runInShell: !Platform.isWindows,
-  );
-  return result.exitCode == 0;
-}
-
 Future<int> _ensureDependencies(String platform) async {
   switch (platform) {
     case 'macos':
@@ -1294,22 +1281,8 @@ Future<int> _ensureDependencies(String platform) async {
 }
 
 Future<int> _ensureMacosDependencies() async {
-  if (await _hasCommand('create-dmg')) {
-    stdout.writeln('create-dmg already installed, skipping.');
-    return 0;
-  }
-  stdout.writeln('Installing create-dmg...');
-  // create-dmg's native helpers build on install, which npm blocks by default.
-  final result = await Process.run('npm', [
-    'install',
-    '-g',
-    '--allow-scripts=fs-xattr,macos-alias',
-    'create-dmg',
-  ]);
-  if (result.exitCode != 0) {
-    stderr.write(result.stderr);
-  }
-  return result.exitCode;
+  // Xcode and hdiutil are the only packaging dependencies on macOS.
+  return 0;
 }
 
 Future<int> _ensureLinuxDependencies() async {
@@ -1467,4 +1440,25 @@ Future<int> _runLinuxDependencyCommand(List<String> command) async {
     stderr.writeln('Linux dependency command failed with exit code $exitCode.');
   }
   return exitCode;
+}
+
+Future<void> requireMacosUniversalBundle(Directory app) async {
+  var count = 0;
+  await for (final entry in app.list(recursive: true, followLinks: false)) {
+    if (entry is! File) continue;
+    final probe = await Process.run('/usr/bin/file', ['-b', entry.path]);
+    if (!'${probe.stdout}'.contains('Mach-O')) continue;
+    count++;
+    for (final arch in ['arm64', 'x86_64']) {
+      final result = await Process.run('/usr/bin/lipo', [
+        entry.path,
+        '-verify_arch',
+        arch,
+      ]);
+      if (result.exitCode != 0) {
+        throw StateError('Not universal (missing $arch): ${entry.path}');
+      }
+    }
+  }
+  if (count == 0) throw StateError('No Mach-O binaries in ${app.path}');
 }

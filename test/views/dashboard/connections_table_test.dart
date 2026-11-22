@@ -48,6 +48,8 @@ TrackerInfo _request(String host, int download) {
 }
 
 void main() {
+  setUpAll(() => debugUpstreamLayout = true);
+  tearDownAll(() => debugUpstreamLayout = false);
   late ProviderContainer container;
 
   setUp(() {

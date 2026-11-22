@@ -33,7 +33,9 @@ class GoBuilder {
   String get _outputPath => p.join(rootDir, config.outputDir);
 
   Future<BuildExecution> build(Target target) async {
-    final outDir = p.join(_outputPath, target.platformDir);
+    final outDir = target.goos == 'darwin'
+        ? p.join(_outputPath, target.platformDir, target.goarch)
+        : p.join(_outputPath, target.platformDir);
     ensureDir(outDir);
 
     final fileName = '${config.coreName}${target.executableExtension}';

@@ -77,9 +77,9 @@ void main() {
     final seed = await keyPair.extractPrivateKeyBytes();
     final publicKey = base64.encode((await keyPair.extractPublicKey()).bytes);
     final payload = utf8.encode('dmg bytes');
-    File('${dist.path}/FlClashX-macos-arm64.dmg').writeAsBytesSync(payload);
+    File('${dist.path}/NurConnect-macos-universal.dmg').writeAsBytesSync(payload);
     File('${dist.path}/FlClashX-android-universal.apk').writeAsStringSync('a');
-    File('${dist.path}/FlClashX-macos-arm64.dmg.sha256').writeAsStringSync('x');
+    File('${dist.path}/NurConnect-macos-universal.dmg.sha256').writeAsStringSync('x');
     File('${dist.path}/manifest.json').writeAsStringSync('{}');
 
     final signed = await buildSignedManifest(
@@ -100,10 +100,10 @@ void main() {
         'sha256': sha256.convert(utf8.encode('a')).toString(),
       },
       {
-        'name': 'FlClashX-macos-arm64.dmg',
+        'name': 'NurConnect-macos-universal.dmg',
         'url':
             'https://github.com/pluralplay/FlClashX/releases/download/v0.5.1/'
-            'FlClashX-macos-arm64.dmg',
+            'NurConnect-macos-universal.dmg',
         'sha256': sha256.convert(payload).toString(),
       },
     ]);

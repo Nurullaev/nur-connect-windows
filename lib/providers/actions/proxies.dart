@@ -238,7 +238,7 @@ class ProxiesAction extends _$ProxiesAction {
   /// DIRECT: until the user picks there, the subscription's servers take it,
   /// so a connected VPN carries the traffic instead of passing it by.
   void _pickGlobalDefault(List<Group> groups, int? profileId) {
-    if (!nurWindowsLayout() ||
+    if (!nurDesktopLayout() ||
         profileId == null ||
         ref.read(patchClashConfigProvider).mode != Mode.global) {
       return;

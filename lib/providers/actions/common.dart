@@ -95,7 +95,7 @@ class CommonAction extends _$CommonAction {
   Future<Map<String, dynamic>?> checkForUpdate() async {
     // Nur Connect Windows releases belong to our repository. A subscription's
     // FlClashX update header must not replace the app's own update source.
-    if (system.isWindows) return request.checkForUpdate();
+    if (system.isWindows || system.isMacOS) return request.checkForUpdate();
     final headers = ref.read(currentProfileProvider)?.headers;
     final manifestUrl = globalState.isPre
         ? headers?.preUpdateManifestUrl

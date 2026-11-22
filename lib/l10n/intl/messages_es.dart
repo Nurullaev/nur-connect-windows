@@ -676,6 +676,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "desc": MessageLookupByLibrary.simpleMessage(
       "Un cliente proxy para Windows basado en Mihomo, de código abierto y sin anuncios.",
     ),
+    "descMacos": MessageLookupByLibrary.simpleMessage(
+      "Un cliente proxy para macOS basado en Mihomo, de código abierto y sin anuncios.",
+    ),
     "destination": MessageLookupByLibrary.simpleMessage("Destino"),
     "destinationGeoIP": MessageLookupByLibrary.simpleMessage(
       "GeoIP de destino",
@@ -1034,9 +1037,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Introduce el contenido de la regla",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "Se denegó el permiso de lista de apps, por lo que no se pueden mostrar las apps instaladas. Concédelo manualmente en los ajustes del sistema.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "Se denegó el permiso de lista de apps, por lo que no se pueden mostrar las apps instaladas. Concédelo manualmente en los ajustes del sistema.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Este sistema oculta la lista de apps instaladas hasta que se concede el permiso. Autorízalo para configurar el proxy por app.",
     ),
@@ -2100,6 +2104,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "splitTunnelInvalidName": MessageLookupByLibrary.simpleMessage(
       "Escribe un nombre de archivo como chrome.exe",
+    ),
+    "splitTunnelInvalidNameMacos": MessageLookupByLibrary.simpleMessage(
+      "Escribe un nombre de archivo como Safari",
     ),
     "splitTunnelMode": MessageLookupByLibrary.simpleMessage("Por la VPN"),
     "splitTunnelNoApps": MessageLookupByLibrary.simpleMessage(

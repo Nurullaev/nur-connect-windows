@@ -70,7 +70,11 @@ class AppPath {
   }
 
   String get corePath {
-    final coreName = system.isWindows ? windowsCoreName : 'FlClashCore';
+    final coreName = system.isWindows
+        ? windowsCoreName
+        : system.isMacOS
+        ? macosCoreName
+        : 'FlClashCore';
     return join(executableDirPath, '$coreName$executableExtension');
   }
 
@@ -83,7 +87,7 @@ class AppPath {
     if (Platform.isLinux) {
       return join('/usr/local/lib', bundle, '$_userId', 'FlClashCore');
     }
-    return join('/Library/Application Support', bundle, 'FlClashCore');
+    return join('/Library/Application Support', bundle, macosCoreName);
   }
 
   late final int _userId = DynamicLibrary.process()

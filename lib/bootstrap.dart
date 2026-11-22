@@ -183,8 +183,8 @@ class Bootstrap {
 
   Future<void> _initApp() async {
     unawaited(_container.read(systemActionProvider.notifier).updateTray());
-    // Windows checks after initialization and periodically through its manager.
-    if (!system.isWindows) unawaited(_checkUpdate());
+    // Desktop checks after initialization and periodically through its manager.
+    if (!system.isWindows && !system.isMacOS) unawaited(_checkUpdate());
     unawaited(
       autoLaunch?.updateStatus(_container.read(appSettingProvider).autoLaunch),
     );

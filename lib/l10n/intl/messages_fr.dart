@@ -679,6 +679,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "desc": MessageLookupByLibrary.simpleMessage(
       "Un client proxy pour Windows basé sur Mihomo, open source et sans publicité.",
     ),
+    "descMacos": MessageLookupByLibrary.simpleMessage(
+      "Un client proxy pour macOS basé sur Mihomo, open source et sans publicité.",
+    ),
     "destination": MessageLookupByLibrary.simpleMessage("Destination"),
     "destinationGeoIP": MessageLookupByLibrary.simpleMessage(
       "GeoIP de destination",
@@ -1035,9 +1038,10 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Saisissez le contenu de la règle",
     ),
-    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
-      "L’autorisation de la liste des apps a été refusée ; les apps installées ne peuvent donc pas être listées. Veuillez l’accorder manuellement dans les réglages du système.",
-    ),
+    "installedAppsPermissionDeniedMessage":
+        MessageLookupByLibrary.simpleMessage(
+          "L’autorisation de la liste des apps a été refusée ; les apps installées ne peuvent donc pas être listées. Veuillez l’accorder manuellement dans les réglages du système.",
+        ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Ce système masque la liste des apps installées tant que l’autorisation n’est pas accordée. Accordez-la pour configurer le proxy par app.",
     ),
@@ -2103,6 +2107,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "splitTunnelInvalidName": MessageLookupByLibrary.simpleMessage(
       "Saisissez un nom de fichier comme chrome.exe",
+    ),
+    "splitTunnelInvalidNameMacos": MessageLookupByLibrary.simpleMessage(
+      "Saisissez un nom de fichier comme Safari",
     ),
     "splitTunnelMode": MessageLookupByLibrary.simpleMessage("Par le VPN"),
     "splitTunnelNoApps": MessageLookupByLibrary.simpleMessage(

@@ -1126,6 +1126,16 @@ class AppLocalizations {
     );
   }
 
+  /// `A macOS proxy client based on Mihomo, open-source and ad-free.`
+  String get descMacos {
+    return Intl.message(
+      'A macOS proxy client based on Mihomo, open-source and ad-free.',
+      name: 'descMacos',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Starting VPN…`
   String get startVpn {
     return Intl.message('Starting VPN…', name: 'startVpn', desc: '', args: []);
@@ -8022,8 +8032,7 @@ class AppLocalizations {
   String customImportDroppedSubRules(num count, Object label) {
     return Intl.plural(
       count,
-      one:
-          '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
+      one: '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
       other:
           '$label SUB-RULE rules were dropped, since custom profiles do not support sub-rules',
       name: 'customImportDroppedSubRules',
@@ -9127,6 +9136,16 @@ class AppLocalizations {
     return Intl.message(
       'Enter a file name such as chrome.exe',
       name: 'splitTunnelInvalidName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter a file name such as Safari`
+  String get splitTunnelInvalidNameMacos {
+    return Intl.message(
+      'Enter a file name such as Safari',
+      name: 'splitTunnelInvalidNameMacos',
       desc: '',
       args: [],
     );

@@ -56,9 +56,8 @@ void main() {
       );
       writePe('NurConnectCore.exe', 0x8664);
       setup.requireWindowsBundleArchitecture(dir, 'amd64');
-      final loopback = File(
-        'windows/EnableLoopback.exe',
-      ).copySync(p.join(dir.path, 'EnableLoopback.exe'));
+      final loopback = File('windows/EnableLoopback.exe')
+          .copySync(p.join(dir.path, 'EnableLoopback.exe'));
       setup.requireWindowsBundleArchitecture(dir, 'amd64');
       writePe('EnableLoopback.exe', 0x014c);
       expect(
@@ -88,21 +87,57 @@ void main() {
       setup.requireWindowsSdkArchitecture('arm64', Abi.windowsArm64);
     });
 
+    test('macOS packaging refuses a thin native library', () async {
+      final root = Directory.systemTemp.createTempSync('nur-universal-');
+      addTearDown(() => root.deleteSync(recursive: true));
+      final source = File(p.join(root.path, 'probe.c'))
+        ..writeAsStringSync('int probe(void) { return 1; }');
+      final app = Directory(p.join(root.path, 'Nur Connect.app'))..createSync();
+      final binary = p.join(app.path, 'probe');
+      final slices = <String>[];
+      for (final arch in ['arm64', 'x86_64']) {
+        final object = p.join(root.path, '$arch.o');
+        final result = await Process.run('/usr/bin/clang', [
+          '-target',
+          '$arch-apple-macos13',
+          '-c',
+          source.path,
+          '-o',
+          object,
+        ]);
+        expect(result.exitCode, 0, reason: result.stderr.toString());
+        slices.add(object);
+      }
+      File(slices.first).copySync(binary);
+      await expectLater(
+        setup.requireMacosUniversalBundle(app),
+        throwsStateError,
+      );
+      final merged = await Process.run('/usr/bin/lipo', [
+        '-create',
+        ...slices,
+        '-output',
+        binary,
+      ]);
+      expect(merged.exitCode, 0, reason: merged.stderr.toString());
+      await setup.requireMacosUniversalBundle(app);
+    }, skip: !Platform.isMacOS);
+
     test('a pre build of macOS takes its own bundle id and name', () {
       final config = setup.macosChannelConfig('pre')!;
 
       expect(
         config,
-        contains('PRODUCT_BUNDLE_IDENTIFIER = com.follow.clashx.pre'),
+        contains('PRODUCT_BUNDLE_IDENTIFIER = org.nurconnect.macos.pre'),
       );
-      expect(config, contains('APP_DISPLAY_NAME = FlClashX Pre'));
-      expect(setup.macosBundleName('pre'), 'FlClashX Pre.app');
+      expect(config, contains('APP_DISPLAY_NAME = Nur Connect Pre'));
+      expect(setup.macosBundleName('pre'), 'Nur Connect Pre.app');
     });
 
     test('stable and dev builds of macOS keep the stable identity', () {
       for (final env in ['stable', 'dev']) {
         expect(setup.macosChannelConfig(env), isNull);
-        expect(setup.macosBundleName(env), 'FlClashX.app');
+        expect(setup.macosBundleName(env), 'Nur Connect.app');
       }
     });
 
@@ -129,7 +164,7 @@ void main() {
 
       expect(check, isNonNegative);
       expect(check, lessThan(sources));
-      expect(project, contains(r'expected=com.follow.clashx.pre'));
+      expect(project, contains(r'expected=org.nurconnect.macos.pre'));
       expect(
         project,
         contains(r'[ \"$CONFIGURATION\" = \"Debug\" ] && exit 0'),
@@ -137,9 +172,8 @@ void main() {
     });
 
     test('Android reads the channel as Dart does', () {
-      final gradle = File(
-        p.join('android', 'app', 'build.gradle.kts'),
-      ).readAsStringSync();
+      final gradle = File(p.join('android', 'app', 'build.gradle.kts'))
+          .readAsStringSync();
 
       expect(gradle, contains('.associate {'));
       expect(gradle, contains('(dartDefines["APP_ENV"] ?: "pre") == "pre"'));
@@ -223,7 +257,7 @@ hooks:
     test('signs the code inside the macOS app before the app', () {
       final root = Directory.systemTemp.createTempSync('setup_sign');
       addTearDown(() => root.deleteSync(recursive: true));
-      final app = p.join(root.path, 'FlClashX.app');
+      final app = p.join(root.path, 'Nur Connect.app');
       String at(String path) => p.joinAll([app, ...path.split('/')]);
       for (final dir in [
         'Contents/Frameworks/FlutterMacOS.framework',
@@ -234,8 +268,8 @@ hooks:
         Directory(at(dir)).createSync(recursive: true);
       }
       for (final file in [
-        'Contents/MacOS/FlClashX',
-        'Contents/MacOS/FlClashCore',
+        'Contents/MacOS/Nur Connect',
+        'Contents/MacOS/NurConnectCore',
         'Contents/Frameworks/Info.plist',
       ]) {
         File(at(file)).createSync(recursive: true);
@@ -245,7 +279,7 @@ hooks:
         at('Contents/Frameworks/App.framework'),
         at('Contents/Frameworks/FlutterMacOS.framework'),
         at('Contents/Library/LoginItems/Helper.app'),
-        at('Contents/MacOS/FlClashCore'),
+        at('Contents/MacOS/NurConnectCore'),
         app,
       ]);
     });
@@ -339,17 +373,16 @@ hooks:
       expect(langs.first, 'ru');
       expect(langs, contains('zh'));
       expect(
-        File(
-          'windows/packaging/exe/ChineseSimplified.isl',
-        ).readAsBytesSync().take(3),
+        File('windows/packaging/exe/ChineseSimplified.isl')
+            .readAsBytesSync()
+            .take(3),
         [0xEF, 0xBB, 0xBF],
       );
     });
 
     test('every installer language has every custom message', () {
-      final script = File(
-        'windows/packaging/exe/inno_setup.iss',
-      ).readAsStringSync();
+      final script = File('windows/packaging/exe/inno_setup.iss')
+          .readAsStringSync();
       Set<String> namesOf(String language) => RegExp(
         '^$language\\.(\\w+)=',
         multiLine: true,
@@ -362,9 +395,8 @@ hooks:
     });
 
     test('the installer clears a stale proxy once it has killed the app', () {
-      final script = File(
-        'windows/packaging/exe/inno_setup.iss',
-      ).readAsStringSync();
+      final script = File('windows/packaging/exe/inno_setup.iss')
+          .readAsStringSync();
 
       expect(
         script,
@@ -402,9 +434,8 @@ hooks:
     });
 
     test('the installer cannot adopt or retire a FlClash installation', () {
-      final script = File(
-        'windows/packaging/exe/inno_setup.iss',
-      ).readAsStringSync();
+      final script = File('windows/packaging/exe/inno_setup.iss')
+          .readAsStringSync();
       expect(script, isNot(contains('FindLegacyInstall')));
       expect(script, isNot(contains('RetireLegacyInstall')));
       expect(script, isNot(contains('728B3532-C74B-4870-9068-BE70FE12A3E6')));
@@ -413,16 +444,11 @@ hooks:
     });
 
     group('a Windows or Linux pre-release', () {
-      final template = File(
-        'windows/packaging/exe/inno_setup.iss',
-      ).readAsStringSync();
-      final config =
-          loadYaml(
-                File(
-                  'windows/packaging/exe/make_config.yaml',
-                ).readAsStringSync(),
-              )
-              as Map;
+      final template = File('windows/packaging/exe/inno_setup.iss')
+          .readAsStringSync();
+      final config = loadYaml(
+        File('windows/packaging/exe/make_config.yaml').readAsStringSync(),
+      ) as Map;
 
       String render(setup.DesktopIdentity identity) => setup.renderInnoSetup(
         template,

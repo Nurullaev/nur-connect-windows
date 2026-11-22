@@ -499,6 +499,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "desc": MessageLookupByLibrary.simpleMessage(
       "基于Mihomo的Windows代理客户端，开源无广告。",
     ),
+    "descMacos": MessageLookupByLibrary.simpleMessage(
+      "基于Mihomo的macOS代理客户端，开源无广告。",
+    ),
     "destination": MessageLookupByLibrary.simpleMessage("目标地址"),
     "destinationGeoIP": MessageLookupByLibrary.simpleMessage("目标地理定位"),
     "destinationIPASN": MessageLookupByLibrary.simpleMessage("目标IP ASN"),
@@ -1512,6 +1515,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "splitTunnelInvalidName": MessageLookupByLibrary.simpleMessage(
       "请输入文件名，例如 chrome.exe",
+    ),
+    "splitTunnelInvalidNameMacos": MessageLookupByLibrary.simpleMessage(
+      "请输入文件名，例如 Safari",
     ),
     "splitTunnelMode": MessageLookupByLibrary.simpleMessage("走 VPN"),
     "splitTunnelNoApps": MessageLookupByLibrary.simpleMessage("已开启，尚未添加程序"),

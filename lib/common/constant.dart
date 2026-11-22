@@ -17,7 +17,7 @@ const coreManifestName = 'manifest.json';
 const browserUa =
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36';
 const packageName = 'com.follow.clashx';
-final unixSocketPath = '/tmp/FlClashSocket_${Random().nextInt(10000)}.sock';
+final unixSocketPath = '/tmp/${Platform.isMacOS ? 'NurConnect' : 'FlClash'}Socket_${Random().nextInt(10000)}.sock';
 final windowsPipeName = '\\\\.\\pipe\\NurConnectCore_${_randomPipeId()}';
 const helperPort = 47891;
 final helperPortKey = helperPortKeyFor(appHelperService);

@@ -82,12 +82,14 @@ class SplitTunnelView extends ConsumerWidget {
     final file = await globalState.safeRun(
       () => FilePicker.pickFile(
         type: FileType.custom,
-        allowedExtensions: const ['exe'],
+        allowedExtensions: system.isMacOS ? const ['app'] : const ['exe'],
       ),
       silence: false,
     );
     if (file == null) return;
-    final name = splitTunnelAppName(file.path ?? file.name);
+    final name = await globalState.safeRun(
+      () => splitTunnelExecutable(file.path ?? file.name),
+    );
     if (name != null) _add(ref, name);
   }
 
@@ -98,9 +100,11 @@ class SplitTunnelView extends ConsumerWidget {
         title: l10n.splitTunnelAddByName,
         value: '',
         labelText: l10n.splitTunnelAppLabel,
-        hintText: 'chrome.exe',
+        hintText: system.isMacOS ? 'Safari' : 'chrome.exe',
         validator: (value) => splitTunnelAppName(value ?? '') == null
-            ? l10n.splitTunnelInvalidName
+            ? system.isMacOS
+                  ? l10n.splitTunnelInvalidNameMacos
+                  : l10n.splitTunnelInvalidName
             : null,
       ),
     );

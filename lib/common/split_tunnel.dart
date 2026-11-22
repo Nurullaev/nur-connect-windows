@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 
@@ -45,6 +47,51 @@ const torrentDirectRules = [
   'PROCESS-NAME,Zona.exe,DIRECT',
   r'PROCESS-PATH-WILDCARD,*\Zona\jre\bin\javaw.exe,DIRECT',
 ];
+
+/// macOS process names are the executables inside .app bundles, not .exe files.
+const macosTorrentDirectRules = [
+  'PROCESS-NAME,uTorrent,DIRECT',
+  'PROCESS-NAME,uTorrent Neo,DIRECT',
+  'PROCESS-NAME,utweb,DIRECT',
+  'PROCESS-NAME,BitTorrent,DIRECT',
+  'PROCESS-NAME,btweb,DIRECT',
+  'PROCESS-NAME,qbittorrent,DIRECT',
+  'PROCESS-NAME,Transmission,DIRECT',
+  'PROCESS-NAME,transmission-daemon,DIRECT',
+  'PROCESS-NAME,deluge,DIRECT',
+  'PROCESS-NAME,deluged,DIRECT',
+  'PROCESS-NAME,WebTorrent,DIRECT',
+  'PROCESS-NAME,BiglyBT,DIRECT',
+  'PROCESS-NAME,TorrServer,DIRECT',
+];
+
+List<String> torrentDirectRulesFor(SupportPlatform platform) =>
+    platform == SupportPlatform.MacOS
+    ? macosTorrentDirectRules
+    : torrentDirectRules;
+
+/// A Finder app package names its actual executable in CFBundleExecutable.
+/// Never register the bundle's display name as a process rule.
+Future<String?> splitTunnelExecutable(String path) async {
+  if (!Platform.isMacOS || !path.toLowerCase().endsWith('.app')) {
+    return splitTunnelAppName(path);
+  }
+  final result = await Process.run('/usr/bin/plutil', [
+    '-extract',
+    'CFBundleExecutable',
+    'raw',
+    '-o',
+    '-',
+    '$path/Contents/Info.plist',
+  ]);
+  if (result.exitCode != 0) return null;
+  final raw = (result.stdout as String).trim();
+  final name = splitTunnelAppName(raw);
+  if (name != raw || !File('$path/Contents/MacOS/$name').existsSync()) {
+    return null;
+  }
+  return name;
+}
 
 /// The rule set the provider's subscription carries for sites that work
 /// better without the VPN: banks, state services, marketplaces. The provider
@@ -136,7 +183,7 @@ Mode splitTunnelCoreMode(SplitTunnelProps props, Mode mode) =>
           for (final app in apps) 'PROCESS-NAME,$app,DIRECT',
         ],
       },
-    if (torrents) ...torrentDirectRules,
+    if (torrents) ...torrentDirectRulesFor(SupportPlatform.currentPlatform),
     if (sites) directSitesRule,
   ];
   final replace = mode == Mode.global;

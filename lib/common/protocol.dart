@@ -15,6 +15,8 @@ const legacyProtocolSchemes = [
 const protocolSchemes = [
   windowsProtocolScheme,
   windowsPreProtocolScheme,
+  macosProtocolScheme,
+  macosPreProtocolScheme,
   ...legacyProtocolSchemes,
 ];
 

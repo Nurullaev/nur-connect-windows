@@ -64,7 +64,11 @@ class BuildConfig {
       coreVersion: yaml['core_version'] as String? ?? defaults.coreVersion,
       coreDir: yaml['core_dir'] as String? ?? defaults.coreDir,
       coreName:
-          yaml[platform == 'windows' ? 'windows_core_name' : 'core_name']
+          yaml[platform == 'windows'
+                  ? 'windows_core_name'
+                  : platform == 'darwin' || platform == 'macos'
+                  ? 'macos_core_name'
+                  : 'core_name']
               as String? ??
           defaults.coreName,
       outputDir: yaml['output_dir'] as String? ?? defaults.outputDir,

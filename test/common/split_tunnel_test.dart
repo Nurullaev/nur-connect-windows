@@ -99,7 +99,7 @@ void main() {
       expect(split.rules, [
         'PROCESS-NAME,chrome.exe,DIRECT',
         'PROCESS-NAME,Telegram.exe,DIRECT',
-        ...torrentDirectRules,
+        ...torrentDirectRulesFor(SupportPlatform.currentPlatform),
         directSitesRule,
       ]);
       expect(split.replace, isFalse);
@@ -112,14 +112,17 @@ void main() {
       expect(props.directSites, isTrue);
       final global = splitTunnelRules(props, Mode.global);
       expect(global.rules, [
-        ...torrentDirectRules,
+        ...torrentDirectRulesFor(SupportPlatform.currentPlatform),
         directSitesRule,
         'MATCH,GLOBAL',
       ]);
       expect(global.replace, isTrue);
       expect(splitTunnelCoreMode(props, Mode.global), Mode.rule);
       final rule = splitTunnelRules(props, Mode.rule);
-      expect(rule.rules, [...torrentDirectRules, directSitesRule]);
+      expect(rule.rules, [
+        ...torrentDirectRulesFor(SupportPlatform.currentPlatform),
+        directSitesRule,
+      ]);
       expect(rule.replace, isFalse);
       expect(splitTunnelKey(props, Mode.global), isNotEmpty);
     });
@@ -136,7 +139,10 @@ void main() {
 
     test('turned off, local sites leave only the torrents', () {
       const props = SplitTunnelProps(directSites: false);
-      expect(splitTunnelRules(props, Mode.rule).rules, torrentDirectRules);
+      expect(
+        splitTunnelRules(props, Mode.rule).rules,
+        torrentDirectRulesFor(SupportPlatform.currentPlatform),
+      );
     });
 
     test('both turned off add nothing', () {
@@ -200,16 +206,13 @@ void main() {
   });
 
   test('props read back from JSON, an unknown mode falling back', () {
-    final json =
-        jsonDecode(jsonEncode(const NetworkProps(splitTunnel: _two)))
-            as Map<String, Object?>;
+    final json = jsonDecode(
+      jsonEncode(const NetworkProps(splitTunnel: _two)),
+    ) as Map<String, Object?>;
     expect(NetworkProps.fromJson(json).splitTunnel, _two);
     expect(
-      SplitTunnelProps.fromJson({
-        'enabled': true,
-        'mode': 'later',
-        'apps': [],
-      }).mode,
+      SplitTunnelProps.fromJson({'enabled': true, 'mode': 'later', 'apps': []})
+          .mode,
       SplitTunnelMode.onlySelected,
     );
     expect(NetworkProps.fromJson({}).splitTunnel, const SplitTunnelProps());
@@ -222,18 +225,18 @@ void main() {
       }).torrentDirect,
       isTrue,
     );
-    final off =
-        jsonDecode(jsonEncode(const SplitTunnelProps(torrentDirect: false)))
-            as Map<String, Object?>;
+    final off = jsonDecode(
+      jsonEncode(const SplitTunnelProps(torrentDirect: false)),
+    ) as Map<String, Object?>;
     expect(SplitTunnelProps.fromJson(off).torrentDirect, isFalse);
     // Settings saved before the local sites switch have no key: on after it.
     expect(
       SplitTunnelProps.fromJson({'torrentDirect': false}).directSites,
       isTrue,
     );
-    final sitesOff =
-        jsonDecode(jsonEncode(const SplitTunnelProps(directSites: false)))
-            as Map<String, Object?>;
+    final sitesOff = jsonDecode(
+      jsonEncode(const SplitTunnelProps(directSites: false)),
+    ) as Map<String, Object?>;
     expect(SplitTunnelProps.fromJson(sitesOff).directSites, isFalse);
   });
 
@@ -301,7 +304,7 @@ void main() {
       expect((loadYaml(result.yaml) as YamlMap)['rules'], [
         'PROCESS-NAME,chrome.exe,DIRECT',
         'PROCESS-NAME,Telegram.exe,DIRECT',
-        ...torrentDirectRules,
+        ...torrentDirectRulesFor(SupportPlatform.currentPlatform),
         'DOMAIN,existing.example,DIRECT',
         'MATCH,Servers',
       ]);
@@ -317,10 +320,13 @@ void main() {
         ),
       );
       final rules = (loadYaml(result.yaml) as YamlMap)['rules'] as YamlList;
-      expect(rules.first, 'PROCESS-NAME,uTorrent.exe,DIRECT');
+      expect(
+        rules.first,
+        torrentDirectRulesFor(SupportPlatform.currentPlatform).first,
+      );
       expect(
         rules,
-        contains(r'PROCESS-PATH-WILDCARD,*\Zona\jre\bin\javaw.exe,DIRECT'),
+        contains(torrentDirectRulesFor(SupportPlatform.currentPlatform).last),
       );
       expect(rules.last, 'MATCH,GLOBAL');
       expect(rules, isNot(contains('DOMAIN,existing.example,DIRECT')));
@@ -330,19 +336,17 @@ void main() {
 
     test('a subscription with the local sites keeps their rule', () async {
       final global = splitTunnelRules(const SplitTunnelProps(), Mode.global);
-      final globalConfig =
-          loadYaml(
-                (await makeRealProfileTask(
-                  (await state(sites: true)).copyWith(
-                    realPatchConfig: const PatchClashConfig(mode: Mode.rule),
-                    splitTunnelRules: global.rules,
-                    splitTunnelReplace: global.replace,
-                  ),
-                )).yaml,
-              )
-              as YamlMap;
+      final globalConfig = loadYaml(
+        (await makeRealProfileTask(
+          (await state(sites: true)).copyWith(
+            realPatchConfig: const PatchClashConfig(mode: Mode.rule),
+            splitTunnelRules: global.rules,
+            splitTunnelReplace: global.replace,
+          ),
+        )).yaml,
+      ) as YamlMap;
       expect(globalConfig['rules'], [
-        ...torrentDirectRules,
+        ...torrentDirectRulesFor(SupportPlatform.currentPlatform),
         directSitesRule,
         'MATCH,GLOBAL',
       ]);
@@ -355,16 +359,14 @@ void main() {
         const SplitTunnelProps(torrentDirect: false),
         Mode.rule,
       );
-      final ruleConfig =
-          loadYaml(
-                (await makeRealProfileTask(
-                  (await state(sites: true)).copyWith(
-                    splitTunnelRules: rule.rules,
-                    splitTunnelReplace: rule.replace,
-                  ),
-                )).yaml,
-              )
-              as YamlMap;
+      final ruleConfig = loadYaml(
+        (await makeRealProfileTask(
+          (await state(sites: true)).copyWith(
+            splitTunnelRules: rule.rules,
+            splitTunnelReplace: rule.replace,
+          ),
+        )).yaml,
+      ) as YamlMap;
       expect(ruleConfig['rules'], [
         directSitesRule,
         'DOMAIN,existing.example,DIRECT',

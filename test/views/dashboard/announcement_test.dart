@@ -1,3 +1,4 @@
+import 'package:fl_clash/common/nur_layout.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -25,6 +26,8 @@ Profile _profile({String? announce}) => Profile(
 );
 
 void main() {
+  setUpAll(() => debugUpstreamLayout = true);
+  tearDownAll(() => debugUpstreamLayout = false);
   late ProviderContainer container;
 
   void setUpProfiles(List<Profile> profiles) {
