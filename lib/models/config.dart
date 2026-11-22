@@ -530,6 +530,11 @@ abstract class SplitTunnelProps with _$SplitTunnelProps {
     /// Known torrent clients connect directly, apart from the split tunnel
     /// switch; on unless turned off, also after an update that lacks the key.
     @Default(true) bool torrentDirect,
+
+    /// Sites the subscription lists as local (banks, state services,
+    /// marketplaces) connect directly; on unless turned off. Needs the
+    /// subscription's `direct-sites` rule set and does nothing without it.
+    @Default(true) bool directSites,
   }) = _SplitTunnelProps;
 
   factory SplitTunnelProps.fromJson(Map<String, Object?>? json) => json == null

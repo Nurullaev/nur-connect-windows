@@ -1986,7 +1986,10 @@ mixin _$SplitTunnelProps implements DiagnosticableTreeMixin {
 
  bool get enabled;@JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected) SplitTunnelMode get mode; List<String> get apps;/// Known torrent clients connect directly, apart from the split tunnel
 /// switch; on unless turned off, also after an update that lacks the key.
- bool get torrentDirect;
+ bool get torrentDirect;/// Sites the subscription lists as local (banks, state services,
+/// marketplaces) connect directly; on unless turned off. Needs the
+/// subscription's `direct-sites` rule set and does nothing without it.
+ bool get directSites;
 /// Create a copy of SplitTunnelProps
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -2001,26 +2004,26 @@ void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   final _this = this as SplitTunnelProps;
   properties
     ..add(DiagnosticsProperty('type', 'SplitTunnelProps'))
-    ..add(DiagnosticsProperty('enabled', _this.enabled))..add(DiagnosticsProperty('mode', _this.mode))..add(DiagnosticsProperty('apps', _this.apps))..add(DiagnosticsProperty('torrentDirect', _this.torrentDirect));
+    ..add(DiagnosticsProperty('enabled', _this.enabled))..add(DiagnosticsProperty('mode', _this.mode))..add(DiagnosticsProperty('apps', _this.apps))..add(DiagnosticsProperty('torrentDirect', _this.torrentDirect))..add(DiagnosticsProperty('directSites', _this.directSites));
 }
 
 @override
 bool operator ==(Object other) {
   final _this = this as SplitTunnelProps;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SplitTunnelProps&&(identical(other.enabled, _this.enabled) || other.enabled == _this.enabled)&&(identical(other.mode, _this.mode) || other.mode == _this.mode)&&const DeepCollectionEquality().equals(other.apps, _this.apps)&&(identical(other.torrentDirect, _this.torrentDirect) || other.torrentDirect == _this.torrentDirect));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SplitTunnelProps&&(identical(other.enabled, _this.enabled) || other.enabled == _this.enabled)&&(identical(other.mode, _this.mode) || other.mode == _this.mode)&&const DeepCollectionEquality().equals(other.apps, _this.apps)&&(identical(other.torrentDirect, _this.torrentDirect) || other.torrentDirect == _this.torrentDirect)&&(identical(other.directSites, _this.directSites) || other.directSites == _this.directSites));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as SplitTunnelProps;
-  return Object.hash(runtimeType,_this.enabled,_this.mode,const DeepCollectionEquality().hash(_this.apps),_this.torrentDirect);
+  return Object.hash(runtimeType,_this.enabled,_this.mode,const DeepCollectionEquality().hash(_this.apps),_this.torrentDirect,_this.directSites);
 }
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   final _this = this as SplitTunnelProps;
-  return 'SplitTunnelProps(enabled: ${_this.enabled}, mode: ${_this.mode}, apps: ${_this.apps}, torrentDirect: ${_this.torrentDirect})';
+  return 'SplitTunnelProps(enabled: ${_this.enabled}, mode: ${_this.mode}, apps: ${_this.apps}, torrentDirect: ${_this.torrentDirect}, directSites: ${_this.directSites})';
 }
 
 
@@ -2031,7 +2034,7 @@ abstract mixin class $SplitTunnelPropsCopyWith<$Res>  {
   factory $SplitTunnelPropsCopyWith(SplitTunnelProps value, $Res Function(SplitTunnelProps) _then) = _$SplitTunnelPropsCopyWithImpl;
 @useResult
 $Res call({
- bool enabled,@JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected) SplitTunnelMode mode, List<String> apps, bool torrentDirect
+ bool enabled,@JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected) SplitTunnelMode mode, List<String> apps, bool torrentDirect, bool directSites
 });
 
 
@@ -2048,12 +2051,13 @@ class _$SplitTunnelPropsCopyWithImpl<$Res>
 
 /// Create a copy of SplitTunnelProps
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? enabled = null,Object? mode = null,Object? apps = null,Object? torrentDirect = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? enabled = null,Object? mode = null,Object? apps = null,Object? torrentDirect = null,Object? directSites = null,}) {
   return _then(SplitTunnelProps(
 enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
 as bool,mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
 as SplitTunnelMode,apps: null == apps ? _self.apps : apps // ignore: cast_nullable_to_non_nullable
 as List<String>,torrentDirect: null == torrentDirect ? _self.torrentDirect : torrentDirect // ignore: cast_nullable_to_non_nullable
+as bool,directSites: null == directSites ? _self.directSites : directSites // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -2139,10 +2143,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enabled, @JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected)  SplitTunnelMode mode,  List<String> apps,  bool torrentDirect)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool enabled, @JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected)  SplitTunnelMode mode,  List<String> apps,  bool torrentDirect,  bool directSites)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SplitTunnelProps() when $default != null:
-return $default(_that.enabled,_that.mode,_that.apps,_that.torrentDirect);case _:
+return $default(_that.enabled,_that.mode,_that.apps,_that.torrentDirect,_that.directSites);case _:
   return orElse();
 
 }
@@ -2160,10 +2164,10 @@ return $default(_that.enabled,_that.mode,_that.apps,_that.torrentDirect);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enabled, @JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected)  SplitTunnelMode mode,  List<String> apps,  bool torrentDirect)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool enabled, @JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected)  SplitTunnelMode mode,  List<String> apps,  bool torrentDirect,  bool directSites)  $default,) {final _that = this;
 switch (_that) {
 case _SplitTunnelProps():
-return $default(_that.enabled,_that.mode,_that.apps,_that.torrentDirect);case _:
+return $default(_that.enabled,_that.mode,_that.apps,_that.torrentDirect,_that.directSites);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -2180,10 +2184,10 @@ return $default(_that.enabled,_that.mode,_that.apps,_that.torrentDirect);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enabled, @JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected)  SplitTunnelMode mode,  List<String> apps,  bool torrentDirect)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool enabled, @JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected)  SplitTunnelMode mode,  List<String> apps,  bool torrentDirect,  bool directSites)?  $default,) {final _that = this;
 switch (_that) {
 case _SplitTunnelProps() when $default != null:
-return $default(_that.enabled,_that.mode,_that.apps,_that.torrentDirect);case _:
+return $default(_that.enabled,_that.mode,_that.apps,_that.torrentDirect,_that.directSites);case _:
   return null;
 
 }
@@ -2195,7 +2199,7 @@ return $default(_that.enabled,_that.mode,_that.apps,_that.torrentDirect);case _:
 @JsonSerializable()
 
 class _SplitTunnelProps with DiagnosticableTreeMixin implements SplitTunnelProps {
-  const _SplitTunnelProps({this.enabled = false, @JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected) this.mode = SplitTunnelMode.onlySelected,  List<String> apps = const [], this.torrentDirect = true}): _apps = apps;
+  const _SplitTunnelProps({this.enabled = false, @JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected) this.mode = SplitTunnelMode.onlySelected,  List<String> apps = const [], this.torrentDirect = true, this.directSites = true}): _apps = apps;
   factory _SplitTunnelProps.fromJson(Map<String, dynamic> json) => _$SplitTunnelPropsFromJson(json);
 
 @override@JsonKey() final  bool enabled;
@@ -2210,6 +2214,10 @@ class _SplitTunnelProps with DiagnosticableTreeMixin implements SplitTunnelProps
 /// Known torrent clients connect directly, apart from the split tunnel
 /// switch; on unless turned off, also after an update that lacks the key.
 @override@JsonKey() final  bool torrentDirect;
+/// Sites the subscription lists as local (banks, state services,
+/// marketplaces) connect directly; on unless turned off. Needs the
+/// subscription's `direct-sites` rule set and does nothing without it.
+@override@JsonKey() final  bool directSites;
 
 /// Create a copy of SplitTunnelProps
 /// with the given fields replaced by the non-null parameter values.
@@ -2225,23 +2233,23 @@ Map<String, dynamic> toJson() {
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties
     ..add(DiagnosticsProperty('type', 'SplitTunnelProps'))
-    ..add(DiagnosticsProperty('enabled', enabled))..add(DiagnosticsProperty('mode', mode))..add(DiagnosticsProperty('apps', apps))..add(DiagnosticsProperty('torrentDirect', torrentDirect));
+    ..add(DiagnosticsProperty('enabled', enabled))..add(DiagnosticsProperty('mode', mode))..add(DiagnosticsProperty('apps', apps))..add(DiagnosticsProperty('torrentDirect', torrentDirect))..add(DiagnosticsProperty('directSites', directSites));
 }
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SplitTunnelProps&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.mode, mode) || other.mode == mode)&&const DeepCollectionEquality().equals(other.apps, _apps)&&(identical(other.torrentDirect, torrentDirect) || other.torrentDirect == torrentDirect));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SplitTunnelProps&&(identical(other.enabled, enabled) || other.enabled == enabled)&&(identical(other.mode, mode) || other.mode == mode)&&const DeepCollectionEquality().equals(other.apps, _apps)&&(identical(other.torrentDirect, torrentDirect) || other.torrentDirect == torrentDirect)&&(identical(other.directSites, directSites) || other.directSites == directSites));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,enabled,mode,const DeepCollectionEquality().hash(_apps),torrentDirect);
+    return Object.hash(runtimeType,enabled,mode,const DeepCollectionEquality().hash(_apps),torrentDirect,directSites);
 }
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-    return 'SplitTunnelProps(enabled: $enabled, mode: $mode, apps: $apps, torrentDirect: $torrentDirect)';
+    return 'SplitTunnelProps(enabled: $enabled, mode: $mode, apps: $apps, torrentDirect: $torrentDirect, directSites: $directSites)';
 }
 
 
@@ -2252,7 +2260,7 @@ abstract mixin class _$SplitTunnelPropsCopyWith<$Res> implements $SplitTunnelPro
   factory _$SplitTunnelPropsCopyWith(_SplitTunnelProps value, $Res Function(_SplitTunnelProps) _then) = __$SplitTunnelPropsCopyWithImpl;
 @override @useResult
 $Res call({
- bool enabled,@JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected) SplitTunnelMode mode, List<String> apps, bool torrentDirect
+ bool enabled,@JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected) SplitTunnelMode mode, List<String> apps, bool torrentDirect, bool directSites
 });
 
 
@@ -2269,12 +2277,13 @@ class __$SplitTunnelPropsCopyWithImpl<$Res>
 
 /// Create a copy of SplitTunnelProps
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? enabled = null,Object? mode = null,Object? apps = null,Object? torrentDirect = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? enabled = null,Object? mode = null,Object? apps = null,Object? torrentDirect = null,Object? directSites = null,}) {
   return _then(_SplitTunnelProps(
 enabled: null == enabled ? _self.enabled : enabled // ignore: cast_nullable_to_non_nullable
 as bool,mode: null == mode ? _self.mode : mode // ignore: cast_nullable_to_non_nullable
 as SplitTunnelMode,apps: null == apps ? _self._apps : apps // ignore: cast_nullable_to_non_nullable
 as List<String>,torrentDirect: null == torrentDirect ? _self.torrentDirect : torrentDirect // ignore: cast_nullable_to_non_nullable
+as bool,directSites: null == directSites ? _self.directSites : directSites // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

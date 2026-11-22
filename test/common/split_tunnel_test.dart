@@ -48,11 +48,19 @@ void main() {
     test('off, empty or direct routing adds nothing', () {
       for (final (props, mode) in [
         (
-          const SplitTunnelProps(apps: ['chrome.exe'], torrentDirect: false),
+          const SplitTunnelProps(
+            apps: ['chrome.exe'],
+            torrentDirect: false,
+            directSites: false,
+          ),
           Mode.global,
         ),
         (
-          const SplitTunnelProps(enabled: true, torrentDirect: false),
+          const SplitTunnelProps(
+            enabled: true,
+            torrentDirect: false,
+            directSites: false,
+          ),
           Mode.global,
         ),
         (_two, Mode.direct),
@@ -70,6 +78,7 @@ void main() {
       final split = splitTunnelRules(_two, Mode.global);
       expect(split.rules, [
         'NOT,((OR,((PROCESS-NAME,chrome.exe),(PROCESS-NAME,Telegram.exe)))),DIRECT',
+        directSitesRule,
         'MATCH,GLOBAL',
       ]);
       expect(split.replace, isTrue);
@@ -80,6 +89,7 @@ void main() {
       const props = SplitTunnelProps(enabled: true, apps: ['chrome.exe']);
       expect(splitTunnelRules(props, Mode.rule).rules, [
         'NOT,((PROCESS-NAME,chrome.exe)),DIRECT',
+        directSitesRule,
       ]);
     });
 
@@ -90,26 +100,47 @@ void main() {
         'PROCESS-NAME,chrome.exe,DIRECT',
         'PROCESS-NAME,Telegram.exe,DIRECT',
         ...torrentDirectRules,
+        directSitesRule,
       ]);
       expect(split.replace, isFalse);
       expect(splitTunnelCoreMode(props, Mode.rule), Mode.rule);
     });
 
-    test('torrent clients go direct by default, the split tunnel off', () {
+    test('torrents and local sites go direct by default, the split off', () {
       const props = SplitTunnelProps();
       expect(props.torrentDirect, isTrue);
+      expect(props.directSites, isTrue);
       final global = splitTunnelRules(props, Mode.global);
-      expect(global.rules, [...torrentDirectRules, 'MATCH,GLOBAL']);
+      expect(global.rules, [
+        ...torrentDirectRules,
+        directSitesRule,
+        'MATCH,GLOBAL',
+      ]);
       expect(global.replace, isTrue);
       expect(splitTunnelCoreMode(props, Mode.global), Mode.rule);
       final rule = splitTunnelRules(props, Mode.rule);
-      expect(rule.rules, torrentDirectRules);
+      expect(rule.rules, [...torrentDirectRules, directSitesRule]);
       expect(rule.replace, isFalse);
       expect(splitTunnelKey(props, Mode.global), isNotEmpty);
     });
 
-    test('turned off, torrents add nothing', () {
+    test('turned off, torrents leave only the local sites', () {
       const props = SplitTunnelProps(torrentDirect: false);
+      expect(splitTunnelRules(props, Mode.global).rules, [
+        directSitesRule,
+        'MATCH,GLOBAL',
+      ]);
+      expect(splitTunnelRules(props, Mode.rule).rules, [directSitesRule]);
+      expect(splitTunnelCoreMode(props, Mode.global), Mode.rule);
+    });
+
+    test('turned off, local sites leave only the torrents', () {
+      const props = SplitTunnelProps(directSites: false);
+      expect(splitTunnelRules(props, Mode.rule).rules, torrentDirectRules);
+    });
+
+    test('both turned off add nothing', () {
+      const props = SplitTunnelProps(torrentDirect: false, directSites: false);
       expect(splitTunnelRules(props, Mode.global).rules, isEmpty);
       expect(splitTunnelCoreMode(props, Mode.global), Mode.global);
       expect(splitTunnelKey(props, Mode.global), '');
@@ -117,11 +148,17 @@ void main() {
 
     test('only the picked programs on the VPN leaves torrents alone', () {
       // Everything unpicked is direct already; a picked torrent client
-      // stays on the VPN as asked.
+      // stays on the VPN as asked. Local sites skip it for picked programs.
       const props = SplitTunnelProps(enabled: true, apps: ['qbittorrent.exe']);
       expect(splitTunnelRules(props, Mode.rule).rules, [
         'NOT,((PROCESS-NAME,qbittorrent.exe)),DIRECT',
+        directSitesRule,
       ]);
+    });
+
+    test('the local sites rule names the subscription rule set', () {
+      expect(directSitesProvider, 'direct-sites');
+      expect(directSitesRule, 'RULE-SET,direct-sites,DIRECT');
     });
 
     test('the torrent list names each approved client once', () {
@@ -189,25 +226,43 @@ void main() {
         jsonDecode(jsonEncode(const SplitTunnelProps(torrentDirect: false)))
             as Map<String, Object?>;
     expect(SplitTunnelProps.fromJson(off).torrentDirect, isFalse);
+    // Settings saved before the local sites switch have no key: on after it.
+    expect(
+      SplitTunnelProps.fromJson({'torrentDirect': false}).directSites,
+      isTrue,
+    );
+    final sitesOff =
+        jsonDecode(jsonEncode(const SplitTunnelProps(directSites: false)))
+            as Map<String, Object?>;
+    expect(SplitTunnelProps.fromJson(sitesOff).directSites, isFalse);
   });
 
   group('makeRealProfileTask', () {
-    Future<MakeRealProfileState> state() async => MakeRealProfileState(
-      profilesPath: '/profiles',
-      profileId: 7,
-      rawConfig: await decodeJSONTask<Map<String, dynamic>>(
-        jsonEncode({
-          'proxies': [],
-          'rules': ['DOMAIN,existing.example,DIRECT', 'MATCH,Servers'],
-        }),
-      ),
-      realPatchConfig: const PatchClashConfig(),
-      appendSystemDns: false,
-      proxyGroups: const [],
-      rules: const [],
-      addedRules: const [],
-      defaultUA: 'FlClash-Test',
-    );
+    Future<MakeRealProfileState> state({bool sites = false}) async =>
+        MakeRealProfileState(
+          profilesPath: '/profiles',
+          profileId: 7,
+          rawConfig: await decodeJSONTask<Map<String, dynamic>>(
+            jsonEncode({
+              'proxies': [],
+              if (sites)
+                'rule-providers': {
+                  'direct-sites': {
+                    'type': 'inline',
+                    'behavior': 'domain',
+                    'payload': ['+.vk.com'],
+                  },
+                },
+              'rules': ['DOMAIN,existing.example,DIRECT', 'MATCH,Servers'],
+            }),
+          ),
+          realPatchConfig: const PatchClashConfig(),
+          appendSystemDns: false,
+          proxyGroups: const [],
+          rules: const [],
+          addedRules: const [],
+          defaultUA: 'FlClash-Test',
+        );
 
     test('without a split tunnel the YAML is unchanged', () async {
       final base = await state();
@@ -221,7 +276,7 @@ void main() {
     test('replacing rules leaves only the split tunnel', () async {
       final split = splitTunnelRules(_two, Mode.global);
       final result = await makeRealProfileTask(
-        (await state()).copyWith(
+        (await state(sites: true)).copyWith(
           realPatchConfig: const PatchClashConfig(mode: Mode.rule),
           splitTunnelRules: split.rules,
           splitTunnelReplace: split.replace,
@@ -269,6 +324,67 @@ void main() {
       );
       expect(rules.last, 'MATCH,GLOBAL');
       expect(rules, isNot(contains('DOMAIN,existing.example,DIRECT')));
+      // This profile has no local sites rule set, so nothing names it.
+      expect(rules, isNot(contains(directSitesRule)));
+    });
+
+    test('a subscription with the local sites keeps their rule', () async {
+      final global = splitTunnelRules(const SplitTunnelProps(), Mode.global);
+      final globalConfig =
+          loadYaml(
+                (await makeRealProfileTask(
+                  (await state(sites: true)).copyWith(
+                    realPatchConfig: const PatchClashConfig(mode: Mode.rule),
+                    splitTunnelRules: global.rules,
+                    splitTunnelReplace: global.replace,
+                  ),
+                )).yaml,
+              )
+              as YamlMap;
+      expect(globalConfig['rules'], [
+        ...torrentDirectRules,
+        directSitesRule,
+        'MATCH,GLOBAL',
+      ]);
+      expect(
+        (globalConfig['rule-providers'] as YamlMap)['direct-sites']['payload'],
+        ['+.vk.com'],
+      );
+
+      final rule = splitTunnelRules(
+        const SplitTunnelProps(torrentDirect: false),
+        Mode.rule,
+      );
+      final ruleConfig =
+          loadYaml(
+                (await makeRealProfileTask(
+                  (await state(sites: true)).copyWith(
+                    splitTunnelRules: rule.rules,
+                    splitTunnelReplace: rule.replace,
+                  ),
+                )).yaml,
+              )
+              as YamlMap;
+      expect(ruleConfig['rules'], [
+        directSitesRule,
+        'DOMAIN,existing.example,DIRECT',
+        'MATCH,Servers',
+      ]);
+    });
+
+    test('without the rule set the local sites rule is dropped', () async {
+      final split = splitTunnelRules(
+        const SplitTunnelProps(torrentDirect: false),
+        Mode.global,
+      );
+      final result = await makeRealProfileTask(
+        (await state()).copyWith(
+          realPatchConfig: const PatchClashConfig(mode: Mode.rule),
+          splitTunnelRules: split.rules,
+          splitTunnelReplace: split.replace,
+        ),
+      );
+      expect((loadYaml(result.yaml) as YamlMap)['rules'], ['MATCH,GLOBAL']);
     });
   });
 }

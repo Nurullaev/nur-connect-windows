@@ -46,6 +46,15 @@ const torrentDirectRules = [
   r'PROCESS-PATH-WILDCARD,*\Zona\jre\bin\javaw.exe,DIRECT',
 ];
 
+/// The rule set the provider's subscription carries for sites that work
+/// better without the VPN: banks, state services, marketplaces. The provider
+/// edits it in the panel; a profile that lacks it gets no rule naming it.
+const directSitesProvider = 'direct-sites';
+
+/// Sends the sites in [directSitesProvider] direct while
+/// [SplitTunnelProps.directSites] is on.
+const directSitesRule = 'RULE-SET,$directSitesProvider,DIRECT';
+
 /// The file name a split tunnel matches, from a path or a typed name, or null
 /// when nothing a rule can carry is left.
 String? splitTunnelAppName(String input) {
@@ -84,24 +93,34 @@ bool torrentDirectActive(SplitTunnelProps props, Mode mode) =>
     !(splitTunnelActive(props, mode) &&
         props.mode == SplitTunnelMode.onlySelected);
 
-/// Global routing ignores rules, so a split tunnel or the torrent rules run
-/// the Core on rule routing that ends on GLOBAL, where the picked server stays.
+/// Local sites go direct unless turned off, for the programs on the VPN too:
+/// a bank refuses a foreign address whichever browser opens it.
+bool directSitesActive(SplitTunnelProps props, Mode mode) =>
+    props.directSites && mode != Mode.direct;
+
+/// Global routing ignores rules, so a split tunnel, the torrent rules or the
+/// local sites run the Core on rule routing that ends on GLOBAL, where the
+/// picked server stays.
 Mode splitTunnelCoreMode(SplitTunnelProps props, Mode mode) =>
     mode == Mode.global &&
-        (splitTunnelActive(props, mode) || torrentDirectActive(props, mode))
+        (splitTunnelActive(props, mode) ||
+            torrentDirectActive(props, mode) ||
+            directSitesActive(props, mode))
     ? Mode.rule
     : mode;
 
-/// The rules a split tunnel and the torrent clients put before the profile's
-/// own, or in their place under global routing. The Core matches process
-/// names ignoring case.
+/// The rules a split tunnel, the torrent clients and the local sites put
+/// before the profile's own, or in their place under global routing. The Core
+/// matches process names ignoring case. [directSitesRule] stays in the list;
+/// building the profile drops it when the subscription lacks its rule set.
 ({List<String> rules, bool replace}) splitTunnelRules(
   SplitTunnelProps props,
   Mode mode,
 ) {
   final split = splitTunnelActive(props, mode);
   final torrents = torrentDirectActive(props, mode);
-  if (!split && !torrents) {
+  final sites = directSitesActive(props, mode);
+  if (!split && !torrents && !sites) {
     return (rules: const <String>[], replace: false);
   }
   final apps = split ? splitTunnelApps(props) : const <String>[];
@@ -118,6 +137,7 @@ Mode splitTunnelCoreMode(SplitTunnelProps props, Mode mode) =>
         ],
       },
     if (torrents) ...torrentDirectRules,
+    if (sites) directSitesRule,
   ];
   final replace = mode == Mode.global;
   return (

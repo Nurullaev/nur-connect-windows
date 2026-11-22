@@ -133,6 +133,24 @@ void main() {
     expect(read(container).enabled, isFalse);
   });
 
+  testWidgets('local services bypass the VPN until switched off', (
+    tester,
+  ) async {
+    final container = await pump(tester);
+    final toggle = find.byKey(const ValueKey('split-tunnel-direct-sites'));
+    await tester.ensureVisible(toggle);
+    await tester.pump();
+    expect(toggle, findsOne);
+    expect(find.text('Local services bypass the VPN'), findsOne);
+    expect(read(container).directSites, isTrue);
+
+    await tester.tap(toggle);
+    await tester.pump();
+    expect(read(container).directSites, isFalse);
+    expect(read(container).torrentDirect, isTrue);
+    expect(read(container).enabled, isFalse);
+  });
+
   testWidgets('the settings entry tells torrents go around the VPN', (
     tester,
   ) async {
@@ -154,15 +172,28 @@ void main() {
       ),
     );
     await tester.pump();
-    expect(find.text('Torrents bypass the VPN'), findsOne);
+    expect(find.text('Torrents and local services bypass the VPN'), findsOne);
 
-    container
+    void set({required bool torrents, required bool sites}) => container
         .read(networkSettingProvider.notifier)
         .update(
           (state) => state.copyWith(
-            splitTunnel: state.splitTunnel.copyWith(torrentDirect: false),
+            splitTunnel: state.splitTunnel.copyWith(
+              torrentDirect: torrents,
+              directSites: sites,
+            ),
           ),
         );
+
+    set(torrents: true, sites: false);
+    await tester.pump();
+    expect(find.text('Torrents bypass the VPN'), findsOne);
+
+    set(torrents: false, sites: true);
+    await tester.pump();
+    expect(find.text('Local services bypass the VPN'), findsOne);
+
+    set(torrents: false, sites: false);
     await tester.pump();
     expect(find.text('Off'), findsOne);
 

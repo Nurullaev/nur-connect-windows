@@ -2,6 +2,7 @@ import 'package:fl_clash/common/app_ports.dart';
 import 'package:fl_clash/common/cidr.dart';
 import 'package:fl_clash/common/compute.dart';
 import 'package:fl_clash/common/constant.dart';
+import 'package:fl_clash/common/split_tunnel.dart';
 import 'package:fl_clash/common/system.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/l10n/l10n.dart';
@@ -1146,13 +1147,34 @@ void main() {
     expect(container.read(setupPatchProvider), isNot(initial));
   });
 
-  test('the setup patch changes only with what a re-apply carries', () {
-    // Torrent rules hang on the routing mode; without them it is live.
+  test('the local sites switch alone re-applies on a routing mode change', () {
     container
         .read(networkSettingProvider.notifier)
         .update(
           (state) => state.copyWith(
             splitTunnel: state.splitTunnel.copyWith(torrentDirect: false),
+          ),
+        );
+    container.listen(setupPatchProvider, (_, _) {});
+    final initial = container.read(setupPatchProvider);
+    expect(initial.splitTunnel, contains(directSitesRule));
+    container
+        .read(patchClashConfigProvider.notifier)
+        .update((state) => state.copyWith(mode: Mode.global));
+    expect(container.read(setupPatchProvider), isNot(initial));
+  });
+
+  test('the setup patch changes only with what a re-apply carries', () {
+    // Torrent and local site rules hang on the routing mode; without them it
+    // is live.
+    container
+        .read(networkSettingProvider.notifier)
+        .update(
+          (state) => state.copyWith(
+            splitTunnel: state.splitTunnel.copyWith(
+              torrentDirect: false,
+              directSites: false,
+            ),
           ),
         );
     container.listen(setupPatchProvider, (_, _) {});

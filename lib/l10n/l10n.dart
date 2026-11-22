@@ -8022,7 +8022,8 @@ class AppLocalizations {
   String customImportDroppedSubRules(num count, Object label) {
     return Intl.plural(
       count,
-      one: '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
+      one:
+          '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
       other:
           '$label SUB-RULE rules were dropped, since custom profiles do not support sub-rules',
       name: 'customImportDroppedSubRules',
@@ -9201,6 +9202,46 @@ class AppLocalizations {
     return Intl.message(
       'uTorrent, qBittorrent, BitTorrent, Transmission and other known torrent apps connect directly, so downloads don\'t slow the VPN down or load its servers. Peers see your regular address. Works in VPN (TUN) mode.',
       name: 'torrentDirectDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Local services bypass the VPN`
+  String get directSites {
+    return Intl.message(
+      'Local services bypass the VPN',
+      name: 'directSites',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Local services bypass the VPN`
+  String get directSitesShort {
+    return Intl.message(
+      'Local services bypass the VPN',
+      name: 'directSitesShort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Banks, government services, marketplaces and other services on your subscription's list open directly, so they load faster and don't block sign-in because of the VPN. Without such a list in the subscription nothing changes.`
+  String get directSitesDesc {
+    return Intl.message(
+      'Banks, government services, marketplaces and other services on your subscription\'s list open directly, so they load faster and don\'t block sign-in because of the VPN. Without such a list in the subscription nothing changes.',
+      name: 'directSitesDesc',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Torrents and local services bypass the VPN`
+  String get bypassTorrentsAndSites {
+    return Intl.message(
+      'Torrents and local services bypass the VPN',
+      name: 'bypassTorrentsAndSites',
       desc: '',
       args: [],
     );

@@ -474,6 +474,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "bypassPrivateRouteDesc": MessageLookupByLibrary.simpleMessage(
       "Con Omitir direcciones privadas activado, las direcciones de LAN, loopback y multidifusión no pasan por TUN.",
     ),
+    "bypassTorrentsAndSites": MessageLookupByLibrary.simpleMessage(
+      "Torrents y servicios locales sin VPN",
+    ),
     "cache": MessageLookupByLibrary.simpleMessage("Caché"),
     "cacheAlgorithm": MessageLookupByLibrary.simpleMessage(
       "Algoritmo de caché",
@@ -706,6 +709,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "dialerProxyLoopStopped": m24,
     "direct": MessageLookupByLibrary.simpleMessage("Directo"),
+    "directSites": MessageLookupByLibrary.simpleMessage(
+      "Servicios locales sin VPN",
+    ),
+    "directSitesDesc": MessageLookupByLibrary.simpleMessage(
+      "Bancos, servicios públicos, tiendas en línea y otros servicios de la lista de tu suscripción se abren directamente: cargan más rápido y no bloquean el inicio de sesión por la VPN. Si la suscripción no trae esa lista, no cambia nada.",
+    ),
+    "directSitesShort": MessageLookupByLibrary.simpleMessage(
+      "Servicios locales sin VPN",
+    ),
     "disableIcmpForwarding": MessageLookupByLibrary.simpleMessage(
       "Desactivar reenvío ICMP",
     ),
@@ -1022,10 +1034,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Introduce el contenido de la regla",
     ),
-    "installedAppsPermissionDeniedMessage":
-        MessageLookupByLibrary.simpleMessage(
-          "Se denegó el permiso de lista de apps, por lo que no se pueden mostrar las apps instaladas. Concédelo manualmente en los ajustes del sistema.",
-        ),
+    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
+      "Se denegó el permiso de lista de apps, por lo que no se pueden mostrar las apps instaladas. Concédelo manualmente en los ajustes del sistema.",
+    ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Este sistema oculta la lista de apps instaladas hasta que se concede el permiso. Autorízalo para configurar el proxy por app.",
     ),

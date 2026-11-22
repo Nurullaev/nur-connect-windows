@@ -1085,5 +1085,9 @@
   "splitTunnelNoApps": "켜짐, 아직 프로그램 없음",
   "torrentDirect": "토렌트 클라이언트는 VPN 우회",
   "torrentDirectShort": "토렌트는 VPN 우회",
-  "torrentDirectDesc": "uTorrent, qBittorrent, BitTorrent, Transmission 등 알려진 토렌트 앱은 직접 연결되어 다운로드가 VPN을 느리게 하거나 서버에 부담을 주지 않습니다. 피어에게는 평소 주소가 보입니다. VPN(TUN) 모드에서 작동합니다."
+  "torrentDirectDesc": "uTorrent, qBittorrent, BitTorrent, Transmission 등 알려진 토렌트 앱은 직접 연결되어 다운로드가 VPN을 느리게 하거나 서버에 부담을 주지 않습니다. 피어에게는 평소 주소가 보입니다. VPN(TUN) 모드에서 작동합니다.",
+  "directSites": "로컬 서비스는 VPN 우회",
+  "directSitesShort": "로컬 서비스는 VPN 우회",
+  "directSitesDesc": "은행, 공공 서비스, 쇼핑몰 등 구독 목록에 있는 서비스는 직접 연결되어 더 빨리 열리고 VPN 때문에 로그인이 막히지 않습니다. 구독에 목록이 없으면 아무것도 바뀌지 않습니다.",
+  "bypassTorrentsAndSites": "토렌트와 로컬 서비스는 VPN 우회"
 }

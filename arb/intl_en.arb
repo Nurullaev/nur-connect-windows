@@ -1085,5 +1085,9 @@
   "splitTunnelNoApps": "On, no programs yet",
   "torrentDirect": "Torrent clients bypass the VPN",
   "torrentDirectShort": "Torrents bypass the VPN",
-  "torrentDirectDesc": "uTorrent, qBittorrent, BitTorrent, Transmission and other known torrent apps connect directly, so downloads don't slow the VPN down or load its servers. Peers see your regular address. Works in VPN (TUN) mode."
+  "torrentDirectDesc": "uTorrent, qBittorrent, BitTorrent, Transmission and other known torrent apps connect directly, so downloads don't slow the VPN down or load its servers. Peers see your regular address. Works in VPN (TUN) mode.",
+  "directSites": "Local services bypass the VPN",
+  "directSitesShort": "Local services bypass the VPN",
+  "directSitesDesc": "Banks, government services, marketplaces and other services on your subscription's list open directly, so they load faster and don't block sign-in because of the VPN. Without such a list in the subscription nothing changes.",
+  "bypassTorrentsAndSites": "Torrents and local services bypass the VPN"
 }

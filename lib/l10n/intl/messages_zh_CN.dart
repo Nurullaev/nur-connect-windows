@@ -361,6 +361,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "bypassPrivateRouteDesc": MessageLookupByLibrary.simpleMessage(
       "开启绕过私有路由地址后，局域网、回环和组播地址不经过虚拟网卡。",
     ),
+    "bypassTorrentsAndSites": MessageLookupByLibrary.simpleMessage(
+      "种子和本地服务不走 VPN",
+    ),
     "cache": MessageLookupByLibrary.simpleMessage("缓存"),
     "cacheAlgorithm": MessageLookupByLibrary.simpleMessage("缓存算法"),
     "cacheCorrupt": MessageLookupByLibrary.simpleMessage("缓存已损坏，是否清空？"),
@@ -519,6 +522,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "dialerProxyLoopStopped": m24,
     "direct": MessageLookupByLibrary.simpleMessage("直连"),
+    "directSites": MessageLookupByLibrary.simpleMessage("本地服务不走 VPN"),
+    "directSitesDesc": MessageLookupByLibrary.simpleMessage(
+      "银行、政务服务、电商等订阅列表中的服务直接连接，打开更快，也不会因 VPN 被拒绝登录。订阅中没有该列表时不会有任何变化。",
+    ),
+    "directSitesShort": MessageLookupByLibrary.simpleMessage("本地服务不走 VPN"),
     "disableIcmpForwarding": MessageLookupByLibrary.simpleMessage("禁用ICMP转发"),
     "disableIcmpForwardingDesc": MessageLookupByLibrary.simpleMessage(
       "禁用 ICMP 转发后由虚拟网卡直接应答 ping，ping 将不再显示真实延迟。",

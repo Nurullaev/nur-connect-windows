@@ -373,6 +373,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "bypassPrivateRouteDesc": MessageLookupByLibrary.simpleMessage(
       "사설 주소 우회를 켜면 LAN, 루프백, 멀티캐스트 주소는 TUN을 거치지 않습니다.",
     ),
+    "bypassTorrentsAndSites": MessageLookupByLibrary.simpleMessage(
+      "토렌트와 로컬 서비스는 VPN 우회",
+    ),
     "cache": MessageLookupByLibrary.simpleMessage("캐시"),
     "cacheAlgorithm": MessageLookupByLibrary.simpleMessage("캐시 알고리즘"),
     "cacheCorrupt": MessageLookupByLibrary.simpleMessage(
@@ -553,6 +556,11 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "dialerProxyLoopStopped": m24,
     "direct": MessageLookupByLibrary.simpleMessage("직접"),
+    "directSites": MessageLookupByLibrary.simpleMessage("로컬 서비스는 VPN 우회"),
+    "directSitesDesc": MessageLookupByLibrary.simpleMessage(
+      "은행, 공공 서비스, 쇼핑몰 등 구독 목록에 있는 서비스는 직접 연결되어 더 빨리 열리고 VPN 때문에 로그인이 막히지 않습니다. 구독에 목록이 없으면 아무것도 바뀌지 않습니다.",
+    ),
+    "directSitesShort": MessageLookupByLibrary.simpleMessage("로컬 서비스는 VPN 우회"),
     "disableIcmpForwarding": MessageLookupByLibrary.simpleMessage(
       "ICMP 전달 사용 안 함",
     ),

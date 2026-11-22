@@ -1085,5 +1085,9 @@
   "splitTunnelNoApps": "Activé, aucun programme pour l’instant",
   "torrentDirect": "Clients torrent sans VPN",
   "torrentDirectShort": "Torrents sans VPN",
-  "torrentDirectDesc": "uTorrent, qBittorrent, BitTorrent, Transmission et les autres applications torrent connues se connectent directement : les téléchargements ne ralentissent pas le VPN et ne chargent pas ses serveurs. Les pairs voient votre adresse habituelle. Fonctionne en mode VPN (TUN)."
+  "torrentDirectDesc": "uTorrent, qBittorrent, BitTorrent, Transmission et les autres applications torrent connues se connectent directement : les téléchargements ne ralentissent pas le VPN et ne chargent pas ses serveurs. Les pairs voient votre adresse habituelle. Fonctionne en mode VPN (TUN).",
+  "directSites": "Services locaux sans VPN",
+  "directSitesShort": "Services locaux sans VPN",
+  "directSitesDesc": "Les banques, services publics, places de marché et autres services de la liste de votre abonnement s'ouvrent directement : ils chargent plus vite et ne bloquent pas la connexion à cause du VPN. Sans cette liste dans l'abonnement, rien ne change.",
+  "bypassTorrentsAndSites": "Torrents et services locaux sans VPN"
 }

@@ -344,7 +344,10 @@ void main() {
         // with them on a mode change rebuilds the profile instead.
         networkSettingProvider.overrideWithBuild(
           (_, _) => const NetworkProps(
-            splitTunnel: SplitTunnelProps(torrentDirect: false),
+            splitTunnel: SplitTunnelProps(
+              torrentDirect: false,
+              directSites: false,
+            ),
           ),
         ),
       ],

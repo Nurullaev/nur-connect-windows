@@ -378,6 +378,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "bypassPrivateRouteDesc": MessageLookupByLibrary.simpleMessage(
       "プライベートアドレスをバイパスすると、LAN・ループバック・マルチキャストのアドレスは TUN を通りません。",
     ),
+    "bypassTorrentsAndSites": MessageLookupByLibrary.simpleMessage(
+      "トレントとローカルサービスは VPN なし",
+    ),
     "cache": MessageLookupByLibrary.simpleMessage("キャッシュ"),
     "cacheAlgorithm": MessageLookupByLibrary.simpleMessage("キャッシュアルゴリズム"),
     "cacheCorrupt": MessageLookupByLibrary.simpleMessage(
@@ -564,6 +567,13 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "dialerProxyLoopStopped": m24,
     "direct": MessageLookupByLibrary.simpleMessage("ダイレクト"),
+    "directSites": MessageLookupByLibrary.simpleMessage("ローカルサービスは VPN を使わない"),
+    "directSitesDesc": MessageLookupByLibrary.simpleMessage(
+      "銀行、行政サービス、通販サイトなど、サブスクリプションのリストにあるサービスは直接接続します。読み込みが速くなり、VPN を理由にログインを拒否されません。サブスクリプションにリストがない場合は何も変わりません。",
+    ),
+    "directSitesShort": MessageLookupByLibrary.simpleMessage(
+      "ローカルサービスは VPN なし",
+    ),
     "disableIcmpForwarding": MessageLookupByLibrary.simpleMessage(
       "ICMP 転送を無効化",
     ),

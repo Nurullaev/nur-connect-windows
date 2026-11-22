@@ -197,7 +197,7 @@ const _tunOff = PatchClashConfig(tun: Tun(enable: false));
 /// Torrent clients go direct by default, which puts their rules first; tests
 /// about the profile's own rules leave them out.
 const _noTorrents = NetworkProps(
-  splitTunnel: SplitTunnelProps(torrentDirect: false),
+  splitTunnel: SplitTunnelProps(torrentDirect: false, directSites: false),
 );
 
 void main() {

@@ -464,6 +464,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "bypassPrivateRouteDesc": MessageLookupByLibrary.simpleMessage(
       "При обходе частных адресов адреса LAN, loopback и multicast идут в обход TUN.",
     ),
+    "bypassTorrentsAndSites": MessageLookupByLibrary.simpleMessage(
+      "Торренты и местные сервисы мимо VPN",
+    ),
     "cache": MessageLookupByLibrary.simpleMessage("Кэш"),
     "cacheAlgorithm": MessageLookupByLibrary.simpleMessage("Алгоритм кэша"),
     "cacheCorrupt": MessageLookupByLibrary.simpleMessage(
@@ -690,6 +693,15 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "dialerProxyLoopStopped": m24,
     "direct": MessageLookupByLibrary.simpleMessage("Прямой"),
+    "directSites": MessageLookupByLibrary.simpleMessage(
+      "Местные сервисы мимо VPN",
+    ),
+    "directSitesDesc": MessageLookupByLibrary.simpleMessage(
+      "Банки, Госуслуги, маркетплейсы, VK, Яндекс и другие сервисы из списка в вашей подписке открываются напрямую: так они работают быстрее и не блокируют вход из‑за VPN. Если в подписке такого списка нет, ничего не меняется.",
+    ),
+    "directSitesShort": MessageLookupByLibrary.simpleMessage(
+      "Местные сервисы мимо VPN",
+    ),
     "disableIcmpForwarding": MessageLookupByLibrary.simpleMessage(
       "Отключить пересылку ICMP",
     ),
@@ -996,10 +1008,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "inputRuleContent": MessageLookupByLibrary.simpleMessage(
       "Введите содержимое правила",
     ),
-    "installedAppsPermissionDeniedMessage":
-        MessageLookupByLibrary.simpleMessage(
-          "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
-        ),
+    "installedAppsPermissionDeniedMessage": MessageLookupByLibrary.simpleMessage(
+      "Разрешение на список приложений отклонено, поэтому установленные приложения недоступны. Предоставьте его вручную в системных настройках.",
+    ),
     "installedAppsPermissionDesc": MessageLookupByLibrary.simpleMessage(
       "Эта система не выдаёт список установленных приложений без разрешения. Предоставьте его, чтобы настроить прокси для отдельных приложений.",
     ),

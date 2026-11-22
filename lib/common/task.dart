@@ -391,9 +391,15 @@ Future<RealProfile> _makeRealProfileTask(MakeRealProfileState data) async {
   }
   applyProxyChains(rawConfig, data.proxyChains);
   if (data.splitTunnelRules.isNotEmpty) {
-    rules = data.splitTunnelReplace
-        ? data.splitTunnelRules
-        : [...data.splitTunnelRules, ...rules];
+    // A rule naming a missing rule set fails the whole profile in the Core.
+    final providers = rawConfig['rule-providers'];
+    final hasSites =
+        providers is Map && providers.containsKey(directSitesProvider);
+    final split = [
+      for (final rule in data.splitTunnelRules)
+        if (hasSites || rule != directSitesRule) rule,
+    ];
+    rules = data.splitTunnelReplace ? split : [...split, ...rules];
   }
   rawConfig['rules'] = rules;
   final yaml = await _encodeYaml(Map<String, dynamic>.from(rawConfig));

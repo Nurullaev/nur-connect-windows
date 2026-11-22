@@ -53,7 +53,12 @@ class SplitTunnelItem extends ConsumerWidget {
     );
     final apps = splitTunnelApps(props);
     final subtitle = !props.enabled
-        ? (props.torrentDirect ? l10n.torrentDirectShort : l10n.splitTunnelOff)
+        ? switch ((props.torrentDirect, props.directSites)) {
+            (true, true) => l10n.bypassTorrentsAndSites,
+            (true, false) => l10n.torrentDirectShort,
+            (false, true) => l10n.directSitesShort,
+            (false, false) => l10n.splitTunnelOff,
+          }
         : apps.isEmpty
         ? l10n.splitTunnelNoApps
         : '${_modeLabel(l10n, props.mode)} · ${l10n.itemsCount(apps.length)}';
@@ -191,6 +196,19 @@ class SplitTunnelView extends ConsumerWidget {
               ),
             ],
             footer: l10n.torrentDirectDesc,
+          ),
+          generateSection(
+            items: [
+              ListItem.toggle(
+                key: const ValueKey('split-tunnel-direct-sites'),
+                leading: const GlyphIcon(AppGlyphs.globe),
+                title: Text(l10n.directSites),
+                value: props.directSites,
+                onChanged: (value) =>
+                    _update(ref, (props) => props.copyWith(directSites: value)),
+              ),
+            ],
+            footer: l10n.directSitesDesc,
           ),
           generateSection(
             title: l10n.splitTunnelApps,
