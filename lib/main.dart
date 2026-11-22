@@ -44,6 +44,12 @@ void main(List<String> args) {
         await RustLib.init();
         final version = await system.init();
         final container = await bootstrap.init(version);
+        // The Windows runner notes the GPU's Direct3D level and what it set up
+        // for drawing before the engine starts; support reads it here.
+        final renderer = Platform.environment['NUR_CONNECT_RENDERER_INFO'];
+        if (renderer != null) {
+          commonPrint.log('renderer: $renderer');
+        }
         await FlClashHttpOverrides.trustCoreRoots();
         HttpOverrides.global = FlClashHttpOverrides(container);
         request.attach(container.read);

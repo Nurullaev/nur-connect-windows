@@ -10,6 +10,7 @@
 #include <algorithm>
 
 #include "flutter_window.h"
+#include "gpu_probe.h"
 #include "utils.h"
 
 // The installer and the uninstaller run this after killing the app, whose exit
@@ -52,6 +53,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev,
 #else
   ::SetCurrentProcessExplicitAppUserModelID(L"org.nurconnect.windows");
 #endif
+
+  // Before the engine creates ANGLE's display, which reads its overrides once.
+  PrepareRenderer();
 
   flutter::DartProject project(L"data");
   // Impeller freezes the window on resize on some GPUs (flutter/flutter#193504).
