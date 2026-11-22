@@ -1082,5 +1082,8 @@
   "splitTunnelEmptyHint": "プログラムを追加してください。リストが空のあいだは、すべての通信がいつも通りに流れます。",
   "splitTunnelAppsHint": "Discord や Steam のように複数のプロセスを動かすアプリがあります。それぞれの .exe を追加してください。",
   "splitTunnelOff": "オフ",
-  "splitTunnelNoApps": "オン、プログラムはまだありません"
+  "splitTunnelNoApps": "オン、プログラムはまだありません",
+  "torrentDirect": "トレントクライアントは VPN を使わない",
+  "torrentDirectShort": "トレントは VPN なし",
+  "torrentDirectDesc": "uTorrent、qBittorrent、BitTorrent、Transmission などの主なトレントアプリは直接接続します。ダウンロードで VPN が遅くなったり、サーバーに負荷がかかったりしません。ピアには通常のアドレスが見えます。VPN（TUN）モードで動作します。"
 }

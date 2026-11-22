@@ -1082,5 +1082,8 @@
   "splitTunnelEmptyHint": "Ajoutez des programmes. Tant que la liste est vide, tout le trafic passe comme d’habitude.",
   "splitTunnelAppsHint": "Certaines apps lancent plusieurs processus, comme Discord ou Steam : ajoutez chacun de leurs fichiers .exe.",
   "splitTunnelOff": "Désactivé",
-  "splitTunnelNoApps": "Activé, aucun programme pour l’instant"
+  "splitTunnelNoApps": "Activé, aucun programme pour l’instant",
+  "torrentDirect": "Clients torrent sans VPN",
+  "torrentDirectShort": "Torrents sans VPN",
+  "torrentDirectDesc": "uTorrent, qBittorrent, BitTorrent, Transmission et les autres applications torrent connues se connectent directement : les téléchargements ne ralentissent pas le VPN et ne chargent pas ses serveurs. Les pairs voient votre adresse habituelle. Fonctionne en mode VPN (TUN)."
 }

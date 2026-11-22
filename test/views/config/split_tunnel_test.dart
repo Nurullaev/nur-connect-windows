@@ -116,4 +116,58 @@ void main() {
     expect(read(container).apps, ['chrome.exe']);
     expect(read(container).mode, SplitTunnelMode.exceptSelected);
   });
+
+  testWidgets('torrent clients bypass the VPN until switched off', (
+    tester,
+  ) async {
+    final container = await pump(tester);
+    final toggle = find.byKey(const ValueKey('split-tunnel-torrent-direct'));
+    expect(toggle, findsOne);
+    expect(find.text('Torrent clients bypass the VPN'), findsOne);
+    expect(read(container).torrentDirect, isTrue);
+
+    await tester.tap(toggle);
+    await tester.pump();
+    expect(read(container).torrentDirect, isFalse);
+    // The split tunnel's own switch stays as it was.
+    expect(read(container).enabled, isFalse);
+  });
+
+  testWidgets('the settings entry tells torrents go around the VPN', (
+    tester,
+  ) async {
+    final container = ProviderContainer(
+      overrides: [
+        networkSettingProvider.overrideWithBuild(
+          (_, _) => const NetworkProps(),
+        ),
+      ],
+    );
+    addTearDown(container.dispose);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const TestApp(
+          locale: Locale('en'),
+          child: Scaffold(body: SplitTunnelItem()),
+        ),
+      ),
+    );
+    await tester.pump();
+    expect(find.text('Torrents bypass the VPN'), findsOne);
+
+    container
+        .read(networkSettingProvider.notifier)
+        .update(
+          (state) => state.copyWith(
+            splitTunnel: state.splitTunnel.copyWith(torrentDirect: false),
+          ),
+        );
+    await tester.pump();
+    expect(find.text('Off'), findsOne);
+
+    // Riverpod disposes the watched provider on a timer: let it run.
+    await tester.pumpWidget(const SizedBox.shrink());
+    await tester.pump();
+  });
 }

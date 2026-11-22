@@ -2139,6 +2139,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "tolerance": MessageLookupByLibrary.simpleMessage("Допуск"),
     "tools": MessageLookupByLibrary.simpleMessage("Настройки"),
     "torch": MessageLookupByLibrary.simpleMessage("Фонарик"),
+    "torrentDirect": MessageLookupByLibrary.simpleMessage(
+      "Торрент-клиенты мимо VPN",
+    ),
+    "torrentDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "uTorrent, qBittorrent, BitTorrent, Transmission и другие известные торрент-программы подключаются напрямую: загрузки не тормозят VPN и не нагружают серверы. Участники раздач видят ваш обычный адрес. Работает в режиме VPN (TUN).",
+    ),
+    "torrentDirectShort": MessageLookupByLibrary.simpleMessage(
+      "Торренты мимо VPN",
+    ),
     "total": MessageLookupByLibrary.simpleMessage("Всего"),
     "totalDownload": MessageLookupByLibrary.simpleMessage("Загружено"),
     "totalTraffic": MessageLookupByLibrary.simpleMessage("Общий трафик"),

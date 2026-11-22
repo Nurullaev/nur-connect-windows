@@ -47,9 +47,16 @@ void main() {
   group('splitTunnelRules', () {
     test('off, empty or direct routing adds nothing', () {
       for (final (props, mode) in [
-        (const SplitTunnelProps(apps: ['chrome.exe']), Mode.global),
-        (const SplitTunnelProps(enabled: true), Mode.global),
+        (
+          const SplitTunnelProps(apps: ['chrome.exe'], torrentDirect: false),
+          Mode.global,
+        ),
+        (
+          const SplitTunnelProps(enabled: true, torrentDirect: false),
+          Mode.global,
+        ),
         (_two, Mode.direct),
+        (const SplitTunnelProps(), Mode.direct),
       ]) {
         final split = splitTunnelRules(props, mode);
         expect(split.rules, isEmpty);
@@ -82,9 +89,69 @@ void main() {
       expect(split.rules, [
         'PROCESS-NAME,chrome.exe,DIRECT',
         'PROCESS-NAME,Telegram.exe,DIRECT',
+        ...torrentDirectRules,
       ]);
       expect(split.replace, isFalse);
       expect(splitTunnelCoreMode(props, Mode.rule), Mode.rule);
+    });
+
+    test('torrent clients go direct by default, the split tunnel off', () {
+      const props = SplitTunnelProps();
+      expect(props.torrentDirect, isTrue);
+      final global = splitTunnelRules(props, Mode.global);
+      expect(global.rules, [...torrentDirectRules, 'MATCH,GLOBAL']);
+      expect(global.replace, isTrue);
+      expect(splitTunnelCoreMode(props, Mode.global), Mode.rule);
+      final rule = splitTunnelRules(props, Mode.rule);
+      expect(rule.rules, torrentDirectRules);
+      expect(rule.replace, isFalse);
+      expect(splitTunnelKey(props, Mode.global), isNotEmpty);
+    });
+
+    test('turned off, torrents add nothing', () {
+      const props = SplitTunnelProps(torrentDirect: false);
+      expect(splitTunnelRules(props, Mode.global).rules, isEmpty);
+      expect(splitTunnelCoreMode(props, Mode.global), Mode.global);
+      expect(splitTunnelKey(props, Mode.global), '');
+    });
+
+    test('only the picked programs on the VPN leaves torrents alone', () {
+      // Everything unpicked is direct already; a picked torrent client
+      // stays on the VPN as asked.
+      const props = SplitTunnelProps(enabled: true, apps: ['qbittorrent.exe']);
+      expect(splitTunnelRules(props, Mode.rule).rules, [
+        'NOT,((PROCESS-NAME,qbittorrent.exe)),DIRECT',
+      ]);
+    });
+
+    test('the torrent list names each approved client once', () {
+      expect(torrentDirectRules, hasLength(32));
+      final names = torrentDirectRules
+          .map((rule) => rule.split(',')[1].toLowerCase())
+          .toList();
+      expect(names.toSet(), hasLength(names.length));
+      for (final rule in torrentDirectRules) {
+        expect(rule, endsWith(',DIRECT'));
+        expect(rule.split(','), hasLength(3), reason: rule);
+      }
+      for (final name in [
+        'utorrent.exe',
+        'qbittorrent.exe',
+        'bitcomet_x64.exe',
+        'transmission-qt.exe',
+        'ace_engine.exe',
+        'torrserver-windows-amd64.exe',
+      ]) {
+        expect(names, contains(name));
+      }
+      // Download managers carry ordinary downloads too.
+      for (final name in ['fdm.exe', 'idman.exe', 'motrix.exe', 'aria2c.exe']) {
+        expect(names, isNot(contains(name)));
+      }
+      expect(
+        torrentDirectRules.last,
+        r'PROCESS-PATH-WILDCARD,*\Zona\jre\bin\javaw.exe,DIRECT',
+      );
     });
 
     test('the key follows the routing mode', () {
@@ -109,6 +176,19 @@ void main() {
       SplitTunnelMode.onlySelected,
     );
     expect(NetworkProps.fromJson({}).splitTunnel, const SplitTunnelProps());
+    // Settings saved before 1.0.7 have no key: torrents go direct after it.
+    expect(
+      SplitTunnelProps.fromJson({
+        'enabled': true,
+        'mode': 'exceptSelected',
+        'apps': ['steam.exe'],
+      }).torrentDirect,
+      isTrue,
+    );
+    final off =
+        jsonDecode(jsonEncode(const SplitTunnelProps(torrentDirect: false)))
+            as Map<String, Object?>;
+    expect(SplitTunnelProps.fromJson(off).torrentDirect, isFalse);
   });
 
   group('makeRealProfileTask', () {
@@ -166,9 +246,29 @@ void main() {
       expect((loadYaml(result.yaml) as YamlMap)['rules'], [
         'PROCESS-NAME,chrome.exe,DIRECT',
         'PROCESS-NAME,Telegram.exe,DIRECT',
+        ...torrentDirectRules,
         'DOMAIN,existing.example,DIRECT',
         'MATCH,Servers',
       ]);
+    });
+
+    test('global routing carries the torrent rules ahead of GLOBAL', () async {
+      final split = splitTunnelRules(const SplitTunnelProps(), Mode.global);
+      final result = await makeRealProfileTask(
+        (await state()).copyWith(
+          realPatchConfig: const PatchClashConfig(mode: Mode.rule),
+          splitTunnelRules: split.rules,
+          splitTunnelReplace: split.replace,
+        ),
+      );
+      final rules = (loadYaml(result.yaml) as YamlMap)['rules'] as YamlList;
+      expect(rules.first, 'PROCESS-NAME,uTorrent.exe,DIRECT');
+      expect(
+        rules,
+        contains(r'PROCESS-PATH-WILDCARD,*\Zona\jre\bin\javaw.exe,DIRECT'),
+      );
+      expect(rules.last, 'MATCH,GLOBAL');
+      expect(rules, isNot(contains('DOMAIN,existing.example,DIRECT')));
     });
   });
 }

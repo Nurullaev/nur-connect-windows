@@ -109,6 +109,12 @@ void main() {
         patchClashConfigProvider.overrideWithBuild(
           (_, _) => const PatchClashConfig(tun: Tun(enable: false)),
         ),
+        // Torrent clients go direct by default and would lead the rules.
+        networkSettingProvider.overrideWithBuild(
+          (_, _) => const NetworkProps(
+            splitTunnel: SplitTunnelProps(torrentDirect: false),
+          ),
+        ),
         setupActionProvider.overrideWith(SetupAction.new),
       ],
     );

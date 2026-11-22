@@ -1716,6 +1716,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "tolerance": MessageLookupByLibrary.simpleMessage("허용 오차"),
     "tools": MessageLookupByLibrary.simpleMessage("설정"),
     "torch": MessageLookupByLibrary.simpleMessage("손전등"),
+    "torrentDirect": MessageLookupByLibrary.simpleMessage("토렌트 클라이언트는 VPN 우회"),
+    "torrentDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "uTorrent, qBittorrent, BitTorrent, Transmission 등 알려진 토렌트 앱은 직접 연결되어 다운로드가 VPN을 느리게 하거나 서버에 부담을 주지 않습니다. 피어에게는 평소 주소가 보입니다. VPN(TUN) 모드에서 작동합니다.",
+    ),
+    "torrentDirectShort": MessageLookupByLibrary.simpleMessage("토렌트는 VPN 우회"),
     "total": MessageLookupByLibrary.simpleMessage("합계"),
     "totalDownload": MessageLookupByLibrary.simpleMessage("다운로드량"),
     "totalTraffic": MessageLookupByLibrary.simpleMessage("전체 트래픽"),

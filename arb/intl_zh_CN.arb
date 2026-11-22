@@ -1082,5 +1082,8 @@
   "splitTunnelEmptyHint": "请添加程序。列表为空时，所有流量照常走。",
   "splitTunnelAppsHint": "有些应用会运行多个进程，例如 Discord 或 Steam：请添加它们的每个 .exe 文件。",
   "splitTunnelOff": "已关闭",
-  "splitTunnelNoApps": "已开启，尚未添加程序"
+  "splitTunnelNoApps": "已开启，尚未添加程序",
+  "torrentDirect": "种子客户端不走 VPN",
+  "torrentDirectShort": "种子不走 VPN",
+  "torrentDirectDesc": "uTorrent、qBittorrent、BitTorrent、Transmission 等常见种子软件直接连接，下载不会拖慢 VPN，也不会占用服务器。对等方会看到您的常用地址。在 VPN（TUN）模式下生效。"
 }

@@ -526,6 +526,10 @@ abstract class SplitTunnelProps with _$SplitTunnelProps {
     @JsonKey(unknownEnumValue: SplitTunnelMode.onlySelected)
     SplitTunnelMode mode,
     @Default([]) List<String> apps,
+
+    /// Known torrent clients connect directly, apart from the split tunnel
+    /// switch; on unless turned off, also after an update that lacks the key.
+    @Default(true) bool torrentDirect,
   }) = _SplitTunnelProps;
 
   factory SplitTunnelProps.fromJson(Map<String, Object?>? json) => json == null

@@ -1082,5 +1082,8 @@
   "splitTunnelEmptyHint": "Add programs. While the list is empty, all traffic goes as usual.",
   "splitTunnelAppsHint": "Some apps run several processes, such as Discord or Steam: add each of their .exe files.",
   "splitTunnelOff": "Off",
-  "splitTunnelNoApps": "On, no programs yet"
+  "splitTunnelNoApps": "On, no programs yet",
+  "torrentDirect": "Torrent clients bypass the VPN",
+  "torrentDirectShort": "Torrents bypass the VPN",
+  "torrentDirectDesc": "uTorrent, qBittorrent, BitTorrent, Transmission and other known torrent apps connect directly, so downloads don't slow the VPN down or load its servers. Peers see your regular address. Works in VPN (TUN) mode."
 }

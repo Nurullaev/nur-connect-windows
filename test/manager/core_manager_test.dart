@@ -338,7 +338,16 @@ void main() {
     final container = await _pumpCoreManager(
       tester,
       _coreInterface(),
-      overrides: [setupActionProvider.overrideWith(() => setupAction)],
+      overrides: [
+        setupActionProvider.overrideWith(() => setupAction),
+        // Torrent rules hang on the routing mode like a split tunnel's, so
+        // with them on a mode change rebuilds the profile instead.
+        networkSettingProvider.overrideWithBuild(
+          (_, _) => const NetworkProps(
+            splitTunnel: SplitTunnelProps(torrentDirect: false),
+          ),
+        ),
+      ],
     );
 
     container

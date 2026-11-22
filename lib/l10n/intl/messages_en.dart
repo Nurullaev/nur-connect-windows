@@ -2044,6 +2044,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "tolerance": MessageLookupByLibrary.simpleMessage("Tolerance"),
     "tools": MessageLookupByLibrary.simpleMessage("Settings"),
     "torch": MessageLookupByLibrary.simpleMessage("Flashlight"),
+    "torrentDirect": MessageLookupByLibrary.simpleMessage(
+      "Torrent clients bypass the VPN",
+    ),
+    "torrentDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "uTorrent, qBittorrent, BitTorrent, Transmission and other known torrent apps connect directly, so downloads don\'t slow the VPN down or load its servers. Peers see your regular address. Works in VPN (TUN) mode.",
+    ),
+    "torrentDirectShort": MessageLookupByLibrary.simpleMessage(
+      "Torrents bypass the VPN",
+    ),
     "total": MessageLookupByLibrary.simpleMessage("Total"),
     "totalDownload": MessageLookupByLibrary.simpleMessage("Downloaded"),
     "totalTraffic": MessageLookupByLibrary.simpleMessage("Total traffic"),

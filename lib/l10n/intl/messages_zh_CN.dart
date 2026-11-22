@@ -1582,6 +1582,11 @@ class MessageLookup extends MessageLookupByLibrary {
     "tolerance": MessageLookupByLibrary.simpleMessage("容差"),
     "tools": MessageLookupByLibrary.simpleMessage("设置"),
     "torch": MessageLookupByLibrary.simpleMessage("手电筒"),
+    "torrentDirect": MessageLookupByLibrary.simpleMessage("种子客户端不走 VPN"),
+    "torrentDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "uTorrent、qBittorrent、BitTorrent、Transmission 等常见种子软件直接连接，下载不会拖慢 VPN，也不会占用服务器。对等方会看到您的常用地址。在 VPN（TUN）模式下生效。",
+    ),
+    "torrentDirectShort": MessageLookupByLibrary.simpleMessage("种子不走 VPN"),
     "total": MessageLookupByLibrary.simpleMessage("总计"),
     "totalDownload": MessageLookupByLibrary.simpleMessage("下载总量"),
     "totalTraffic": MessageLookupByLibrary.simpleMessage("总流量"),

@@ -303,6 +303,7 @@ _SplitTunnelProps _$SplitTunnelPropsFromJson(Map<String, dynamic> json) =>
       apps:
           (json['apps'] as List<dynamic>?)?.map((e) => e as String).toList() ??
           const [],
+      torrentDirect: json['torrentDirect'] as bool? ?? true,
     );
 
 Map<String, dynamic> _$SplitTunnelPropsToJson(_SplitTunnelProps instance) =>
@@ -310,6 +311,7 @@ Map<String, dynamic> _$SplitTunnelPropsToJson(_SplitTunnelProps instance) =>
       'enabled': instance.enabled,
       'mode': _$SplitTunnelModeEnumMap[instance.mode]!,
       'apps': instance.apps,
+      'torrentDirect': instance.torrentDirect,
     };
 
 const _$SplitTunnelModeEnumMap = {

@@ -1755,6 +1755,13 @@ class MessageLookup extends MessageLookupByLibrary {
     "tolerance": MessageLookupByLibrary.simpleMessage("許容値"),
     "tools": MessageLookupByLibrary.simpleMessage("設定"),
     "torch": MessageLookupByLibrary.simpleMessage("ライト"),
+    "torrentDirect": MessageLookupByLibrary.simpleMessage(
+      "トレントクライアントは VPN を使わない",
+    ),
+    "torrentDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "uTorrent、qBittorrent、BitTorrent、Transmission などの主なトレントアプリは直接接続します。ダウンロードで VPN が遅くなったり、サーバーに負荷がかかったりしません。ピアには通常のアドレスが見えます。VPN（TUN）モードで動作します。",
+    ),
+    "torrentDirectShort": MessageLookupByLibrary.simpleMessage("トレントは VPN なし"),
     "total": MessageLookupByLibrary.simpleMessage("合計"),
     "totalDownload": MessageLookupByLibrary.simpleMessage("ダウンロード量"),
     "totalTraffic": MessageLookupByLibrary.simpleMessage("合計トラフィック"),

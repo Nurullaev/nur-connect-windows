@@ -194,6 +194,12 @@ class TestSetupAction extends SetupAction {
 /// TUN is on by default, and authorizing it has no place in a test.
 const _tunOff = PatchClashConfig(tun: Tun(enable: false));
 
+/// Torrent clients go direct by default, which puts their rules first; tests
+/// about the profile's own rules leave them out.
+const _noTorrents = NetworkProps(
+  splitTunnel: SplitTunnelProps(torrentDirect: false),
+);
+
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
   setUpAll(() {
@@ -2306,6 +2312,7 @@ void main() {
           ),
           coreHandlerProvider.overrideWithValue(CoreController.scoped(core)),
           patchClashConfigProvider.overrideWithBuild((_, _) => _tunOff),
+          networkSettingProvider.overrideWithBuild((_, _) => _noTorrents),
           setupActionProvider.overrideWith(SetupAction.new),
         ],
       );
@@ -2353,6 +2360,7 @@ void main() {
         final scoped = ProviderContainer(
           overrides: [
             coreHandlerProvider.overrideWithValue(CoreController.scoped(core)),
+            networkSettingProvider.overrideWithBuild((_, _) => _noTorrents),
             setupActionProvider.overrideWith(SetupAction.new),
           ],
         );
@@ -2564,6 +2572,7 @@ void main() {
         overrides: [
           coreHandlerProvider.overrideWithValue(CoreController.scoped(core)),
           patchClashConfigProvider.overrideWithBuild((_, _) => _tunOff),
+          networkSettingProvider.overrideWithBuild((_, _) => _noTorrents),
           setupActionProvider.overrideWith(SetupAction.new),
         ],
       );

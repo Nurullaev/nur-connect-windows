@@ -1082,5 +1082,8 @@
   "splitTunnelEmptyHint": "프로그램을 추가하세요. 목록이 비어 있는 동안에는 모든 트래픽이 평소대로 흐릅니다.",
   "splitTunnelAppsHint": "Discord나 Steam처럼 여러 프로세스를 실행하는 앱이 있습니다. 각 .exe 파일을 추가하세요.",
   "splitTunnelOff": "꺼짐",
-  "splitTunnelNoApps": "켜짐, 아직 프로그램 없음"
+  "splitTunnelNoApps": "켜짐, 아직 프로그램 없음",
+  "torrentDirect": "토렌트 클라이언트는 VPN 우회",
+  "torrentDirectShort": "토렌트는 VPN 우회",
+  "torrentDirectDesc": "uTorrent, qBittorrent, BitTorrent, Transmission 등 알려진 토렌트 앱은 직접 연결되어 다운로드가 VPN을 느리게 하거나 서버에 부담을 주지 않습니다. 피어에게는 평소 주소가 보입니다. VPN(TUN) 모드에서 작동합니다."
 }

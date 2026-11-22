@@ -1136,7 +1136,25 @@ void main() {
     expect(scoped.read(sharedStateProvider).vpnOptions?.systemProxy, false);
   });
 
+  test('torrent rules make a routing mode change re-apply', () {
+    container.listen(setupPatchProvider, (_, _) {});
+    final initial = container.read(setupPatchProvider);
+    expect(initial.splitTunnel, isNotEmpty);
+    container
+        .read(patchClashConfigProvider.notifier)
+        .update((state) => state.copyWith(mode: Mode.global));
+    expect(container.read(setupPatchProvider), isNot(initial));
+  });
+
   test('the setup patch changes only with what a re-apply carries', () {
+    // Torrent rules hang on the routing mode; without them it is live.
+    container
+        .read(networkSettingProvider.notifier)
+        .update(
+          (state) => state.copyWith(
+            splitTunnel: state.splitTunnel.copyWith(torrentDirect: false),
+          ),
+        );
     container.listen(setupPatchProvider, (_, _) {});
     final initial = container.read(setupPatchProvider);
 

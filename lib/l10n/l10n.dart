@@ -8022,8 +8022,7 @@ class AppLocalizations {
   String customImportDroppedSubRules(num count, Object label) {
     return Intl.plural(
       count,
-      one:
-          '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
+      one: '1 SUB-RULE rule was dropped, since custom profiles do not support sub-rules',
       other:
           '$label SUB-RULE rules were dropped, since custom profiles do not support sub-rules',
       name: 'customImportDroppedSubRules',
@@ -9172,6 +9171,36 @@ class AppLocalizations {
     return Intl.message(
       'On, no programs yet',
       name: 'splitTunnelNoApps',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Torrent clients bypass the VPN`
+  String get torrentDirect {
+    return Intl.message(
+      'Torrent clients bypass the VPN',
+      name: 'torrentDirect',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Torrents bypass the VPN`
+  String get torrentDirectShort {
+    return Intl.message(
+      'Torrents bypass the VPN',
+      name: 'torrentDirectShort',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `uTorrent, qBittorrent, BitTorrent, Transmission and other known torrent apps connect directly, so downloads don't slow the VPN down or load its servers. Peers see your regular address. Works in VPN (TUN) mode.`
+  String get torrentDirectDesc {
+    return Intl.message(
+      'uTorrent, qBittorrent, BitTorrent, Transmission and other known torrent apps connect directly, so downloads don\'t slow the VPN down or load its servers. Peers see your regular address. Works in VPN (TUN) mode.',
+      name: 'torrentDirectDesc',
       desc: '',
       args: [],
     );

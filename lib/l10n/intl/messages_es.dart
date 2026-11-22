@@ -2197,6 +2197,15 @@ class MessageLookup extends MessageLookupByLibrary {
     "tolerance": MessageLookupByLibrary.simpleMessage("Tolerancia"),
     "tools": MessageLookupByLibrary.simpleMessage("Ajustes"),
     "torch": MessageLookupByLibrary.simpleMessage("Linterna"),
+    "torrentDirect": MessageLookupByLibrary.simpleMessage(
+      "Clientes torrent sin VPN",
+    ),
+    "torrentDirectDesc": MessageLookupByLibrary.simpleMessage(
+      "uTorrent, qBittorrent, BitTorrent, Transmission y otras aplicaciones torrent conocidas se conectan directamente: las descargas no ralentizan la VPN ni cargan sus servidores. Los pares ven tu dirección habitual. Funciona en modo VPN (TUN).",
+    ),
+    "torrentDirectShort": MessageLookupByLibrary.simpleMessage(
+      "Torrents sin VPN",
+    ),
     "total": MessageLookupByLibrary.simpleMessage("Total"),
     "totalDownload": MessageLookupByLibrary.simpleMessage("Descargado"),
     "totalTraffic": MessageLookupByLibrary.simpleMessage("Tráfico total"),

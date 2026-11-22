@@ -1082,5 +1082,8 @@
   "splitTunnelEmptyHint": "Добавьте программы. Пока список пуст, весь трафик идёт как обычно.",
   "splitTunnelAppsHint": "Некоторые программы запускают несколько процессов, например Discord или Steam: добавьте каждый их .exe.",
   "splitTunnelOff": "Выключено",
-  "splitTunnelNoApps": "Включено, программ пока нет"
+  "splitTunnelNoApps": "Включено, программ пока нет",
+  "torrentDirect": "Торрент-клиенты мимо VPN",
+  "torrentDirectShort": "Торренты мимо VPN",
+  "torrentDirectDesc": "uTorrent, qBittorrent, BitTorrent, Transmission и другие известные торрент-программы подключаются напрямую: загрузки не тормозят VPN и не нагружают серверы. Участники раздач видят ваш обычный адрес. Работает в режиме VPN (TUN)."
 }
