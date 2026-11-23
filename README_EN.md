@@ -20,12 +20,16 @@ An independent Windows client built on [FlClashX](https://github.com/pluralplay/
 
 - **One button.** A dashed ring when idle, a running gold arc while connecting, and a lit ring with the time and speed once connected.
 - **VPN or proxy.** A VPN (TUN) / Proxy switch under the button; VPN by default.
-- **Your plan at a glance.** Days left, remaining traffic, refresh and the provider's announcement on top.
-- **Servers.** Flags, latency, search and sorting; the chosen server is marked in gold.
-- **Provider links.** Web page, account, bot and support straight from the subscription headers; Happ's keys for the brand name, promotion, renewal link and fallback domain work too.
+- **Your plan at a glance.** Days left, remaining traffic, refresh and the provider's announcement on top; three days before the end and after it, "Subscription ends…" with Renew.
+- **Servers.** The full list on the home screen with flags, latency, descriptions from the panel, search and sorting; the chosen server is marked in gold.
+- **Provider links.** Site → Bot → Subscription → Support straight from the subscription headers; Happ's keys for the brand name, promotion, renewal link, fallback domain and hidden settings or subscription link work too.
+- **Split tunnelling.** Only the chosen programs through the VPN, or everything except them.
+- **Torrents and local services bypass the VPN.** Torrent clients and the sites on your subscription's list (banks, government services, marketplaces) connect directly; both are on by default and can be turned off.
+- **Tray.** The icon shows whether you are connected; closing the window can leave the app in the tray.
 - **Clear refusals.** "Subscription has ended" with Renew, and a device-limit dialog with the provider's words and support.
 - **Subscription import** with clear errors and a retry that keeps what you typed.
 - **Updates.** The app offers each new version with Update / Later; see [updates](docs/windows/updates.md).
+- **Older graphics cards.** Runs on DirectX 10 class cards too, such as the GeForce 9800 GT.
 - **Installs on its own.** Separate processes, helper service, data folders and URI schemes, so it sits beside FlClashX.
 - Translated into Russian, English, Spanish, French, Japanese, Korean and Chinese.
 
