@@ -34,6 +34,48 @@ void main() {
     });
   });
 
+  group('registerProtocolPlan', () {
+    const plan = ProtocolRegistrationPlan(
+      scheme: 'nurconnect-win',
+      executable: r'C:\Program Files\Nur Connect\NurConnect.exe',
+    );
+
+    test('leaves a scheme that already points at the app alone', () {
+      final registry = _FakeRegistry(
+        marker: '',
+        command: r'"C:\Program Files\Nur Connect\NurConnect.exe" "%1"',
+      );
+      expect(registerProtocolPlan(plan, registry), isTrue);
+      expect(registry.writes, 0);
+    });
+
+    test('writes a missing or stale scheme', () {
+      final missing = _FakeRegistry();
+      expect(registerProtocolPlan(plan, missing), isTrue);
+      expect(missing.writes, 1);
+
+      final stale = _FakeRegistry(
+        marker: '',
+        command: r'"D:\Old\NurConnect.exe" "%1"',
+      );
+      expect(registerProtocolPlan(plan, stale), isTrue);
+      expect(stale.writes, 1);
+    });
+
+    test('a refused write lets the app start without the link handler', () {
+      // An antivirus guarding protocol keys answers 0x80070005.
+      final registry = _FakeRegistry(refuseWrite: true);
+      expect(registerProtocolPlan(plan, registry), isFalse);
+      expect(registry.writes, 1);
+    });
+
+    test('an unreadable key still gets the write', () {
+      final registry = _FakeRegistry(refuseRead: true);
+      expect(registerProtocolPlan(plan, registry), isTrue);
+      expect(registry.writes, 1);
+    });
+  });
+
   group('LinuxProtocolRegistrationPlan', () {
     const plan = LinuxProtocolRegistrationPlan(
       schemes: legacyProtocolSchemes,
@@ -81,4 +123,31 @@ void main() {
       expect(plan.exec, r'"/opt/my \"apps\"/\$HOME/100%%/Fl\`Clash\\bin" %u');
     });
   });
+}
+
+class _FakeRegistry implements ProtocolRegistry {
+  _FakeRegistry({
+    this.marker,
+    this.command,
+    this.refuseRead = false,
+    this.refuseWrite = false,
+  });
+
+  final String? marker;
+  final String? command;
+  final bool refuseRead;
+  final bool refuseWrite;
+  int writes = 0;
+
+  @override
+  ({String? marker, String? command}) read(ProtocolRegistrationPlan plan) {
+    if (refuseRead) throw StateError('access denied');
+    return (marker: marker, command: command);
+  }
+
+  @override
+  void write(ProtocolRegistrationPlan plan) {
+    writes++;
+    if (refuseWrite) throw StateError('HRESULT(0x80070005)');
+  }
 }
