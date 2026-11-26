@@ -5,11 +5,23 @@ import 'proxy_command.dart';
 class MacosProxy {
   final ProxyCommandRunner _commandRunner;
 
+  /// Each service's own bypass list from before this run's first start.
+  /// macOS keeps one list per service and a start writes ours over it, so a
+  /// stop puts it back. A service whose list could not be read is kept as
+  /// null, so a later start does not take ours for its own, and gets the
+  /// system default.
+  final Map<String, List<String>?> _savedBypass = {};
+
   MacosProxy({required ProxyCommandRunner commandRunner})
     : _commandRunner = commandRunner;
 
   Future<bool> start(int port, List<String> bypassDomain) async {
     final services = await _networkServices();
+    for (final service in services) {
+      if (!_savedBypass.containsKey(service)) {
+        _savedBypass[service] = await _bypassDomains(service);
+      }
+    }
     return _commandRunner.run(
       services.expand(
         (service) => MacosProxyCommands.buildStart(service, port, bypassDomain),
@@ -19,8 +31,17 @@ class MacosProxy {
 
   Future<bool> stop() async {
     final services = await _networkServices();
-    return _commandRunner.run(services.expand(MacosProxyCommands.buildStop));
+    final stopped = await _commandRunner.run(services.expand(_buildStop));
+    if (stopped) {
+      _savedBypass.clear();
+    }
+    return stopped;
   }
+
+  List<ProxyCommand> _buildStop(String service) => MacosProxyCommands.buildStop(
+    service,
+    _savedBypass[service] ?? MacosProxyCommands.defaultBypass,
+  );
 
   Future<bool> clearStale(Future<bool> Function(int port) isListening) async {
     final stale = <String>[];
@@ -33,7 +54,23 @@ class MacosProxy {
     if (stale.isEmpty) {
       return true;
     }
-    return _commandRunner.run(stale.expand(MacosProxyCommands.buildStop));
+    return _commandRunner.run(stale.expand(_buildStop));
+  }
+
+  /// Null when the list could not be read.
+  Future<List<String>?> _bypassDomains(String service) async {
+    try {
+      final result = await _commandRunner.process('/usr/sbin/networksetup', [
+        '-getproxybypassdomains',
+        service,
+      ]);
+      if (result.exitCode != 0) {
+        return null;
+      }
+      return MacosProxyCommands.parseBypassDomains(result.stdout.toString());
+    } on ProcessException {
+      return null;
+    }
   }
 
   /// Null when a setting could not be read.
@@ -124,7 +161,14 @@ class MacosProxyCommands {
     ];
   }
 
-  static List<ProxyCommand> buildStop(String service) {
+  /// What System Settings puts in a new service's list.
+  static const defaultBypass = ['*.local', '169.254/16'];
+
+  /// [bypassDomain] is the list to leave behind: the service's own one.
+  static List<ProxyCommand> buildStop(
+    String service, [
+    List<String> bypassDomain = defaultBypass,
+  ]) {
     return [
       ProxyCommand('/usr/sbin/networksetup', [
         '-setwebproxystate',
@@ -141,7 +185,7 @@ class MacosProxyCommands {
         service,
         'off',
       ]),
-      buildProxyBypass(service, const []),
+      buildProxyBypass(service, bypassDomain),
     ];
   }
 
@@ -174,6 +218,17 @@ class MacosProxyCommands {
       host: fields['Server'] ?? '',
       port: int.tryParse(fields['Port'] ?? '') ?? 0,
     );
+  }
+
+  /// A `-getproxybypassdomains` answer: one entry a line, or a sentence
+  /// ("There aren't any bypass domains set on …") when the list is empty.
+  /// An entry never holds a space, so no message line is taken for one.
+  static List<String> parseBypassDomains(String stdout) {
+    return stdout
+        .split('\n')
+        .map((line) => line.trim())
+        .where((line) => line.isNotEmpty && !line.contains(' '))
+        .toList();
   }
 
   static List<String> parseNetworkServices(String stdout) {

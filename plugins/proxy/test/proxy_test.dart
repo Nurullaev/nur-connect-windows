@@ -407,6 +407,75 @@ USB 10/100/1000 LAN
       expect(commands[3].args.first, '-setproxybypassdomains');
     });
 
+    test('reads a bypass list one entry a line, and the empty answer', () {
+      expect(MacosProxyCommands.parseBypassDomains('*.local\n169.254/16\n'), [
+        '*.local',
+        '169.254/16',
+      ]);
+      expect(
+        MacosProxyCommands.parseBypassDomains(
+          "There aren't any bypass domains set on Wi-Fi.\n",
+        ),
+        isEmpty,
+      );
+    });
+
+    test(
+      'stop puts back the bypass list each service had before start',
+      () async {
+        final calls = <List<String>>[];
+        final proxy = MacosProxy(
+          commandRunner: ProxyCommandRunner((
+            executable,
+            arguments, {
+            runInShell = false,
+          }) async {
+            calls.add(arguments);
+            final stdout = switch (arguments) {
+              ['-listallnetworkservices'] => 'Wi-Fi\nEthernet\nUSB\n',
+              ['-getproxybypassdomains', 'Wi-Fi'] =>
+                '*.local\n169.254/16\ncorp.example\n',
+              ['-getproxybypassdomains', 'Ethernet'] =>
+                "There aren't any bypass domains set on Ethernet.\n",
+              _ => '',
+            };
+            final failed =
+                arguments.length == 2 &&
+                arguments.first == '-getproxybypassdomains' &&
+                arguments.last == 'USB';
+            return ProcessResult(0, failed ? 8 : 0, stdout, '');
+          }),
+        );
+        List<String> leftOn(String service) => calls
+            .lastWhere(
+              (call) =>
+                  call.first == '-setproxybypassdomains' && call[1] == service,
+            )
+            .sublist(2);
+
+        expect(await proxy.start(7890, const ['localhost']), isTrue);
+        expect(leftOn('Wi-Fi'), ['localhost']);
+        // A second start, as after a settings change, must not save ours.
+        expect(
+          await proxy.start(7890, const ['localhost', '10.0.0.0/8']),
+          isTrue,
+        );
+        expect(
+          calls.where((call) => call.first == '-getproxybypassdomains'),
+          hasLength(3),
+        );
+
+        expect(await proxy.stop(), isTrue);
+        expect(leftOn('Wi-Fi'), ['*.local', '169.254/16', 'corp.example']);
+        expect(leftOn('Ethernet'), ['Empty']);
+        expect(leftOn('USB'), MacosProxyCommands.defaultBypass);
+
+        // A stop with nothing saved, as after a crash, leaves the default.
+        expect(await proxy.stop(), isTrue);
+        expect(leftOn('Wi-Fi'), MacosProxyCommands.defaultBypass);
+      },
+    );
+
     test('leaves an automatic proxy configuration alone on stop', () {
       final commands = MacosProxyCommands.buildStop('Wi-Fi');
 
