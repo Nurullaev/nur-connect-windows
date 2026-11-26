@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:fl_clash/common/constant.dart';
-import 'package:fl_clash/common/path.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
 
@@ -11,21 +10,8 @@ typedef LegacyConfig = ({
   Map<String, Object?>? clashConfig,
 });
 
-/// FlClashX 0.4 on macOS ran as `com.follow.clash`, the bundle id upstream
-/// FlClash still uses; 0.5 is `com.follow.clashx` and starts on empty data.
-const _legacyMacosDomain = 'com.follow.clash';
-
-Future<LegacyConfig?> importMacosLegacyConfig() async {
-  if (!Platform.isMacOS) {
-    return null;
-  }
-  final home = await appPath.homeDirPath;
-  return importLegacyConfig(
-    readKey: (key) => _readDefault(_legacyMacosDomain, 'flutter.$key'),
-    legacyHome: join(dirname(home), _legacyMacosDomain),
-    home: home,
-  );
-}
+/// Nur Connect has separate data and never adopts an installed FlClash profile.
+Future<LegacyConfig?> importMacosLegacyConfig() async => null;
 
 @visibleForTesting
 Future<LegacyConfig?> importLegacyConfig({
@@ -83,18 +69,5 @@ Future<void> _copyProfiles(Directory source, String targetPath) async {
     }
     await target.parent.create(recursive: true);
     await entity.copy(target.path);
-  }
-}
-
-Future<String?> _readDefault(String domain, String key) async {
-  try {
-    final result = await Process.run('/usr/bin/defaults', [
-      'read',
-      domain,
-      key,
-    ]);
-    return result.exitCode == 0 ? result.stdout as String : null;
-  } catch (_) {
-    return null;
   }
 }

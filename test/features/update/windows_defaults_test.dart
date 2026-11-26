@@ -5,18 +5,18 @@ import 'package:fl_clash/models/models.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  test('fresh Windows installs check app releases by default', () {
+  test('fresh desktop installs check app releases by default', () {
     expect(
       Config.realFromJson(null).appSettingProps.autoCheckUpdate,
-      Platform.isWindows,
+      Platform.isWindows || Platform.isMacOS,
     );
     expect(
       AppSettingProps.safeFromJson({}).autoCheckUpdate,
-      Platform.isWindows,
+      Platform.isWindows || Platform.isMacOS,
     );
     expect(
       Config.realFromJson({}).appSettingProps.autoCheckUpdate,
-      Platform.isWindows,
+      Platform.isWindows || Platform.isMacOS,
     );
   });
 

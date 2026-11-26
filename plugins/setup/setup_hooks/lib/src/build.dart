@@ -49,6 +49,66 @@ class BuildReport {
 
 /// The Helper embeds the Core's SHA256, so the Core is built first.
 Future<BuildReport> buildPlatform(BuildRequest request) async {
+  if (request.target.goos != 'darwin') return _buildTarget(request);
+  final reports = <BuildReport>[];
+  final cores = <String>[];
+  final config = BuildConfig.load(rootDir: request.rootDir, platform: 'darwin');
+  for (final target in Target.forPlatform('macos')) {
+    final report = await _buildTarget(
+      BuildRequest(
+        rootDir: request.rootDir,
+        target: target,
+        harnessDir: request.harnessDir,
+      ),
+    );
+    reports.add(report);
+    cores.add(
+      p.join(
+        request.rootDir,
+        config.outputDir,
+        'macos',
+        target.goarch,
+        config.coreName,
+      ),
+    );
+  }
+  final destination = p.join(
+    request.rootDir,
+    config.outputDir,
+    'macos',
+    config.coreName,
+  );
+  // Never replace a working universal Core with an incomplete slice.
+  final staged = '$destination.universal-$pid';
+  try {
+    await runCommandStream('/usr/bin/lipo', [
+      '-create',
+      ...cores,
+      '-output',
+      staged,
+    ]);
+    for (final arch in ['arm64', 'x86_64']) {
+      await runCommandStream('/usr/bin/lipo', [staged, '-verify_arch', arch]);
+    }
+    replaceFile(staged, destination);
+  } finally {
+    final file = File(staged);
+    if (file.existsSync()) file.deleteSync();
+  }
+  return BuildReport(
+    inputs: {for (final report in reports) ...report.inputs}.toList()..sort(),
+    outputs: {
+      destination,
+      for (final report in reports) ...report.outputs,
+    }.toList()..sort(),
+    sourceDirectories: {
+      for (final report in reports) ...report.sourceDirectories,
+    }.toList()..sort(),
+    rebuilt: reports.any((report) => report.rebuilt),
+  );
+}
+
+Future<BuildReport> _buildTarget(BuildRequest request) async {
   final stopwatch = Stopwatch()..start();
   final target = request.target;
   final rootDir = request.rootDir;

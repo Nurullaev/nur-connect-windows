@@ -34,8 +34,7 @@ void main() {
       'NurConnect-windows-amd64-setup.exe',
       'NurConnect-windows-amd64.zip',
       'NurConnect-windows-arm64-setup.exe',
-      'FlClashX-macos-amd64.dmg',
-      'FlClashX-macos-arm64.dmg',
+      'NurConnect-macos-universal.dmg',
       'FlClashX-linux-amd64.AppImage',
       'FlClashX-linux-amd64.deb',
       'FlClashX-linux-amd64.rpm',
@@ -79,7 +78,7 @@ void main() {
       );
       expect(
         select(const UpdateTarget(UpdateInstallKind.macos, ['amd64'])),
-        'FlClashX-macos-amd64.dmg',
+        'NurConnect-macos-universal.dmg',
       );
       expect(
         select(const UpdateTarget(UpdateInstallKind.appImage, ['amd64'])),
@@ -114,21 +113,21 @@ void main() {
 
     test('holds a release to the channel the app runs on', () {
       final pre = _release(
-        ['FlClashX-macos-arm64.dmg'],
+        ['NurConnect-macos-universal.dmg'],
         tag: 'v0.5.2-pre.1',
         prerelease: true,
       );
       const target = UpdateTarget(UpdateInstallKind.macos, ['arm64']);
       expect(
         selectUpdateAsset(pre, target, repository: _repository, pre: true).name,
-        'FlClashX-macos-arm64.dmg',
+        'NurConnect-macos-universal.dmg',
       );
       expect(
         () =>
             selectUpdateAsset(pre, target, repository: _repository, pre: false),
         _fails(UpdateErrorKind.noAsset),
       );
-      final stable = _release(['FlClashX-macos-arm64.dmg'], prerelease: false);
+      final stable = _release(['NurConnect-macos-universal.dmg'], prerelease: false);
       expect(
         () => selectUpdateAsset(
           stable,
@@ -141,7 +140,7 @@ void main() {
     });
 
     test('rejects a tag that is not a version', () {
-      final release = _release(['FlClashX-macos-arm64.dmg'], tag: 'v1/../x');
+      final release = _release(['NurConnect-macos-universal.dmg'], tag: 'v1/../x');
       expect(
         () => selectUpdateAsset(
           release,
@@ -156,7 +155,7 @@ void main() {
     test('requires a published checksum', () {
       final release = {
         'tag_name': 'v0.5.1',
-        'assets': [_asset('FlClashX-macos-arm64.dmg')],
+        'assets': [_asset('NurConnect-macos-universal.dmg')],
       };
       expect(
         () => selectUpdateAsset(
@@ -171,7 +170,7 @@ void main() {
 
     test('caps the size at the release figure and the ceiling', () {
       final asset = selectUpdateAsset(
-        _release(['FlClashX-macos-arm64.dmg']),
+        _release(['NurConnect-macos-universal.dmg']),
         const UpdateTarget(UpdateInstallKind.macos, ['arm64']),
         repository: _repository,
         pre: false,
@@ -181,8 +180,8 @@ void main() {
       final huge = {
         'tag_name': 'v0.5.1',
         'assets': [
-          _asset('FlClashX-macos-arm64.dmg', size: updateSizeCeiling + 1),
-          _asset('FlClashX-macos-arm64.dmg.sha256'),
+          _asset('NurConnect-macos-universal.dmg', size: updateSizeCeiling + 1),
+          _asset('NurConnect-macos-universal.dmg.sha256'),
         ],
       };
       expect(
@@ -201,10 +200,10 @@ void main() {
         'tag_name': 'v0.5.1',
         'assets': [
           _asset(
-            'FlClashX-macos-arm64.dmg',
-            url: 'https://evil.example/FlClashX-macos-arm64.dmg',
+            'NurConnect-macos-universal.dmg',
+            url: 'https://evil.example/NurConnect-macos-universal.dmg',
           ),
-          _asset('FlClashX-macos-arm64.dmg.sha256'),
+          _asset('NurConnect-macos-universal.dmg.sha256'),
         ],
       };
       expect(
@@ -274,7 +273,7 @@ void main() {
   group('parseChecksum', () {
     const hash =
         '3dad780109d1524106a07cc6499c7f0fb04f08290b0eb931a5f7bbcf2c153058';
-    const name = 'FlClashX-macos-arm64.dmg';
+    const name = 'NurConnect-macos-universal.dmg';
 
     test('reads the sha256sum line a release publishes', () {
       expect(parseChecksum('$hash  ./$name\n', name), hash);
@@ -336,7 +335,7 @@ void main() {
       expect(
         () => manifestUpdateAsset(
           manifest(
-            'FlClashX-macos-arm64.dmg',
+            'NurConnect-macos-universal.dmg',
             url: 'http://mirror.example/x.dmg',
           ),
           const UpdateTarget(UpdateInstallKind.macos, ['arm64']),
@@ -349,7 +348,7 @@ void main() {
       for (final bad in ['xyz', 'a' * 63]) {
         expect(
           () => manifestUpdateAsset(
-            manifest('FlClashX-macos-arm64.dmg', sha256: bad),
+            manifest('NurConnect-macos-universal.dmg', sha256: bad),
             const UpdateTarget(UpdateInstallKind.macos, ['arm64']),
           ),
           _fails(UpdateErrorKind.noChecksum),
@@ -360,7 +359,7 @@ void main() {
           'version': 'v0.5.2',
           'assets': [
             {
-              'name': 'FlClashX-macos-arm64.dmg',
+              'name': 'NurConnect-macos-universal.dmg',
               'url': 'https://mirror.example/x.dmg',
             },
           ],

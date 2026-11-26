@@ -53,7 +53,7 @@ class _DashboardViewState extends ConsumerState<DashboardView> {
   @override
   Widget build(BuildContext context) {
     final platform = widget.platform ?? SupportPlatform.currentPlatform;
-    if (nurWindowsLayout(platform)) return const NurConnectDashboard();
+    if (nurDesktopLayout(platform)) return const NurConnectDashboard();
     final scale = math.max(1.0, MediaQuery.textScalerOf(context).scale(1));
     final providerMode = ref.watch(providerModeProvider);
     final editable = !ref.watch(widgetEditingDeniedProvider);

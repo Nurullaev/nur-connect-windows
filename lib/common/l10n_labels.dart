@@ -11,12 +11,12 @@ extension PageLabelL10n on PageLabel {
     return switch (this) {
       PageLabel.dashboard => appLocalizations.dashboard,
       PageLabel.proxies =>
-        nurWindowsLayout()
+        nurDesktopLayout()
             ? appLocalizations.nurServers
             : appLocalizations.proxies,
       PageLabel.profiles => appLocalizations.profiles,
       PageLabel.tools =>
-        nurWindowsLayout() ? appLocalizations.settings : appLocalizations.tools,
+        nurDesktopLayout() ? appLocalizations.settings : appLocalizations.tools,
       PageLabel.logs => appLocalizations.logs,
       PageLabel.requests => appLocalizations.recentRequests,
       PageLabel.resources => appLocalizations.resources,

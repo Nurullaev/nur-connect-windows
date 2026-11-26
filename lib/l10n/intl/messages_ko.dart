@@ -531,6 +531,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "desc": MessageLookupByLibrary.simpleMessage(
       "Mihomo 기반의 Windows용 프록시 클라이언트로, 오픈 소스이고 광고가 없습니다.",
     ),
+    "descMacos": MessageLookupByLibrary.simpleMessage(
+      "Mihomo 기반의 macOS용 프록시 클라이언트로, 오픈 소스이고 광고가 없습니다.",
+    ),
     "destination": MessageLookupByLibrary.simpleMessage("목적지"),
     "destinationGeoIP": MessageLookupByLibrary.simpleMessage("목적지 GeoIP"),
     "destinationIPASN": MessageLookupByLibrary.simpleMessage("목적지 IP ASN"),
@@ -1644,6 +1647,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "splitTunnelInvalidName": MessageLookupByLibrary.simpleMessage(
       "chrome.exe 같은 파일 이름을 입력하세요",
+    ),
+    "splitTunnelInvalidNameMacos": MessageLookupByLibrary.simpleMessage(
+      "Safari 같은 파일 이름을 입력하세요",
     ),
     "splitTunnelMode": MessageLookupByLibrary.simpleMessage("VPN 사용"),
     "splitTunnelNoApps": MessageLookupByLibrary.simpleMessage("켜짐, 아직 프로그램 없음"),

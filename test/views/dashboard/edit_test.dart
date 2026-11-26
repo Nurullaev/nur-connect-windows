@@ -1,3 +1,4 @@
+import 'package:fl_clash/common/nur_layout.dart';
 import 'package:fl_clash/enum/enum.dart';
 import 'package:fl_clash/models/models.dart';
 import 'package:fl_clash/providers/providers.dart';
@@ -15,6 +16,8 @@ import '../../helpers/test_app.dart';
 import '../../helpers/test_profiles.dart';
 
 void main() {
+  setUpAll(() => debugUpstreamLayout = true);
+  tearDownAll(() => debugUpstreamLayout = false);
   late ProviderContainer container;
 
   setUp(() {

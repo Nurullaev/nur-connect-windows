@@ -10,7 +10,7 @@ import 'package:fl_clash/features/update/download.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:path/path.dart' as p;
 
-const _name = 'FlClashX-macos-arm64.dmg';
+const _name = 'NurConnect-macos-universal.dmg';
 const _base = 'https://github.com/pluralplay/FlClashX/releases/download/v0.5.1';
 const _cdn = 'https://release-assets.githubusercontent.com/blob';
 

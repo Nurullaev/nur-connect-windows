@@ -64,7 +64,7 @@ class UpdateTarget {
   String? assetName(String arch) => switch (kind) {
     UpdateInstallKind.android => 'FlClashX-android-$arch.apk',
     UpdateInstallKind.windows => 'NurConnect-windows-$arch-setup.exe',
-    UpdateInstallKind.macos => 'FlClashX-macos-$arch.dmg',
+    UpdateInstallKind.macos => 'NurConnect-macos-universal.dmg',
     UpdateInstallKind.appImage => 'FlClashX-linux-$arch.AppImage',
     UpdateInstallKind.deb => 'FlClashX-linux-$arch.deb',
     UpdateInstallKind.rpm => 'FlClashX-linux-$arch.rpm',

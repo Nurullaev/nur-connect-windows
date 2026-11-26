@@ -67,7 +67,7 @@ Future<UpdatePlatform> resolveUpdatePlatform({required ExitApp exitApp}) async {
   if (Platform.isMacOS) {
     return MacosUpdatePlatform(
       bundle: macosBundleOf(executable),
-      archs: archs,
+      archs: const ['universal'],
       run: runProcess,
       exitApp: exitApp,
     );
@@ -286,6 +286,7 @@ class WindowsUpdatePlatform implements UpdatePlatform {
         '-NonInteractive',
         '-Command',
         // A small progress window instead of the wizard, then the app again.
+        // ignore: no_adjacent_strings_in_list
         'Start-Process -FilePath \$env:$_setupVariable '
             "-ArgumentList '/SILENT','/SUPPRESSMSGBOXES','/NORESTART','/RELAUNCH=1'",
       ],

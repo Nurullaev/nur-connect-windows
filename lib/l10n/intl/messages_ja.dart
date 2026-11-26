@@ -540,6 +540,9 @@ class MessageLookup extends MessageLookupByLibrary {
     "desc": MessageLookupByLibrary.simpleMessage(
       "MihomoベースのWindows向けプロキシクライアント。オープンソースで広告もありません。",
     ),
+    "descMacos": MessageLookupByLibrary.simpleMessage(
+      "MihomoベースのmacOS向けプロキシクライアント。オープンソースで広告もありません。",
+    ),
     "destination": MessageLookupByLibrary.simpleMessage("宛先"),
     "destinationGeoIP": MessageLookupByLibrary.simpleMessage("宛先GeoIP"),
     "destinationIPASN": MessageLookupByLibrary.simpleMessage("宛先IP ASN"),
@@ -1681,6 +1684,9 @@ class MessageLookup extends MessageLookupByLibrary {
     ),
     "splitTunnelInvalidName": MessageLookupByLibrary.simpleMessage(
       "chrome.exe のようなファイル名を入力してください",
+    ),
+    "splitTunnelInvalidNameMacos": MessageLookupByLibrary.simpleMessage(
+      "Safari のようなファイル名を入力してください",
     ),
     "splitTunnelMode": MessageLookupByLibrary.simpleMessage("VPN を通す"),
     "splitTunnelNoApps": MessageLookupByLibrary.simpleMessage(

@@ -51,7 +51,7 @@ class _AppStateManagerState extends ConsumerState<AppStateManager>
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    if (system.isWindows) {
+    if (system.isWindows || system.isMacOS) {
       _updateTimer = Timer.periodic(const Duration(minutes: 5), (_) {
         unawaited(_checkAppUpdate());
       });

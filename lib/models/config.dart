@@ -208,9 +208,8 @@ List<DashboardWidget> dashboardWidgetsNamed(Iterable<String> names) {
     for (final widget in DashboardWidget.values)
       widget.name.toLowerCase(): widget,
   };
-  return {
-    for (final name in names) ?byName[name.trim().toLowerCase()],
-  }.toList();
+  return {for (final name in names) ?byName[name.trim().toLowerCase()]}
+      .toList();
 }
 
 /// Saved by 0.5.1 on, where providermode may leave the status card out.
@@ -383,10 +382,12 @@ abstract class AppSettingProps with _$AppSettingProps {
 
   factory AppSettingProps.safeFromJson(Map<String, Object?>? json) {
     if (json == null) {
-      return AppSettingProps(autoCheckUpdate: system.isWindows);
+      return AppSettingProps(
+        autoCheckUpdate: system.isWindows || system.isMacOS,
+      );
     }
     return decodeSalvaging('app settings', {
-      if (system.isWindows) 'autoCheckUpdate': true,
+      if (system.isWindows || system.isMacOS) 'autoCheckUpdate': true,
       ...json,
     }, AppSettingProps.fromJson);
   }
@@ -710,7 +711,7 @@ abstract class Config with _$Config {
 
   factory Config.strictFromJson(Map<String, Object?> json) =>
       _withLegacyOverrideDns(
-        _$ConfigFromJson(_withLegacyRouteMode(_withWindowsUpdateDefault(json))),
+        _$ConfigFromJson(_withLegacyRouteMode(_withDesktopUpdateDefault(json))),
         json,
       );
 
@@ -721,7 +722,7 @@ abstract class Config with _$Config {
         hotKeyActions: defaultHotKeyActions,
         appSettingProps: AppSettingProps(
           dashboardWidgets: platformDefaultDashboardWidgets,
-          autoCheckUpdate: system.isWindows,
+          autoCheckUpdate: system.isWindows || system.isMacOS,
         ),
       );
     }
@@ -729,9 +730,12 @@ abstract class Config with _$Config {
   }
 }
 
-/// A missing setting gets the Windows default; an explicit false stays false.
-Map<String, Object?> _withWindowsUpdateDefault(Map<String, Object?> json) {
-  if (!system.isWindows || json['appSettingProps'] != null) return json;
+/// A missing setting gets the desktop default; an explicit false stays false.
+Map<String, Object?> _withDesktopUpdateDefault(Map<String, Object?> json) {
+  if ((!system.isWindows && !system.isMacOS) ||
+      json['appSettingProps'] != null) {
+    return json;
+  }
   return {
     ...json,
     'appSettingProps': {'autoCheckUpdate': true},

@@ -73,7 +73,7 @@ class Navigation implements NavigationPort {
       NavigationItem(
         glyph: AppGlyphs.settings,
         label: PageLabel.tools,
-        builder: (_) => nurWindowsLayout()
+        builder: (_) => nurDesktopLayout()
             ? const NurWindowsSettings(key: GlobalObjectKey(PageLabel.tools))
             : const ToolsView(key: GlobalObjectKey(PageLabel.tools)),
         modes: [NavigationItemMode.desktop, NavigationItemMode.mobile],

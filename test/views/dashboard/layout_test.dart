@@ -31,6 +31,8 @@ const _everyCard = [
 ];
 
 void main() {
+  setUpAll(() => debugUpstreamLayout = true);
+  tearDownAll(() => debugUpstreamLayout = false);
   test('the window picks the density', () {
     DashboardDensity of(double width, double height) =>
         DashboardDensity.of(Size(width, height));

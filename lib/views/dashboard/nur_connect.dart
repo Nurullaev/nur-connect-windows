@@ -20,7 +20,7 @@ import 'widgets/core_status_button.dart';
 import 'widgets/profile_detail.dart';
 import 'widgets/widgets.dart';
 
-/// The Windows home, after the mobile app's design: one large power button,
+/// The desktop home, after the mobile app's design: one large power button,
 /// the subscription with the panel's notices in one card, then every server.
 /// A wide window keeps the button and the card on the left and the servers
 /// on the right. It drives the existing profile, server and connection

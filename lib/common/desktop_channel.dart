@@ -10,12 +10,16 @@ const preExecutableName = 'FlClashXPre';
 bool isPreExecutable(String executable) {
   final context = executable.contains(r'\') ? p.windows : p.posix;
   final name = context.basenameWithoutExtension(executable);
+  if (context != p.windows &&
+      executable.contains('/Nur Connect Pre.app/Contents/MacOS/')) {
+    return true;
+  }
   return name == windowsPreExecutableName ||
       (context != p.windows && name == preExecutableName);
 }
 
 final bool isPreDesktopApp =
-    (Platform.isWindows || Platform.isLinux) &&
+    (Platform.isWindows || Platform.isMacOS || Platform.isLinux) &&
     isPreExecutable(Platform.resolvedExecutable);
 
 String helperServiceFor({required bool pre, bool? windows}) =>

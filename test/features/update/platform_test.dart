@@ -170,7 +170,7 @@ void main() {
       root = await Directory.systemTemp.createTemp('flclashx_update_macos');
       bundle = '${root.path}/Applications/FlClashX.app';
       await Directory(bundle).create(recursive: true);
-      image = File('${root.path}/cache/1/FlClashX-macos-arm64.dmg');
+      image = File('${root.path}/cache/1/NurConnect-macos-universal.dmg');
       await image.create(recursive: true);
     });
 

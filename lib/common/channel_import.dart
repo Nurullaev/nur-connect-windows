@@ -124,16 +124,16 @@ Future<StableSource?> _macosSource() async {
   }
   final home = await appPath.homeDirPath;
   final domain = basename(home);
-  if (domain != '$packageName.pre') {
+  if (domain != '$macosBundleId.pre') {
     return null;
   }
-  final stableHome = join(dirname(home), packageName);
+  final stableHome = join(dirname(home), macosBundleId);
   return (
     stableHome: stableHome,
     home: home,
     hasOwnPreferences: () async =>
         await _defaults(['read', domain, 'flutter.$configKey']) == 0,
-    copyPreferences: () => _copyDefaults(from: packageName, to: domain),
+    copyPreferences: () => _copyDefaults(from: macosBundleId, to: domain),
     dropPreferences: () => _dropDefaults(domain),
     lock: () => lockStableHome(stableHome),
   );

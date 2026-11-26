@@ -1,4 +1,4 @@
-// Public identity of the independent Nur Connect for Windows project.
+// Public identity of Nur Connect desktop applications.
 // Keep OS resources, the helper and packaging in sync (docs/windows/identity.md).
 const productName = 'Nur Connect';
 const productFileName = 'NurConnect';
@@ -26,3 +26,10 @@ const productRepository = 'Nurullaev/nur-connect-windows';
 const productWebsite = 'https://nurconnect.app';
 const productUserAgent = 'Nur-Connect-Windows';
 const productLockFile = 'NurConnect.lock';
+
+const macosBundleId = 'org.nurconnect.macos';
+const macosProductName = 'Nur Connect';
+const macosCoreName = 'NurConnectCore';
+const macosProtocolScheme = 'nurconnect-mac';
+const macosPreProtocolScheme = 'nurconnect-mac-pre';
+const macosUserAgent = 'Nur-Connect-macOS';

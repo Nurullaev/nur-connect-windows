@@ -239,7 +239,7 @@ class _AboutHero extends ConsumerWidget {
           ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 420),
             child: Text(
-              appLocalizations.desc,
+              system.isMacOS ? appLocalizations.descMacos : appLocalizations.desc,
               textAlign: TextAlign.center,
               style: AppTextStyle.subheadline
                   .of(context)

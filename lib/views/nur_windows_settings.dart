@@ -17,7 +17,7 @@ import 'package:fl_clash/widgets/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 
-/// Windows essentials, backed by the same persisted/managed settings as the
+/// Desktop essentials, backed by the same persisted/managed settings as the
 /// engine, tray and startup manager. Advanced pages remain available separately.
 class NurWindowsSettings extends ConsumerWidget {
   const NurWindowsSettings({super.key});
