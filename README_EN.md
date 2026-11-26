@@ -30,6 +30,7 @@ An independent Windows client built on [FlClashX](https://github.com/pluralplay/
 - **Subscription import** with clear errors and a retry that keeps what you typed.
 - **Updates.** The app offers each new version with Update / Later; see [updates](docs/windows/updates.md).
 - **Older graphics cards.** Runs on DirectX 10 class cards too, such as the GeForce 9800 GT.
+- **Logs for support.** In Logs and diagnostics: turn on log capture, repeat the problem and press Share logs; the archive opens in Explorer.
 - **Installs on its own.** Separate processes, helper service, data folders and URI schemes, so it sits beside FlClashX.
 - Translated into Russian, English, Spanish, French, Japanese, Korean and Chinese.
 
