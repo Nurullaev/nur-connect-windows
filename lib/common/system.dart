@@ -330,6 +330,19 @@ class System {
     await runProcess(command, [path]);
   }
 
+  /// Opens the file manager on [path]'s folder with the file selected, where
+  /// the platform can select it.
+  Future<void> revealFile(String path) async {
+    if (isWindows) {
+      // Explorer exits with 1 even when it opens the folder.
+      await runProcess('explorer', ['/select,', path]);
+    } else if (isMacOS) {
+      await runProcess('open', ['-R', path]);
+    } else {
+      await runProcess('xdg-open', [File(path).parent.path]);
+    }
+  }
+
   Future<void> back() async {
     await app?.moveTaskToBack();
   }

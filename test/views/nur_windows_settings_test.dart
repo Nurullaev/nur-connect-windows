@@ -46,4 +46,37 @@ void main() {
       expect(tester.takeException(), isNull);
     },
   );
+
+  testWidgets('logs, their capture and sharing sit in one section', (
+    tester,
+  ) async {
+    tester.view.physicalSize = const Size(1200, 2400);
+    tester.view.devicePixelRatio = 1;
+    addTearDown(tester.view.resetPhysicalSize);
+    addTearDown(tester.view.resetDevicePixelRatio);
+    final container = ProviderContainer(
+      overrides: [profilesProvider.overrideWith(TestProfiles.new)],
+    );
+    addTearDown(container.dispose);
+    globalState.container = container;
+    container.read(viewSizeProvider.notifier).value = const Size(1200, 2400);
+    await tester.pumpWidget(
+      UncontrolledProviderScope(
+        container: container,
+        child: const TestApp(locale: Locale('en'), child: NurWindowsSettings()),
+      ),
+    );
+    await tester.pumpAndSettle();
+    final l10n = currentAppLocalizations;
+    final capture = find.text(l10n.logcat);
+    await tester.scrollUntilVisible(capture, 200);
+    expect(find.text(l10n.shareLogs), findsOne);
+    expect(find.text(l10n.openLogsFolder), findsOne);
+    expect(find.text(l10n.logsHowTo), findsOne);
+    expect(container.read(appSettingProvider).openLogs, isFalse);
+    await tester.tap(capture);
+    await tester.pumpAndSettle();
+    expect(container.read(appSettingProvider).openLogs, isTrue);
+    expect(tester.takeException(), isNull);
+  });
 }

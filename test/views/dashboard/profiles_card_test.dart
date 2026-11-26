@@ -302,6 +302,43 @@ void main() {
     }
   });
 
+  testWidgets('the dense header packs its links tightly beside the name', (
+    tester,
+  ) async {
+    setUpProfiles([
+      _profile(1, type: ProfileType.url).copyWith(
+        providerHeaders: const {
+          'account-url': 'https://site.example.com',
+          'bot-url': 'https://t.me/example_bot',
+          'profile-web-page-url': 'https://sub.example.com',
+          'support-url': 'https://help.example.com',
+        },
+      ),
+    ]);
+    await pumpCard(tester, card: const ProfilesCard(dense: true));
+    for (final key in ['profile-site', 'profile-bot', 'profile-more']) {
+      expect(tester.getSize(find.byKey(ValueKey(key))).width, 28);
+    }
+    final site = tester.getRect(find.byKey(const ValueKey('profile-site')));
+    final bot = tester.getRect(find.byKey(const ValueKey('profile-bot')));
+    expect(bot.left - site.right, 0);
+    expect(tester.takeException(), isNull);
+  });
+
+  test('the link glyphs share one centre line', () {
+    for (final glyph in [
+      AppGlyphs.globe,
+      AppGlyphs.send,
+      AppGlyphs.link,
+      AppGlyphs.support,
+    ]) {
+      final bounds = glyph.shapes
+          .map((shape) => shape.path.getBounds())
+          .reduce((a, b) => a.expandToInclude(b));
+      expect(bounds.center.dy, closeTo(12, 0.4));
+    }
+  });
+
   testWidgets('a successful update shows a green check for a second', (
     tester,
   ) async {

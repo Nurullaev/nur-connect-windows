@@ -1089,5 +1089,7 @@
   "directSites": "Local services bypass the VPN",
   "directSitesShort": "Local services bypass the VPN",
   "directSitesDesc": "Banks, government services, marketplaces and other services on your subscription's list open directly, so they load faster and don't block sign-in because of the VPN. Without such a list in the subscription nothing changes.",
-  "bypassTorrentsAndSites": "Torrents and local services bypass the VPN"
+  "bypassTorrentsAndSites": "Torrents and local services bypass the VPN",
+  "logsArchiveSaved": "Log archive saved: {path}",
+  "logsHowTo": "To help support: turn on log capture, repeat the problem and press Share logs. The archive opens in its folder, ready to send."
 }

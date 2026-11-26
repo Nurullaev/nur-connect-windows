@@ -130,6 +130,15 @@ void main() {
     linuxElevation.run = Process.run;
   });
 
+  test('revealing a file selects it in Explorer', () async {
+    await system.revealFile(r'C:\Users\a b\share\logs.zip');
+    expect(processes.runs.single.executable, 'explorer');
+    expect(processes.runs.single.arguments, [
+      '/select,',
+      r'C:\Users\a b\share\logs.zip',
+    ]);
+  }, skip: !Platform.isWindows);
+
   group('statArguments', () {
     test('selects the BSD format on macOS and the GNU one elsewhere', () {
       expect(System.statArguments('/a/core', isMacOS: true), [

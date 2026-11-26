@@ -156,7 +156,19 @@ class NurWindowsSettings extends ConsumerWidget {
           ),
           generateSection(
             title: l10n.logsAndDiagnostics,
-            items: const [OpenLogsFolderItem(), ShareLogsItem()],
+            items: [
+              ConfigToggleItem(
+                title: (l) => l.logcat,
+                managedKey: 'app.openLogs',
+                selector: appSettingProvider.select((state) => state.openLogs),
+                onChanged: (ref, value) => ref
+                    .read(appSettingProvider.notifier)
+                    .update((state) => state.copyWith(openLogs: value)),
+              ),
+              const OpenLogsFolderItem(),
+              const ShareLogsItem(),
+            ],
+            footer: l10n.logsHowTo,
           ),
           generateSection(
             title: simple ? l10n.more : l10n.advancedConfig,

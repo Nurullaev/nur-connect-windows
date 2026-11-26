@@ -1089,5 +1089,7 @@
   "directSites": "Services locaux sans VPN",
   "directSitesShort": "Services locaux sans VPN",
   "directSitesDesc": "Les banques, services publics, places de marché et autres services de la liste de votre abonnement s'ouvrent directement : ils chargent plus vite et ne bloquent pas la connexion à cause du VPN. Sans cette liste dans l'abonnement, rien ne change.",
-  "bypassTorrentsAndSites": "Torrents et services locaux sans VPN"
+  "bypassTorrentsAndSites": "Torrents et services locaux sans VPN",
+  "logsArchiveSaved": "Archive des journaux enregistrée : {path}",
+  "logsHowTo": "Pour aider le support : activez la capture des journaux, reproduisez le problème et appuyez sur « Partager les journaux ». L’archive s’ouvre dans son dossier, prête à être envoyée."
 }

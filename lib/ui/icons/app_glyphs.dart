@@ -469,11 +469,12 @@ abstract final class AppGlyphs {
     GlyphPath('M4.6 16.4 Q12 13.8 19.4 16.4', role: GlyphRole.detail),
   ]);
 
+  // Centred on y 12 like its neighbours; drawn 1.4 lower it sank in a row.
   static const support = Glyph([
-    GlyphPath('M4.2 13.2 A7.8 7.8 0 0 1 19.8 13.2', role: GlyphRole.line),
-    GlyphBox(3.2, 12.2, 7.4, 18.6, 1.8),
-    GlyphBox(16.6, 12.2, 20.8, 18.6, 1.8),
-    GlyphPath('M18.7 18.6 Q18.7 21.4 14.2 21.4', role: GlyphRole.line),
+    GlyphPath('M4.2 11.8 A7.8 7.8 0 0 1 19.8 11.8', role: GlyphRole.line),
+    GlyphBox(3.2, 10.8, 7.4, 17.2, 1.8),
+    GlyphBox(16.6, 10.8, 20.8, 17.2, 1.8),
+    GlyphPath('M18.7 17.2 Q18.7 20 14.2 20', role: GlyphRole.line),
   ]);
 
   static const warning = Glyph([

@@ -91,8 +91,10 @@ Future<void> _deleteProfile(
 const _nearlyUsedShare = 0.9;
 
 /// The name row already carries the way to other profiles, so the header
-/// keeps only the panel's links and gives them the room it saves.
-const _actionGlyphSize = 22.0;
+/// keeps only the panel's links. They stay a touch above the default glyph
+/// but sit close together, so a long provider name still fits beside them.
+const _actionGlyphSize = 19.0;
+const _actionBoxSize = 28.0;
 
 const _soonDays = 7;
 
@@ -139,6 +141,7 @@ class ProfilesCard extends ConsumerWidget {
             glyph: AppGlyphs.globe,
             tooltip: appLocalizations.website,
             iconSize: _actionGlyphSize,
+            boxSize: _actionBoxSize,
             onPressed: () => dialogs.openUrl(siteUrl),
           );
     final subscriptionPageUrl = profile?.headers.webPageUrl;
@@ -149,6 +152,7 @@ class ProfilesCard extends ConsumerWidget {
             glyph: AppGlyphs.link,
             tooltip: appLocalizations.nurSubscriptionPage,
             iconSize: _actionGlyphSize,
+            boxSize: _actionBoxSize,
             onPressed: () => dialogs.openUrl(subscriptionPageUrl),
           );
     final botUrl = profile?.headers.botUrl;
@@ -159,6 +163,7 @@ class ProfilesCard extends ConsumerWidget {
             glyph: AppGlyphs.send,
             tooltip: appLocalizations.nurBot,
             iconSize: _actionGlyphSize,
+            boxSize: _actionBoxSize,
             onPressed: () => dialogs.openUrl(botUrl),
           );
     final supportUrl = profile?.headers.supportUrl;
@@ -168,6 +173,7 @@ class ProfilesCard extends ConsumerWidget {
             glyph: AppGlyphs.support,
             tooltip: appLocalizations.support,
             iconSize: _actionGlyphSize,
+            boxSize: _actionBoxSize,
             onPressed: () => dialogs.openUrl(supportUrl),
           );
     final swap = profile != null && switchable
@@ -192,6 +198,7 @@ class ProfilesCard extends ConsumerWidget {
                 glyph: AppGlyphs.more,
                 tooltip: appLocalizations.more,
                 iconSize: _actionGlyphSize,
+                boxSize: _actionBoxSize,
                 onPressed: open,
               ),
               popupBuilder: (_) => CommonPopupMenu(
@@ -252,12 +259,18 @@ class ProfilesCard extends ConsumerWidget {
                     ],
                   ),
                 ),
-                ?site,
-                ?bot,
-                ?subscriptionPage,
-                ?support,
-                ?sync,
-                ?more,
+                // One tight group: the row's spacing is for the name.
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ?site,
+                    ?bot,
+                    ?subscriptionPage,
+                    ?support,
+                    ?sync,
+                    ?more,
+                  ],
+                ),
               ],
             ),
             if (hasFigures) ...[
@@ -375,14 +388,15 @@ class _SyncButtonState extends ConsumerState<_SyncButton> {
     final Widget child = isUpdating
         ? const SizedBox.square(
             key: ValueKey('updating'),
-            dimension: 32,
-            child: Center(child: CommonCircleLoading(size: 18)),
+            dimension: _actionBoxSize,
+            child: Center(child: CommonCircleLoading(size: 16)),
           )
         : DashboardIconButton(
             key: ValueKey(done),
             glyph: done ? AppGlyphs.check : AppGlyphs.sync,
             tooltip: appLocalizations.update,
             iconSize: _actionGlyphSize,
+            boxSize: _actionBoxSize,
             color: done ? context.colorScheme.success : null,
             onPressed: _sync,
           );

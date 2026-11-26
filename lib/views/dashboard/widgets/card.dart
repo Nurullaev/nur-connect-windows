@@ -905,6 +905,7 @@ class DashboardIconButton extends StatelessWidget {
     required this.onPressed,
     this.color,
     this.iconSize = glyphSize,
+    this.boxSize = size,
   });
 
   static const size = 32.0;
@@ -916,22 +917,25 @@ class DashboardIconButton extends StatelessWidget {
   final Color? color;
   final double iconSize;
 
+  /// The circle's side, [size] unless a crowded row asks for less.
+  final double boxSize;
+
   @override
   Widget build(BuildContext context) {
     // A 24 tall card header would otherwise squeeze the circle into a pill.
     return SizedBox(
-      width: size,
+      width: boxSize,
       child: OverflowBox(
         fit: OverflowBoxFit.deferToChild,
-        minHeight: size,
-        maxHeight: size,
+        minHeight: boxSize,
+        maxHeight: boxSize,
         child: IconButton(
           tooltip: tooltip,
           padding: EdgeInsets.zero,
           iconSize: iconSize,
           style: IconButton.styleFrom(
-            minimumSize: const Size.square(size),
-            fixedSize: const Size.square(size),
+            minimumSize: Size.square(boxSize),
+            fixedSize: Size.square(boxSize),
             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
             foregroundColor: color ?? context.colorScheme.onSurfaceVariant,
           ),

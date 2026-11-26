@@ -9246,6 +9246,26 @@ class AppLocalizations {
       args: [],
     );
   }
+
+  /// `Log archive saved: {path}`
+  String logsArchiveSaved(Object path) {
+    return Intl.message(
+      'Log archive saved: $path',
+      name: 'logsArchiveSaved',
+      desc: '',
+      args: [path],
+    );
+  }
+
+  /// `To help support: turn on log capture, repeat the problem and press Share logs. The archive opens in its folder, ready to send.`
+  String get logsHowTo {
+    return Intl.message(
+      'To help support: turn on log capture, repeat the problem and press Share logs. The archive opens in its folder, ready to send.',
+      name: 'logsHowTo',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<AppLocalizations> {

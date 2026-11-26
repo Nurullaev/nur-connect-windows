@@ -1089,5 +1089,7 @@
   "directSites": "Servicios locales sin VPN",
   "directSitesShort": "Servicios locales sin VPN",
   "directSitesDesc": "Bancos, servicios públicos, tiendas en línea y otros servicios de la lista de tu suscripción se abren directamente: cargan más rápido y no bloquean el inicio de sesión por la VPN. Si la suscripción no trae esa lista, no cambia nada.",
-  "bypassTorrentsAndSites": "Torrents y servicios locales sin VPN"
+  "bypassTorrentsAndSites": "Torrents y servicios locales sin VPN",
+  "logsArchiveSaved": "Archivo de registros guardado: {path}",
+  "logsHowTo": "Para ayudar al soporte: activa la captura de registros, repite el problema y pulsa «Compartir registros». El archivo se abre en su carpeta, listo para enviar."
 }

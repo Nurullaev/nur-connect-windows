@@ -1089,5 +1089,7 @@
   "directSites": "本地服务不走 VPN",
   "directSitesShort": "本地服务不走 VPN",
   "directSitesDesc": "银行、政务服务、电商等订阅列表中的服务直接连接，打开更快，也不会因 VPN 被拒绝登录。订阅中没有该列表时不会有任何变化。",
-  "bypassTorrentsAndSites": "种子和本地服务不走 VPN"
+  "bypassTorrentsAndSites": "种子和本地服务不走 VPN",
+  "logsArchiveSaved": "日志压缩包已保存：{path}",
+  "logsHowTo": "协助客服排查：开启日志捕获，重现问题后点击“分享日志”。压缩包会在所在文件夹中打开，可直接发送。"
 }

@@ -271,18 +271,28 @@ class _ShareLogsItemState extends State<ShareLogsItem> {
     _sharing = true;
     final appLocalizations = context.appLocalizations;
     try {
+      // The archive's path, '' without logs today, null when it failed (the
+      // error is already shown).
       final shared = await globalState.safeRun(() async {
         final directory = Directory(await appPath.shareDirPath);
         await directory.create(recursive: true);
         final archive = await fileLogger.archiveToday(directory.path);
         if (archive == null) {
-          return false;
+          return '';
         }
-        await app?.shareFile(archive, mimeType: 'application/zip');
-        return true;
+        final share = app;
+        if (share != null) {
+          await share.shareFile(archive, mimeType: 'application/zip');
+        } else {
+          // A desktop has no share sheet: show the archive to send it on.
+          await system.revealFile(archive);
+        }
+        return archive;
       }, title: appLocalizations.shareLogs);
-      if (shared == false) {
+      if (shared == '') {
         dialogs.showNotifier(appLocalizations.noLogsToday);
+      } else if (shared != null && app == null) {
+        dialogs.showNotifier(appLocalizations.logsArchiveSaved(shared));
       }
     } finally {
       _sharing = false;
@@ -573,7 +583,7 @@ class GeneralView extends ConsumerWidget {
         update: (state, value) => state.copyWith(openLogs: value),
       ),
       if (system.isDesktop) const OpenLogsFolderItem(),
-      if (system.isAndroid) const ShareLogsItem(),
+      if (system.isAndroid || system.isDesktop) const ShareLogsItem(),
       const ReturnToProviderItem(),
       const ResetAppItem(),
     ];

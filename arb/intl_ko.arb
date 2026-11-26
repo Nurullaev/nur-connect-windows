@@ -1089,5 +1089,7 @@
   "directSites": "로컬 서비스는 VPN 우회",
   "directSitesShort": "로컬 서비스는 VPN 우회",
   "directSitesDesc": "은행, 공공 서비스, 쇼핑몰 등 구독 목록에 있는 서비스는 직접 연결되어 더 빨리 열리고 VPN 때문에 로그인이 막히지 않습니다. 구독에 목록이 없으면 아무것도 바뀌지 않습니다.",
-  "bypassTorrentsAndSites": "토렌트와 로컬 서비스는 VPN 우회"
+  "bypassTorrentsAndSites": "토렌트와 로컬 서비스는 VPN 우회",
+  "logsArchiveSaved": "로그 압축 파일을 저장했습니다: {path}",
+  "logsHowTo": "지원을 위해 로그 수집을 켜고 문제를 재현한 뒤 「로그 공유」를 누르세요. 압축 파일이 폴더에서 열리며 바로 보낼 수 있습니다."
 }
