@@ -127,10 +127,17 @@ class Request {
   }
 
   /// Null when this build is current; throws when GitHub cannot be asked.
-  Future<Map<String, dynamic>?> checkForUpdate() async {
+  ///
+  /// [installs] names the files this copy can update itself from. Windows
+  /// and macOS share the releases, so one may come out for the other alone:
+  /// a release without any of them is passed over for the newest one that
+  /// has one, and never offers a download that is not there.
+  Future<Map<String, dynamic>?> checkForUpdate({
+    Set<String> installs = const {},
+  }) async {
     final release = globalState.isPre
-        ? await latestPrerelease()
-        : await latestRelease();
+        ? await latestPrerelease(installs: installs)
+        : await latestRelease(installs: installs);
     if (release == null) {
       return null;
     }
@@ -144,20 +151,11 @@ class Request {
   /// A pre-release installs as its own app, which a stable release would not
   /// upgrade, so it only hears of newer pre-releases.
   @visibleForTesting
-  Future<Map<String, dynamic>?> latestPrerelease() async {
+  Future<Map<String, dynamic>?> latestPrerelease({
+    Set<String> installs = const {},
+  }) async {
     try {
-      final releases = <dynamic>[];
-      String? next =
-          'https://api.github.com/repos/$repository/releases?per_page=100';
-      for (var page = 0; next != null && page < _releasePages; page++) {
-        final response = await dio.get<List<dynamic>>(
-          next,
-          options: Options(responseType: ResponseType.json),
-        );
-        releases.addAll(response.data ?? const []);
-        next = nextPageOf(response.headers.value('link'));
-      }
-      return newestPrerelease(releases);
+      return newestPrerelease(await _releases(), installs: installs);
     } on DioException catch (error) {
       commonPrint.log(
         'releases API failed: ${compactError(error)}',
@@ -168,18 +166,43 @@ class Request {
       'https://github.com/$repository/releases.atom',
       options: Options(responseType: ResponseType.plain),
     );
-    return newestPrereleaseInFeed(feed.data ?? '');
+    return _withDownload(
+      newestPrereleaseInFeed(feed.data ?? ''),
+      installs: installs,
+    );
+  }
+
+  Future<List<dynamic>> _releases() async {
+    final releases = <dynamic>[];
+    String? next =
+        'https://api.github.com/repos/$repository/releases?per_page=100';
+    for (var page = 0; next != null && page < _releasePages; page++) {
+      final response = await dio.get<List<dynamic>>(
+        next,
+        options: Options(responseType: ResponseType.json),
+      );
+      releases.addAll(response.data ?? const []);
+      next = nextPageOf(response.headers.value('link'));
+    }
+    return releases;
   }
 
   /// The release page redirect still answers once the hourly API quota is spent.
+  /// Null when no stable release carries any of [installs].
   @visibleForTesting
-  Future<Map<String, dynamic>> latestRelease() async {
+  Future<Map<String, dynamic>?> latestRelease({
+    Set<String> installs = const {},
+  }) async {
     try {
       final response = await dio.get<Map<String, dynamic>>(
         'https://api.github.com/repos/$repository/releases/latest',
         options: Options(responseType: ResponseType.json),
       );
-      return response.data!;
+      final latest = response.data!;
+      if (carriesInstall(latest, installs) != false) {
+        return latest;
+      }
+      return newestStableRelease(await _releases(), installs: installs);
     } on DioException catch (error) {
       commonPrint.log(
         'latest release API failed: ${compactError(error)}',
@@ -199,7 +222,37 @@ class Request {
     if (tagIndex == 0 || tagIndex >= segments.length) {
       throw FormatException('No release tag in the redirect', location);
     }
-    return {'tag_name': segments[tagIndex]};
+    return _withDownload({'tag_name': segments[tagIndex]}, installs: installs);
+  }
+
+  /// A release known by its tag alone, as the quota-free fallbacks give it,
+  /// is kept unless every one of [installs] is missing from it. Only a 404
+  /// says a file is missing; any other answer leaves the download to tell.
+  Future<Map<String, dynamic>?> _withDownload(
+    Map<String, dynamic>? release, {
+    required Set<String> installs,
+  }) async {
+    final tag = release?['tag_name'];
+    if (release == null || installs.isEmpty || tag is! String) {
+      return release;
+    }
+    for (final name in installs) {
+      try {
+        final response = await dio.head<void>(
+          'https://github.com/$repository/releases/download/$tag/$name',
+          options: Options(
+            followRedirects: false,
+            validateStatus: (status) => status != null,
+          ),
+        );
+        if (response.statusCode != HttpStatus.notFound) {
+          return release;
+        }
+      } on DioException {
+        return release;
+      }
+    }
+    return null;
   }
 }
 
@@ -211,16 +264,44 @@ const _releasePages = 5;
 /// list under tags compareVersions cannot read.
 final _prereleaseTag = RegExp(r'^v\d+\.\d+\.\d+-pre\.\d+$');
 
-Map<String, dynamic>? newestPrerelease(List<dynamic> releases) {
+Map<String, dynamic>? newestPrerelease(
+  List<dynamic> releases, {
+  Set<String> installs = const {},
+}) => _newestRelease(
+  releases,
+  prerelease: true,
+  tagPattern: _prereleaseTag,
+  installs: installs,
+);
+
+final _stableTag = RegExp(r'^v\d+\.\d+\.\d+$');
+
+Map<String, dynamic>? newestStableRelease(
+  List<dynamic> releases, {
+  Set<String> installs = const {},
+}) => _newestRelease(
+  releases,
+  prerelease: false,
+  tagPattern: _stableTag,
+  installs: installs,
+);
+
+Map<String, dynamic>? _newestRelease(
+  List<dynamic> releases, {
+  required bool prerelease,
+  required RegExp tagPattern,
+  required Set<String> installs,
+}) {
   Map<String, dynamic>? newest;
   for (final release in releases) {
     if (release is! Map<String, dynamic> ||
-        release['prerelease'] != true ||
-        release['draft'] == true) {
+        (release['prerelease'] == true) != prerelease ||
+        release['draft'] == true ||
+        carriesInstall(release, installs) == false) {
       continue;
     }
     final tag = release['tag_name'];
-    if (tag is! String || !_prereleaseTag.hasMatch(tag)) {
+    if (tag is! String || !tagPattern.hasMatch(tag)) {
       continue;
     }
     if (newest == null || _newer(tag, newest['tag_name'] as String)) {
@@ -228,6 +309,21 @@ Map<String, dynamic>? newestPrerelease(List<dynamic> releases) {
     }
   }
   return newest;
+}
+
+/// Whether [release] lists one of [installs]: null when it lists no files
+/// at all, and true when there is nothing to look for.
+bool? carriesInstall(Map<String, dynamic> release, Set<String> installs) {
+  if (installs.isEmpty) {
+    return true;
+  }
+  final assets = release['assets'];
+  if (assets is! List) {
+    return null;
+  }
+  return assets.any(
+    (asset) => asset is Map && installs.contains(asset['name']),
+  );
 }
 
 /// The releases feed, which is not rate limited, names tags but not which

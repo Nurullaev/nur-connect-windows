@@ -95,7 +95,9 @@ class CommonAction extends _$CommonAction {
   Future<Map<String, dynamic>?> checkForUpdate() async {
     // Nur Connect Windows releases belong to our repository. A subscription's
     // FlClashX update header must not replace the app's own update source.
-    if (system.isWindows || system.isMacOS) return request.checkForUpdate();
+    if (system.isWindows || system.isMacOS) {
+      return request.checkForUpdate(installs: await _installableFiles());
+    }
     final headers = ref.read(currentProfileProvider)?.headers;
     final manifestUrl = globalState.isPre
         ? headers?.preUpdateManifestUrl
@@ -203,6 +205,13 @@ class CommonAction extends _$CommonAction {
           ),
       ],
     ];
+  }
+
+  /// The release files this copy can install itself from; none for one that
+  /// only opens the release page, such as the portable Windows folder.
+  Future<Set<String>> _installableFiles() async {
+    final target = (await _updatePlatform()).target;
+    return {for (final arch in target.archs) ?target.assetName(arch)};
   }
 
   Future<UpdatePlatform> _updatePlatform() async {

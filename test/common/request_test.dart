@@ -214,6 +214,101 @@ void main() {
       expect((await request.checkForUpdate())?['tag_name'], 'v0.5.1');
     });
 
+    const dmg = 'NurConnect-macos-universal.dmg';
+    const exe = 'NurConnect-windows-amd64-setup.exe';
+    Map<String, dynamic> release(String tag, List<String> files) => {
+      'tag_name': tag,
+      'prerelease': tag.contains('-'),
+      'draft': false,
+      'assets': [
+        for (final name in files) {'name': name},
+      ],
+    };
+
+    test('a stable build passes over a release made for the other '
+        'desktop', () async {
+      installed('stable', '1.0.9');
+      final request = Request()
+        ..dio.httpClientAdapter = _UrlAdapter({
+          'https://api.github.com/repos/$repository/releases/latest': () =>
+              json(release('v1.0.11', [exe])),
+          'https://api.github.com/repos/$repository/releases?per_page=100':
+              () => json([
+                release('v1.0.11', [exe]),
+                release('v1.0.10', [exe, dmg]),
+                release('v1.0.12-pre.1', [exe, dmg]),
+                release('v1.0.9', [exe, dmg]),
+              ]),
+        });
+
+      expect(
+        (await request.checkForUpdate(installs: {dmg}))?['tag_name'],
+        'v1.0.10',
+      );
+      expect(
+        (await request.checkForUpdate(installs: {exe}))?['tag_name'],
+        'v1.0.11',
+      );
+    });
+
+    test('a stable build hears of nothing when no release has its '
+        'file', () async {
+      installed('stable', '1.0.9');
+      final request = Request()
+        ..dio.httpClientAdapter = _UrlAdapter({
+          'https://api.github.com/repos/$repository/releases/latest': () =>
+              json(release('v1.0.11', [exe])),
+          'https://api.github.com/repos/$repository/releases?per_page=100':
+              () => json([
+                release('v1.0.11', [exe]),
+              ]),
+        });
+
+      expect(await request.checkForUpdate(installs: {dmg}), isNull);
+    });
+
+    test('past the quota a tag is kept only if its file is there', () async {
+      installed('stable', '1.0.9');
+      var dmgStatus = 404;
+      final request = Request()
+        ..dio.httpClientAdapter = _UrlAdapter({
+          'https://api.github.com/repos/$repository/releases/latest': () =>
+              ResponseBody.fromString('limit', 403),
+          'https://github.com/$repository/releases/latest': () =>
+              ResponseBody.fromString(
+                '',
+                302,
+                headers: {
+                  HttpHeaders.locationHeader: [
+                    'https://github.com/$repository/releases/tag/v1.0.11',
+                  ],
+                },
+              ),
+          'https://github.com/$repository/releases/download/v1.0.11/$dmg': () =>
+              ResponseBody.fromString('', dmgStatus),
+        });
+
+      expect(await request.checkForUpdate(installs: {dmg}), isNull);
+      dmgStatus = 302;
+      expect(
+        (await request.checkForUpdate(installs: {dmg}))?['tag_name'],
+        'v1.0.11',
+      );
+    });
+
+    test('a pre-release build passes over one without its file', () {
+      expect(
+        newestPrerelease(
+          [
+            release('v1.0.11-pre.2', [exe]),
+            release('v1.0.11-pre.1', [exe, dmg]),
+          ],
+          installs: {dmg},
+        )?['tag_name'],
+        'v1.0.11-pre.1',
+      );
+    });
+
     test('finds none among stable releases only', () {
       expect(
         newestPrerelease([
